@@ -12,7 +12,7 @@ git clone https://github.com/phpfmt/php.tools.git
 * Composer
 
 ```
-php composer.phar global require dericofilho/fmt
+php composer.phar global require phpfmt/fmt
 ```
 
 2 - Add php.tools as an External tool in PhpStorm : Open Settings (or “Preferences” on OS X) > External Tools and setup a new tool :
