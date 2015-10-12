@@ -1,5 +1,5 @@
 {
-    "name": "dericofilho/fmt",
+    "name": "phpfmt/fmt",
     "type": "application",
     "description": "A script to automatically fix K&R and PSR-1/2 Coding Standard.",
     "license": "BSD-3-Clause",
@@ -16,7 +16,7 @@
         "source": "https://github.com/phpfmt/php.tools"
     },
     "require":{
-        "php": ">=5.4.0",
+        "php": ">=5.6.0",
         "ext-tokenizer": "*"
     },
     "require-dev": {
