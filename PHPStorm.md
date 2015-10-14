@@ -21,12 +21,12 @@ php composer.phar global require phpfmt/fmt
 
 Fill the fields with the following:
 
-Program: `/full/path/to/php /full/path/to/fmt.php`
+Program: `/full/path/to/php`
 
-Parameters: `--no-backup “$FileDir$/$FileName$”`
+Parameters: `/full/path/to/fmt.php --no-backup "$FileDir$/$FileName$"`
 
 (Note `--no-backup` prevents the creation of backup files `file~`, therefore not letting pollute the working directory).
 
 Working directory: `$ProjectFileDir$`
 
-Tested with PhpStorm 8 stable with `php.tools 5.30.2`, [consider putting a keyboard shortcut to make it easier](https://www.jetbrains.com/phpstorm/help/configuring-keyboard-shortcuts.html).
+Tested with PhpStorm 9.0.2 with `phpfmt v15.1.1`, [consider putting a keyboard shortcut to make it easier](https://www.jetbrains.com/phpstorm/help/configuring-keyboard-shortcuts.html).
