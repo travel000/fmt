@@ -6,6 +6,6 @@ namespace {
 	}
 }
 
-require 'fmt.php';
+require 'fmt-external.php';
 
 __HALT_COMPILER();

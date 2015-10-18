@@ -171,6 +171,6 @@ namespace {
 		$inPhar = false;
 	}
 	if (!isset($testEnv)) {
-		require 'cli.php';
+		require 'cli-core.php';
 	}
 }
