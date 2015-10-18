@@ -2459,7 +2459,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "15.1.1");
+	define("VERSION", "15.2.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -9851,6 +9851,7 @@ EOT;
 			case T_PUBLIC:
 			case T_STATIC:
 			case T_VARIABLE:
+			case T_FINAL:
 				$stack = '';
 				if ($touchedDocComment) {
 					$touchedDocComment = false;
@@ -9871,6 +9872,7 @@ EOT;
 					T_STATIC,
 					T_STRING,
 					T_VARIABLE,
+					T_FINAL,
 				];
 				prev($tokens);
 
