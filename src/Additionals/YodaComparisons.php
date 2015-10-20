@@ -163,7 +163,6 @@ EOT;
 				)) {
 					continue;
 				}
-
 				while (list($ptr, $token) = each($tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$tkns[$ptr] = null;

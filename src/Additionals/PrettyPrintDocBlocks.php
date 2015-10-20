@@ -169,7 +169,6 @@ EOT;
 
 			++$seqdetect;
 		}
-
 		while (list($idx, $line) = each($lines)) {
 			$weight = substr(strrchr($line, ':'), 1);
 			$line = substr($line, 0, -1 * (strlen($line) - strrpos($line, ':')));
@@ -237,7 +236,6 @@ EOT;
 							break;
 						}
 					}
-
 					while ((list(, $word) = each($words))) {
 						if (!trim($word)) {
 							continue;

@@ -71,10 +71,6 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 			case T_CASE:
 				$this->appendCode($text);
 				$this->printUntil(ST_COLON);
-				$nl = '';
-				if ($this->hasLnAfter()) {
-					$nl = $this->newLine;
-				}
 
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);

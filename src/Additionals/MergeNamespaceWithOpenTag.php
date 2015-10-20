@@ -26,7 +26,6 @@ final class MergeNamespaceWithOpenTag extends AdditionalPass {
 				break;
 			}
 		}
-
 		while (list(, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);

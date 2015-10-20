@@ -2974,7 +2974,6 @@ abstract class FormatterPass {
 		if (isset($tknids[$this->newLine])) {
 			$whitespaceNewLine = true;
 		}
-
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -3983,7 +3982,6 @@ final class AutoImportPass extends FormatterPass {
 				if ($this->rightUsefulTokenIs(T_NS_SEPARATOR)) {
 					break;
 				}
-
 				while (list($index, $token) = each($tokens)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -4106,7 +4104,6 @@ final class AutoImportPass extends FormatterPass {
 			}
 			$return .= $text;
 		}
-
 		while (list(, $token) = each($tokens)) {
 			list(, $text) = $this->getToken($token);
 			$return .= $text;
@@ -4194,7 +4191,6 @@ final class AutoImportPass extends FormatterPass {
 				}
 			}
 		}
-
 		while (list($index, $token) = each($tokens)) {
 			list($id, $text) = $this->getToken($token);
 			$lowerText = strtolower($text);
@@ -6422,7 +6418,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 				if ($this->leftUsefulTokenIs(T_DOUBLE_COLON)) {
 					break;
 				}
-
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -9571,7 +9566,6 @@ EOT;
 				break;
 			}
 		}
-
 		while (list(, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);
@@ -10491,7 +10485,6 @@ EOT;
 
 			++$seqdetect;
 		}
-
 		while (list($idx, $line) = each($lines)) {
 			$weight = substr(strrchr($line, ':'), 1);
 			$line = substr($line, 0, -1 * (strlen($line) - strrpos($line, ':')));
@@ -10559,7 +10552,6 @@ EOT;
 							break;
 						}
 					}
-
 					while ((list(, $word) = each($words))) {
 						if (!trim($word)) {
 							continue;
@@ -12463,10 +12455,6 @@ EOT;
 			case T_CASE:
 				$this->appendCode($text);
 				$this->printUntil(ST_COLON);
-				$nl = '';
-				if ($this->hasLnAfter()) {
-					$nl = $this->newLine;
-				}
 
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
@@ -13082,7 +13070,6 @@ EOT;
 				)) {
 					continue;
 				}
-
 				while (list($ptr, $token) = each($tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$tkns[$ptr] = null;
@@ -13485,7 +13472,6 @@ EOT;
 				$this->appendCode($text);
 			}
 		}
-
 		while (list(, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);

@@ -27,7 +27,6 @@ final class PSR2CurlyOpenNextLine extends FormatterPass {
 				if ($this->leftUsefulTokenIs(T_DOUBLE_COLON)) {
 					break;
 				}
-
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
