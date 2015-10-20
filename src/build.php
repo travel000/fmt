@@ -31,6 +31,7 @@ if (!empty($newver)) {
 
 class Build extends FormatterPass {
 	private $suffix = [];
+
 	public function __construct($suffix) {
 		$this->suffix = explode(',', $suffix);
 		$this->suffix[] = '';

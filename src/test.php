@@ -524,7 +524,7 @@ function bogomips() {
 }
 
 function delay($loops) {
-	for ($i = 0; $i < $loops; $i++);
+	for ($i = 0; $i < $loops; ++$i);
 }
 
 function stopAtStep() {

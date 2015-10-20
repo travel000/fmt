@@ -2360,9 +2360,12 @@ function select_channel(array $actions) {
 	}
 	interface Cacher {
 	const DEFAULT_CACHE_FILENAME = '.php.tools.cache';
+
 	public function create_db();
-	public function upsert($target, $filename, $content);
+
 	public function is_changed($target, $filename);
+
+	public function upsert($target, $filename, $content);
 }
 
 	$enableCache = false;
@@ -2459,7 +2462,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.0.0");
+	define('VERSION', '16.0.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(

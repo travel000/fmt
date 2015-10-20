@@ -2360,9 +2360,12 @@ function select_channel(array $actions) {
 	}
 	interface Cacher {
 	const DEFAULT_CACHE_FILENAME = '.php.tools.cache';
+
 	public function create_db();
-	public function upsert($target, $filename, $content);
+
 	public function is_changed($target, $filename);
+
+	public function upsert($target, $filename, $content);
 }
 
 	$enableCache = false;
@@ -2459,7 +2462,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.0.0");
+	define('VERSION', '16.0.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3847,6 +3850,7 @@ final class CodeFormatter extends BaseCodeFormatter {
  * @codeCoverageIgnore
  */
 final class CodeFormatter extends BaseCodeFormatter {
+
 }
 
 	}
@@ -6041,6 +6045,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 	}
 }
 	final class SurrogateToken {
+
 }
 
 	final class TwoCommandsInSameLine extends FormatterPass {
@@ -9950,9 +9955,11 @@ EOT;
 }
 
 	final class OrderMethod extends OrganizeClass {
+
 }
 
 	final class OrderMethodAndVisibility extends OrganizeClass {
+
 }
 
 	class OrderAndRemoveUseClauses extends AdditionalPass {

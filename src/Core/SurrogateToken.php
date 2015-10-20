@@ -1,3 +1,4 @@
 <?php
 final class SurrogateToken {
+
 }
