@@ -14140,7 +14140,7 @@ if (isset($opts['i'])) {
 	}
 	if ($inPhar) {
 		if (!file_exists($argv[1])) {
-			$argv[1] = dirname(Phar::running(false)) . DIRECTORY_SEPARATOR . $argv[1];
+			$argv[1] = getcwd() . DIRECTORY_SEPARATOR . $argv[1];
 		}
 	}
 	if (!is_file($argv[1])) {
