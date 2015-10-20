@@ -3,12 +3,13 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
 
 		if (
-			isset($foundTokens[T_IF]) ||
+			isset($foundTokens[T_CASE]) ||
 			isset($foundTokens[T_DO]) ||
-			isset($foundTokens[T_WHILE]) ||
 			isset($foundTokens[T_FOR]) ||
 			isset($foundTokens[T_FOREACH]) ||
-			isset($foundTokens[T_SWITCH])
+			isset($foundTokens[T_IF]) ||
+			isset($foundTokens[T_SWITCH]) ||
+			isset($foundTokens[T_WHILE])
 		) {
 			return true;
 		}
@@ -60,6 +61,24 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 
 				}
 
+				break;
+
+			case T_CASE:
+				$this->appendCode($text);
+				$this->printUntil(ST_COLON);
+				$nl = '';
+				if ($this->hasLnAfter()) {
+					$nl = $this->newLine;
+				}
+				while (list($index, $token) = each($this->tkns)) {
+					list($id, $text) = $this->getToken($token);
+					$this->ptr = $index;
+					if (T_WHITESPACE != $id) {
+						break;
+					}
+					$this->appendCode($text);
+				}
+				$this->rtrimAndAppendCode($this->newLine . $text);
 				break;
 
 			case ST_CURLY_CLOSE:
