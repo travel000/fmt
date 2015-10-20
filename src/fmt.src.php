@@ -62,6 +62,7 @@ namespace {
 	require 'Core/AutoImport.php';
 	require 'Core/ConstructorPass.php';
 	require 'Core/EliminateDuplicatedEmptyLines.php';
+	require 'Core/ExternalPass.php';
 	require 'Core/ExtraCommaInArray.php';
 	require 'Core/LeftAlignComment.php';
 	require 'Core/MergeCurlyCloseAndDoWhile.php';

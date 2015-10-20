@@ -11,7 +11,7 @@ abstract class BaseCodeFormatter {
 
 	private $hasBeforePass = false;
 
-	private $passes = [
+	protected $passes = [
 		'StripSpaces' => false,
 		'ExtractMethods' => false,
 		'UpdateVisibility' => false,
@@ -181,6 +181,16 @@ abstract class BaseCodeFormatter {
 		if (!isset($args[1])) {
 			$args[1] = null;
 		}
+
+		// external pass
+		if (!isset($this->passes[$pass])) {
+			$passName = sprintf('ExternalPass%s', $pass);
+			$passes = array_reverse($this->passes, true);
+			$passes[$passName] = new ExternalPass($pass);
+			$this->passes = array_reverse($passes, true);
+			return;
+		}
+
 		$this->passes[$pass] = new $pass($args[1]);
 
 		$scPass = &$this->shortcircuit[$pass];

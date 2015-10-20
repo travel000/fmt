@@ -299,9 +299,7 @@ if (isset($opts['passes'])) {
 		return trim($v);
 	}, explode(',', $opts['passes']));
 	foreach ($optPasses as $optPass) {
-		if (class_exists($optPass)) {
-			$fmt->enablePass($optPass);
-		}
+		$fmt->enablePass($optPass);
 	}
 	$argv = extractFromArgv($argv, 'passes');
 }
