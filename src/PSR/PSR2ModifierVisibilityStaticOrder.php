@@ -1,7 +1,6 @@
 <?php
 final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 	public function candidate($source, $foundTokens) {
-
 		return isset($foundTokens[T_VAR]) ||
 		isset($foundTokens[T_PUBLIC]) ||
 		isset($foundTokens[T_PRIVATE]) ||
@@ -11,7 +10,6 @@ final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 		isset($foundTokens[T_STATIC]) ||
 		isset($foundTokens[T_CLASS])
 		;
-
 	}
 
 	public function format($source) {

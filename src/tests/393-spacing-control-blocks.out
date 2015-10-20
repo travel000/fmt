@@ -25,4 +25,9 @@ class PhpFmtTest {
 
 		return 'switchTest';
 	}
+
+	public function doWhileBlock() {
+		do {
+		} while (true);
+	}
 }

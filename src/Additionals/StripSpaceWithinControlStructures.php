@@ -1,7 +1,6 @@
 <?php
 final class StripSpaceWithinControlStructures extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
-
 		if (
 			isset($foundTokens[T_CASE]) ||
 			isset($foundTokens[T_DO]) ||
@@ -20,6 +19,7 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 	public function format($source) {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
+		$touchedDo = false;
 
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -31,6 +31,9 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 			case T_FOR:
 			case T_FOREACH:
 			case T_SWITCH:
+				if (T_DO == $id) {
+					$touchedDo = true;
+				}
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
@@ -45,7 +48,10 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 				break;
 
 			case T_WHILE:
-				$this->appendCode($this->newLine);
+				if (!$touchedDo && $this->leftUsefulTokenIs(ST_CURLY_CLOSE)) {
+					$this->rtrimAndAppendCode($this->newLine);
+				}
+				$touchedDo = false;
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
@@ -58,7 +64,6 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 						$this->appendCode($this->newLine);
 						continue;
 					}
-
 				}
 
 				break;
@@ -70,6 +75,7 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 				if ($this->hasLnAfter()) {
 					$nl = $this->newLine;
 				}
+
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -82,7 +88,6 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 				break;
 
 			case ST_CURLY_CLOSE:
-
 				if ($this->hasLnBefore()) {
 					$this->rtrimAndAppendCode($this->newLine . $text);
 					continue;
@@ -95,7 +100,6 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 				$this->appendCode($text);
 				break;
 			}
-
 		}
 
 		return $this->code;

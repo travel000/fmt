@@ -4,7 +4,6 @@
  */
 final class Cache implements Cacher {
 	public function create_db() {}
-
 	public function is_changed($target, $filename) {
 		return file_get_contents($filename);
 	}

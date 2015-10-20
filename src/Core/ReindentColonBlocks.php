@@ -24,7 +24,6 @@ final class ReindentColonBlocks extends FormatterPass {
 				$this->setIndent(-1);
 			}
 			switch ($id) {
-
 			case T_ENDFOR:
 			case T_ENDFOREACH:
 			case T_ENDWHILE:

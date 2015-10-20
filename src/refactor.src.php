@@ -112,5 +112,4 @@ namespace {
 			echo $fmt->formatCode(file_get_contents('php://stdin'));
 		}
 	}
-
 }

@@ -2452,7 +2452,6 @@ final class Cache implements Cacher {
  */
 final class Cache implements Cacher {
 	public function create_db() {}
-
 	public function is_changed($target, $filename) {
 		return file_get_contents($filename);
 	}
@@ -2975,6 +2974,7 @@ abstract class FormatterPass {
 		if (isset($tknids[$this->newLine])) {
 			$whitespaceNewLine = true;
 		}
+
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -3332,7 +3332,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . $end;
 		}
 		return $start . $tmp . $end;
-
 	}
 
 	protected function scanAndReplaceCurly(&$tkns, &$ptr, $start, $call, $lookFor) {
@@ -3377,7 +3376,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . ST_CURLY_CLOSE;
 		}
 		return $start . $tmp . ST_CURLY_CLOSE;
-
 	}
 
 	protected function setIndent($increment) {
@@ -3850,7 +3848,6 @@ final class CodeFormatter extends BaseCodeFormatter {
  * @codeCoverageIgnore
  */
 final class CodeFormatter extends BaseCodeFormatter {
-
 }
 
 	}
@@ -3921,7 +3918,6 @@ final class CodeFormatter extends BaseCodeFormatter {
 				$this->insertCurlyBraces();
 				break;
 			}
-
 		}
 		return $this->render($this->tkns);
 	}
@@ -3987,6 +3983,7 @@ final class AutoImportPass extends FormatterPass {
 				if ($this->rightUsefulTokenIs(T_NS_SEPARATOR)) {
 					break;
 				}
+
 				while (list($index, $token) = each($tokens)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -4109,6 +4106,7 @@ final class AutoImportPass extends FormatterPass {
 			}
 			$return .= $text;
 		}
+
 		while (list(, $token) = each($tokens)) {
 			list(, $text) = $this->getToken($token);
 			$return .= $text;
@@ -4399,7 +4397,6 @@ final class AutoImportPass extends FormatterPass {
 		}
 
 		return $ret;
-
 	}
 }
 	final class ExtraCommaInArray extends FormatterPass {
@@ -4965,7 +4962,6 @@ final class AutoImportPass extends FormatterPass {
 				$this->setIndent(-1);
 			}
 			switch ($id) {
-
 			case T_ENDFOR:
 			case T_ENDFOREACH:
 			case T_ENDWHILE:
@@ -5212,7 +5208,6 @@ final class AutoImportPass extends FormatterPass {
 		}
 		++$contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]];
 		$maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]] = max($maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]], $contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]);
-
 	}
 
 	protected function indentParenthesesContent() {
@@ -5685,7 +5680,6 @@ final class AutoImportPass extends FormatterPass {
 		}
 
 		return $this->code;
-
 	}
 }
 
@@ -6045,7 +6039,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 	}
 }
 	final class SurrogateToken {
-
 }
 
 	final class TwoCommandsInSameLine extends FormatterPass {
@@ -6101,7 +6094,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 				$touchedSemicolon = false;
 				$this->appendCode($text);
 				break;
-
 			}
 		}
 
@@ -6253,7 +6245,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 			switch ($id) {
 			case T_STRING:
 				if (isset($methodReplaceList[$text]) && $this->rightUsefulTokenIs(ST_PARENTHESES_OPEN)) {
-
 					$this->appendCode($methodReplaceList[$text]);
 					break;
 				}
@@ -6431,6 +6422,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 				if ($this->leftUsefulTokenIs(T_DOUBLE_COLON)) {
 					break;
 				}
+
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -6655,7 +6647,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 }
 	final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 	public function candidate($source, $foundTokens) {
-
 		return isset($foundTokens[T_VAR]) ||
 		isset($foundTokens[T_PUBLIC]) ||
 		isset($foundTokens[T_PRIVATE]) ||
@@ -6665,7 +6656,6 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 		isset($foundTokens[T_STATIC]) ||
 		isset($foundTokens[T_CLASS])
 		;
-
 	}
 
 	public function format($source) {
@@ -9581,6 +9571,7 @@ EOT;
 				break;
 			}
 		}
+
 		while (list(, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);
@@ -9955,11 +9946,9 @@ EOT;
 }
 
 	final class OrderMethod extends OrganizeClass {
-
 }
 
 	final class OrderMethodAndVisibility extends OrganizeClass {
-
 }
 
 	class OrderAndRemoveUseClauses extends AdditionalPass {
@@ -10106,14 +10095,12 @@ EOT;
 					next($tokens);
 
 					$foundComma = false;
-
 				} elseif (ST_COMMA == $foundToken) {
 					$useStack[$groupCount][] = 'use ' . ltrim($useTokens) . ';';
 					$newTokens[] = new SurrogateToken();
 					$newTokens[] = [T_WHITESPACE, $this->newLine . $this->newLine];
 
 					$foundComma = true;
-
 				} elseif (ST_CURLY_OPEN == $foundToken) {
 					next($tokens);
 					$base = $this->newLine . 'use ' . ltrim($useTokens);
@@ -10504,6 +10491,7 @@ EOT;
 
 			++$seqdetect;
 		}
+
 		while (list($idx, $line) = each($lines)) {
 			$weight = substr(strrchr($line, ':'), 1);
 			$line = substr($line, 0, -1 * (strlen($line) - strrpos($line, ':')));
@@ -10716,7 +10704,6 @@ EOT;
 						$touchedComma = true;
 						$this->appendCode(self::LINE_BREAK);
 					}
-
 				}
 				$placeholderReplace = $this->newLine;
 				if (!$touchedComma) {
@@ -11136,7 +11123,6 @@ EOT;
 		}
 		++$contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]];
 		$maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]] = max($maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]], $contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]);
-
 	}
 
 	protected function indentParenthesesContent() {
@@ -12407,7 +12393,6 @@ EOT;
 }
 	final class StripSpaceWithinControlStructures extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
-
 		if (
 			isset($foundTokens[T_CASE]) ||
 			isset($foundTokens[T_DO]) ||
@@ -12426,6 +12411,7 @@ EOT;
 	public function format($source) {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
+		$touchedDo = false;
 
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -12437,6 +12423,9 @@ EOT;
 			case T_FOR:
 			case T_FOREACH:
 			case T_SWITCH:
+				if (T_DO == $id) {
+					$touchedDo = true;
+				}
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
@@ -12451,7 +12440,10 @@ EOT;
 				break;
 
 			case T_WHILE:
-				$this->appendCode($this->newLine);
+				if (!$touchedDo && $this->leftUsefulTokenIs(ST_CURLY_CLOSE)) {
+					$this->rtrimAndAppendCode($this->newLine);
+				}
+				$touchedDo = false;
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
@@ -12464,7 +12456,6 @@ EOT;
 						$this->appendCode($this->newLine);
 						continue;
 					}
-
 				}
 
 				break;
@@ -12476,6 +12467,7 @@ EOT;
 				if ($this->hasLnAfter()) {
 					$nl = $this->newLine;
 				}
+
 				while (list($index, $token) = each($this->tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -12488,7 +12480,6 @@ EOT;
 				break;
 
 			case ST_CURLY_CLOSE:
-
 				if ($this->hasLnBefore()) {
 					$this->rtrimAndAppendCode($this->newLine . $text);
 					continue;
@@ -12501,7 +12492,6 @@ EOT;
 				$this->appendCode($text);
 				break;
 			}
-
 		}
 
 		return $this->code;
@@ -13092,6 +13082,7 @@ EOT;
 				)) {
 					continue;
 				}
+
 				while (list($ptr, $token) = each($tkns)) {
 					list($id, $text) = $this->getToken($token);
 					$tkns[$ptr] = null;
@@ -13494,6 +13485,7 @@ EOT;
 				$this->appendCode($text);
 			}
 		}
+
 		while (list(, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);
@@ -13954,7 +13946,6 @@ if (isset($opts['config'])) {
 			$opts += $iniOpts;
 		}
 	}
-
 } elseif (file_exists(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini') && is_file(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini')) {
 	fwrite(STDERR, 'Configuration file found' . PHP_EOL);
 	$iniOpts = parse_ini_file(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini', true);
@@ -14322,7 +14313,6 @@ if (isset($opts['i'])) {
 					rename($file . '-tmp', $file);
 					chmod($file, $oldchmod);
 				}
-
 			}
 			if ($concurrent) {
 				for ($i = 0; $i < $workers; ++$i) {

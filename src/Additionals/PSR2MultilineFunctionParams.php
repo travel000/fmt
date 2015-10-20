@@ -45,7 +45,6 @@ final class PSR2MultilineFunctionParams extends AdditionalPass {
 						$touchedComma = true;
 						$this->appendCode(self::LINE_BREAK);
 					}
-
 				}
 				$placeholderReplace = $this->newLine;
 				if (!$touchedComma) {

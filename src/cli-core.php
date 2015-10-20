@@ -156,7 +156,6 @@ if (isset($opts['config'])) {
 			$opts += $iniOpts;
 		}
 	}
-
 } elseif (file_exists(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini') && is_file(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini')) {
 	fwrite(STDERR, 'Configuration file found' . PHP_EOL);
 	$iniOpts = parse_ini_file(getcwd() . DIRECTORY_SEPARATOR . '.php.tools.ini', true);
@@ -524,7 +523,6 @@ if (isset($opts['i'])) {
 					rename($file . '-tmp', $file);
 					chmod($file, $oldchmod);
 				}
-
 			}
 			if ($concurrent) {
 				for ($i = 0; $i < $workers; ++$i) {

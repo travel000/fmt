@@ -143,14 +143,12 @@ EOT;
 					next($tokens);
 
 					$foundComma = false;
-
 				} elseif (ST_COMMA == $foundToken) {
 					$useStack[$groupCount][] = 'use ' . ltrim($useTokens) . ';';
 					$newTokens[] = new SurrogateToken();
 					$newTokens[] = [T_WHITESPACE, $this->newLine . $this->newLine];
 
 					$foundComma = true;
-
 				} elseif (ST_CURLY_OPEN == $foundToken) {
 					next($tokens);
 					$base = $this->newLine . 'use ' . ltrim($useTokens);

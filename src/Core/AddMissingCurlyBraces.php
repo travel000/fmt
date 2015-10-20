@@ -65,7 +65,6 @@ final class AddMissingCurlyBraces extends FormatterPass {
 				$this->insertCurlyBraces();
 				break;
 			}
-
 		}
 		return $this->render($this->tkns);
 	}

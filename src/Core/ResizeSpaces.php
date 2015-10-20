@@ -398,6 +398,5 @@ final class ResizeSpaces extends FormatterPass {
 		}
 
 		return $this->code;
-
 	}
 }

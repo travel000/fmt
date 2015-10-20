@@ -359,6 +359,7 @@ abstract class FormatterPass {
 		if (isset($tknids[$this->newLine])) {
 			$whitespaceNewLine = true;
 		}
+
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -716,7 +717,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . $end;
 		}
 		return $start . $tmp . $end;
-
 	}
 
 	protected function scanAndReplaceCurly(&$tkns, &$ptr, $start, $call, $lookFor) {
@@ -761,7 +761,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . ST_CURLY_CLOSE;
 		}
 		return $start . $tmp . ST_CURLY_CLOSE;
-
 	}
 
 	protected function setIndent($increment) {

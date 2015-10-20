@@ -192,7 +192,6 @@ final class ReindentObjOps extends FormatterPass {
 		}
 		++$contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]];
 		$maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]] = max($maxContextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]], $contextCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]);
-
 	}
 
 	protected function indentParenthesesContent() {

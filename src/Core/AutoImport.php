@@ -41,6 +41,7 @@ final class AutoImportPass extends FormatterPass {
 				if ($this->rightUsefulTokenIs(T_NS_SEPARATOR)) {
 					break;
 				}
+
 				while (list($index, $token) = each($tokens)) {
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
@@ -163,6 +164,7 @@ final class AutoImportPass extends FormatterPass {
 			}
 			$return .= $text;
 		}
+
 		while (list(, $token) = each($tokens)) {
 			list(, $text) = $this->getToken($token);
 			$return .= $text;

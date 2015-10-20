@@ -52,7 +52,6 @@ final class PSR1MethodNames extends FormatterPass {
 			switch ($id) {
 			case T_STRING:
 				if (isset($methodReplaceList[$text]) && $this->rightUsefulTokenIs(ST_PARENTHESES_OPEN)) {
-
 					$this->appendCode($methodReplaceList[$text]);
 					break;
 				}

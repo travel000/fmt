@@ -52,7 +52,6 @@ final class TwoCommandsInSameLine extends FormatterPass {
 				$touchedSemicolon = false;
 				$this->appendCode($text);
 				break;
-
 			}
 		}
 

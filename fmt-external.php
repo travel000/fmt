@@ -2452,7 +2452,6 @@ final class Cache implements Cacher {
  */
 final class Cache implements Cacher {
 	public function create_db() {}
-
 	public function is_changed($target, $filename) {
 		return file_get_contents($filename);
 	}
@@ -2975,6 +2974,7 @@ abstract class FormatterPass {
 		if (isset($tknids[$this->newLine])) {
 			$whitespaceNewLine = true;
 		}
+
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -3332,7 +3332,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . $end;
 		}
 		return $start . $tmp . $end;
-
 	}
 
 	protected function scanAndReplaceCurly(&$tkns, &$ptr, $start, $call, $lookFor) {
@@ -3377,7 +3376,6 @@ abstract class FormatterPass {
 			return $start . str_replace($placeholder, '', $this->{$call}($placeholder . $tmp)) . ST_CURLY_CLOSE;
 		}
 		return $start . $tmp . ST_CURLY_CLOSE;
-
 	}
 
 	protected function setIndent($increment) {
@@ -4080,7 +4078,6 @@ final class CodeFormatter extends BaseCodeFormatter {
 	}
 
 	public function disablePass($pass) {}
-
 	public function enablePass($pass) {}
 }
 

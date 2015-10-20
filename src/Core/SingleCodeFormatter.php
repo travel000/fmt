@@ -12,6 +12,5 @@ final class CodeFormatter extends BaseCodeFormatter {
 	}
 
 	public function disablePass($pass) {}
-
 	public function enablePass($pass) {}
 }
