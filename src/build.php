@@ -130,7 +130,7 @@ for ($i = 0; $i < $workers; ++$i) {
 	}, $pass, $chn, $chn_done);
 }
 
-$targets = ['fmt-core', 'fmt-external', 'refactor'];
+$targets = ['fmt', 'fmt-external', 'refactor'];
 foreach ($targets as $target) {
 	$chn->in($target);
 }
@@ -145,7 +145,7 @@ $chn->close();
 $chn_done->close();
 
 echo 'Building PHARs...';
-$phars = ['fmt-core', 'fmt-external', 'refactor'];
+$phars = ['fmt', 'fmt-external', 'refactor'];
 foreach ($phars as $target) {
 	file_put_contents($target . '.stub.php', '<?php namespace {$inPhar = true;} ' . preg_replace('/' . preg_quote('<?php') . '/', '', file_get_contents($target . '.stub.php'), 1));
 	$phar = new Phar($target . '.phar', FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, $target . '.phar');

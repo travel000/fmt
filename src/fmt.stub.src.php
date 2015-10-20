@@ -6,6 +6,6 @@ namespace {
 	}
 }
 
-require 'fmt-core.php';
+require 'fmt.php';
 
 __HALT_COMPILER();

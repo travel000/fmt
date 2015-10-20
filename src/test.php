@@ -46,8 +46,8 @@ if ($isCoverage) {
 	require 'vendor/phpunit/php-code-coverage/src/CodeCoverage/Filter.php';
 
 	$filter = new PHP_CodeCoverage_Filter();
-	$filter->addFileToBlacklist('fmt-core.php');
-	$filter->addFileToBlacklist('fmt-core.src.php');
+	$filter->addFileToBlacklist('fmt.php');
+	$filter->addFileToBlacklist('fmt.src.php');
 	$filter->addFileToBlacklist('fmt-external.php');
 	$filter->addFileToBlacklist('fmt-external.src.php');
 	$filter->addFileToBlacklist('test.php');
@@ -75,9 +75,9 @@ $start = microtime(true);
 $testEnv = true;
 ob_start();
 if (!isset($opt['deployed'])) {
-	include realpath(__DIR__ . '/fmt-core.src.php');
+	include realpath(__DIR__ . '/fmt.src.php');
 } else {
-	include realpath(__DIR__ . '/../fmt-core.php');
+	include realpath(__DIR__ . '/../fmt.php');
 }
 ob_end_clean();
 
