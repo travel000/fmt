@@ -5006,11 +5006,9 @@ final class AutoImportPass extends FormatterPass {
 			list($id) = $this->getToken($token);
 			$this->ptr = $index;
 
-			switch ($id) {
-			case ST_SEMI_COLON:
+			if (ST_SEMI_COLON == $id) {
 				$index--;
 				$this->scanUntilEqual($index);
-				break;
 			}
 		}
 

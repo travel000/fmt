@@ -3,14 +3,6 @@
  * @codeCoverageIgnore
  */
 abstract class BaseCodeFormatter {
-	private $hasAfterExecutedPass = false;
-
-	private $hasAfterFormat = false;
-
-	private $hasBeforeFormat = false;
-
-	private $hasBeforePass = false;
-
 	protected $passes = [
 		'StripSpaces' => false,
 		'ExtractMethods' => false,
@@ -136,6 +128,14 @@ abstract class BaseCodeFormatter {
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
 	];
+
+	private $hasAfterExecutedPass = false;
+
+	private $hasAfterFormat = false;
+
+	private $hasBeforeFormat = false;
+
+	private $hasBeforePass = false;
 
 	private $shortcircuit = [
 		'ReindentAndAlignObjOps' => 'ReindentObjOps',
