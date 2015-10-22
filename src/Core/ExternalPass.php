@@ -7,7 +7,7 @@ class ExternalPass {
 	}
 
 	public function candidate() {
-		return true;
+		return !empty($this->passName);
 	}
 
 	public function format($source) {
