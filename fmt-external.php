@@ -2461,7 +2461,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.0.1");
+	define("VERSION", "16.1.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3632,6 +3632,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'ReindentEqual' => false,
 		'Reindent' => false,
 		'ReindentAndAlignObjOps' => false,
 		'ReindentObjOps' => false,
@@ -3716,6 +3717,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
@@ -3740,12 +3742,7 @@ abstract class BaseCodeFormatter {
 			$args[1] = null;
 		}
 
-		// external pass
-		if (!isset($this->passes[$pass])) {
-			$passName = sprintf('ExternalPass%s', $pass);
-			$passes = array_reverse($this->passes, true);
-			$passes[$passName] = new ExternalPass($pass);
-			$this->passes = array_reverse($passes, true);
+		if (!class_exists($pass)) {
 			return;
 		}
 

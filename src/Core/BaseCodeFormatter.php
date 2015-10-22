@@ -74,6 +74,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'ReindentEqual' => false,
 		'Reindent' => false,
 		'ReindentAndAlignObjOps' => false,
 		'ReindentObjOps' => false,
@@ -158,6 +159,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
@@ -182,14 +184,8 @@ abstract class BaseCodeFormatter {
 			$args[1] = null;
 		}
 
-		// external pass
 		if (!class_exists($pass)) {
 			return;
-			// 	$passName = sprintf('ExternalPass%s', $pass);
-			// 	$passes = array_reverse($this->passes, true);
-			// 	$passes[$passName] = new ExternalPass($pass);
-			// 	$this->passes = array_reverse($passes, true);
-			// 	return;
 		}
 
 		$this->passes[$pass] = new $pass($args[1]);

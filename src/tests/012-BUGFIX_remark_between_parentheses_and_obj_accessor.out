@@ -11,4 +11,4 @@ $obj->get()
     ->set(ConstantBag::NEED_J)
     ->set(ConstantBag::NEED_K) //COMMENT
     ->set(ConstantBag::NEED_L)
-;
+	;

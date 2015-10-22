@@ -2461,7 +2461,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.0.1");
+	define("VERSION", "16.1.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3632,6 +3632,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'ReindentEqual' => false,
 		'Reindent' => false,
 		'ReindentAndAlignObjOps' => false,
 		'ReindentObjOps' => false,
@@ -3716,6 +3717,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
@@ -3740,12 +3742,7 @@ abstract class BaseCodeFormatter {
 			$args[1] = null;
 		}
 
-		// external pass
-		if (!isset($this->passes[$pass])) {
-			$passName = sprintf('ExternalPass%s', $pass);
-			$passes = array_reverse($this->passes, true);
-			$passes[$passName] = new ExternalPass($pass);
-			$this->passes = array_reverse($passes, true);
+		if (!class_exists($pass)) {
 			return;
 		}
 
@@ -4413,7 +4410,7 @@ final class AutoImportPass extends FormatterPass {
 	}
 
 	public function candidate() {
-		return true;
+		return !empty($this->passName);
 	}
 
 	public function format($source) {
@@ -4992,6 +4989,96 @@ final class AutoImportPass extends FormatterPass {
 			}
 		}
 		return $this->code;
+	}
+}
+
+	final class ReindentEqual extends FormatterPass {
+	public function candidate($source, $foundTokens) {
+		return true;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+
+		for ($index = sizeof($this->tkns) - 1; 0 <= $index; --$index) {
+			$token = $this->tkns[$index];
+			list($id) = $this->getToken($token);
+			$this->ptr = $index;
+
+			switch ($id) {
+			case ST_SEMI_COLON:
+				$index--;
+				$this->scanUntilEqual($index);
+				break;
+			}
+		}
+
+		return $this->render($this->tkns);
+	}
+
+	private function scanUntilEqual($index) {
+		for ($index; 0 <= $index; --$index) {
+			$token = $this->tkns[$index];
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+
+			switch ($id) {
+			case ST_CURLY_CLOSE:
+				$this->refWalkCurlyBlockReverse($this->tkns, $index);
+				break;
+
+			case ST_PARENTHESES_CLOSE:
+				$this->refWalkBlockReverse($this->tkns, $index, ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
+				break;
+
+			case ST_BRACKET_CLOSE:
+				$this->refWalkBlockReverse($this->tkns, $index, ST_BRACKET_OPEN, ST_BRACKET_CLOSE);
+				break;
+
+			case ST_CONCAT:
+			case T_STRING:
+			case T_VARIABLE:
+			case ST_TIMES:
+			case ST_DIVIDE:
+			case ST_PLUS:
+			case ST_MINUS:
+			case T_POW:
+				break;
+
+			case T_WHITESPACE:
+				if (
+					$this->hasLn($text)
+					&&
+					!
+					(
+						$this->leftUsefulTokenIs([
+							ST_BRACKET_OPEN,
+							ST_COLON,
+							ST_CURLY_CLOSE,
+							ST_CURLY_OPEN,
+							ST_PARENTHESES_OPEN,
+							ST_SEMI_COLON,
+							T_END_HEREDOC,
+							T_OBJECT_OPERATOR,
+							T_OPEN_TAG,
+						])
+						||
+						$this->leftTokenIs([
+							T_COMMENT,
+							T_DOC_COMMENT,
+						])
+					)
+				) {
+					$text .= $this->indentChar;
+					$this->tkns[$index] = [$id, $text];
+				}
+				break;
+
+			default:
+				return;
+			}
+		}
 	}
 }
 

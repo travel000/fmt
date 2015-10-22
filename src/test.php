@@ -83,6 +83,7 @@ ob_end_clean();
 
 echo 'Running tests...', PHP_EOL;
 $brokenTests = [];
+$skippedTests = [];
 
 $cases = glob(__DIR__ . '/tests/' . $testNumber . '*.in');
 $count = 0;
@@ -100,15 +101,18 @@ foreach ($cases as $caseIn) {
 		if (T_COMMENT == $id && '//skipHHVM' == substr($text, 0, 10)) {
 			$version = str_replace('//skipHHVM', '', $text);
 			if ($isHHVM) {
+				$skippedTests[] = $caseIn;
 				echo 'S';
 				continue 2;
 			}
 		} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
+			$skippedTests[] = $caseIn;
 			echo 'S';
 			continue 2;
 		} elseif (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
 			$version = str_replace('//version:', '', $text);
 			if (version_compare(PHP_VERSION, $version, '<')) {
+				$skippedTests[] = $caseIn;
 				echo 'S';
 				continue 2;
 			}
@@ -206,10 +210,12 @@ if (!$bailOut) {
 			if (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
 				$version = str_replace('//version:', '', $text);
 				if (version_compare(PHP_VERSION, $version, '<')) {
+					$skippedTests[] = $caseIn;
 					echo 'S';
 					continue 2;
 				}
 			} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
+				$skippedTests[] = $caseIn;
 				echo 'S';
 				continue 2;
 			} elseif (T_COMMENT == $id && '//passes:' == substr($text, 0, 9)) {
@@ -306,14 +312,18 @@ if (!$bailOut) {
 			if (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
 				$version = str_replace('//version:', '', $text);
 				if (version_compare(PHP_VERSION, $version, '<')) {
+					$skippedTests[] = $caseIn;
 					echo 'S';
 					continue 2;
 				}
 			} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
+				$skippedTests[] = $caseIn;
+				$skippedTests[] = $caseIn;
 				echo 'S';
 				continue 2;
 			} elseif (T_COMMENT == $id && '//passes:' == substr($text, 0, 9)) {
 				$passes = explode(',', str_replace('//passes:', '', $text));
+				$skippedTests[] = $caseIn;
 				$specialPasses = true;
 				foreach ($passes as $pass) {
 					$pass = trim($pass);
@@ -381,10 +391,12 @@ if (!$bailOut) {
 			if (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
 				$version = str_replace('//version:', '', $text);
 				if (version_compare(PHP_VERSION, $version, '<')) {
+					$skippedTests[] = $caseIn;
 					echo 'S';
 					continue 2;
 				}
 			} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
+				$skippedTests[] = $caseIn;
 				echo 'S';
 				continue 2;
 			} elseif (T_COMMENT == $id && '//passes:' == substr($text, 0, 9)) {
@@ -495,6 +507,10 @@ if ($isCoveralls) {
 if (sizeof($brokenTests) > 0) {
 	echo 'run test.php -v to see the error diffs', PHP_EOL;
 	exit(255);
+}
+
+if (sizeof($skippedTests) > 0) {
+	echo 'Skipped tests:', PHP_EOL, implode(PHP_EOL, $skippedTests), PHP_EOL;
 }
 exit(0);
 

@@ -71,6 +71,7 @@ namespace {
 	require 'Core/NormalizeIsNotEquals.php';
 	require 'Core/NormalizeLnAndLtrimLines.php';
 	require 'Core/Reindent.php';
+	require 'Core/ReindentEqual.php';
 	require 'Core/ReindentColonBlocks.php';
 	require 'Core/ReindentObjOps.php';
 	require 'Core/ResizeSpaces.php';

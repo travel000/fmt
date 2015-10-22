@@ -22,7 +22,7 @@ function hello() {
 		->foo(
 			'moreFoos'
 		)
-	;
+		;
 }
 
 function dataState() {
