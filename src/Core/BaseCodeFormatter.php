@@ -183,13 +183,13 @@ abstract class BaseCodeFormatter {
 		}
 
 		// external pass
-		if (!isset($this->passes[$pass])) {
-			$passName = sprintf('ExternalPass%s', $pass);
-			$passes = array_reverse($this->passes, true);
-			$passes[$passName] = new ExternalPass($pass);
-			$this->passes = array_reverse($passes, true);
-			return;
-		}
+		// if (!isset($this->passes[$pass])) {
+		// 	$passName = sprintf('ExternalPass%s', $pass);
+		// 	$passes = array_reverse($this->passes, true);
+		// 	$passes[$passName] = new ExternalPass($pass);
+		// 	$this->passes = array_reverse($passes, true);
+		// 	return;
+		// }
 
 		$this->passes[$pass] = new $pass($args[1]);
 
