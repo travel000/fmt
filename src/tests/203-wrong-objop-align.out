@@ -13,7 +13,7 @@ $object->firstMethod()
 	       2,
 	       3,
        ])
-	;
+;
 
 // old array syntax
 $object->firstMethod()
@@ -32,4 +32,4 @@ $object->firstMethod(
 	       2,
 	       3,
        ))
-	;
+;

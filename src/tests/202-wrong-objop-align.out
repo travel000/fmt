@@ -15,7 +15,7 @@ $object
 		2,
 		3,
 	])
-	;
+;
 
 // old array syntax
 $object
@@ -36,4 +36,4 @@ $object
 		2,
 		3,
 	))
-	;
+;

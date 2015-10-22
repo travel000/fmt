@@ -2,7 +2,7 @@
 $a = $b->foo()
        ->bar() // comment
        ->baz()
-	;
+;
 
 $c = $d
 	->asdf() /* hello */

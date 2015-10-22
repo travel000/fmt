@@ -5052,6 +5052,8 @@ final class AutoImportPass extends FormatterPass {
 					&&
 					!
 					(
+						$this->rightUsefulTokenIs([ST_SEMI_COLON])
+						||
 						$this->leftUsefulTokenIs([
 							ST_BRACKET_OPEN,
 							ST_COLON,
