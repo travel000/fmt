@@ -204,6 +204,7 @@ if (isset($opts['no-backup'])) {
 
 $dryRun = false;
 if (isset($opts['dry-run'])) {
+	$argv = extractFromArgv($argv, 'dry-run');
 	$dryRun = true;
 }
 
