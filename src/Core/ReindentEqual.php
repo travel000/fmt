@@ -58,13 +58,29 @@ final class ReindentEqual extends FormatterPass {
 				if ($this->rightUsefulTokenIs(ST_PARENTHESES_OPEN) && !$this->leftUsefulTokenIs(ST_EQUAL)) {
 					return;
 				}
+
 			case ST_CONCAT:
 			case ST_DIVIDE:
 			case ST_MINUS:
 			case ST_PLUS:
 			case ST_TIMES:
+			case T_BOOLEAN_AND:
+			case T_BOOLEAN_OR:
 			case T_CONSTANT_ENCAPSED_STRING:
+			case T_DNUMBER:
+			case T_IS_EQUAL:
+			case T_IS_GREATER_OR_EQUAL:
+			case T_IS_IDENTICAL:
+			case T_IS_NOT_EQUAL:
+			case T_IS_NOT_IDENTICAL:
+			case T_IS_SMALLER_OR_EQUAL:
+			case T_IS_SMALLER_OR_EQUAL:
+			case T_LNUMBER:
+			case T_LOGICAL_AND:
+			case T_LOGICAL_OR:
+			case T_LOGICAL_XOR:
 			case T_POW:
+			case T_SPACESHIP:
 			case T_VARIABLE:
 				break;
 
