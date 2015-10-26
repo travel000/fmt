@@ -1,8 +1,9 @@
 <?php
 if (ini_get('phar.readonly')) {
 	unset($argv[0]);
-	passthru($_SERVER['_'] . ' -dphar.readonly=0 build.php ' . implode(' ', $argv) . ' 2>&1');
-	exit(0);
+	$ret = 0;
+	passthru($_SERVER['_'] . ' -dphar.readonly=0 build.php ' . implode(' ', $argv) . ' 2>&1', $ret);
+	exit($ret);
 }
 require 'vendor/dericofilho/csp/csp.php';
 require 'Core/constants.php';
