@@ -1,0 +1,12 @@
+<?php
+$data =
+	[
+		'foo' => 'bar',
+	];
+
+$data = [
+	'foo' =>
+		[
+			'bar' => 'baz',
+		],
+];
