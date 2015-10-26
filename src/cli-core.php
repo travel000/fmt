@@ -6,6 +6,7 @@ function showHelp($argv, $enableCache, $inPhar) {
 		'--cakephp' => 'Apply CakePHP coding style',
 		'--config=FILENAME' => 'configuration file. Default: .php.tools.ini',
 		'--constructor=type' => 'analyse classes for attributes and generate constructor - camel, snake, golang',
+		'--dry-run' => 'Runs the formatter without atually changing files; returns exit code 1 if changes would have been applied',
 		'--enable_auto_align' => 'disable auto align of ST_EQUAL and T_DOUBLE_ARROW',
 		'--exclude=pass1,passN,...' => 'disable specific passes',
 		'--help-pass' => 'show specific information for one pass',
@@ -55,6 +56,7 @@ $getoptLongOptions = [
 	'cakephp',
 	'config:',
 	'constructor:',
+	'dry-run',
 	'enable_auto_align',
 	'exclude:',
 	'help',
@@ -198,6 +200,11 @@ $backup = true;
 if (isset($opts['no-backup'])) {
 	$argv = extractFromArgv($argv, 'no-backup');
 	$backup = false;
+}
+
+$dryRun = false;
+if (isset($opts['dry-run'])) {
+	$dryRun = true;
 }
 
 $ignore_list = null;
@@ -394,6 +401,9 @@ if (isset($opts['i'])) {
 
 	$hasFnSeparator = false;
 
+	// Used with dry-run to flag if any files would have been changed
+	$filesChanged = false;
+
 	for ($j = 1; $j < $argc; ++$j) {
 		$arg = &$argv[$j];
 		if (!isset($arg)) {
@@ -414,10 +424,18 @@ if (isset($opts['i'])) {
 			}
 			++$fileCount;
 			fwrite(STDERR, '.');
-			file_put_contents($file . '-tmp', $fmt->formatCode(file_get_contents($file)));
-			$oldchmod = fileperms($file);
-			rename($file . '-tmp', $file);
-			chmod($file, $oldchmod);
+			$fileContents = file_get_contents($file);
+			$formattedCode = $fmt->formatCode($fileContents);
+			if ($dryRun) {
+				if ($fileContents !== $formattedCode) {
+					$filesChanged = true;
+				}
+			} else {
+				file_put_contents($file . '-tmp', $formattedCode);
+				$oldchmod = fileperms($file);
+				rename($file . '-tmp', $file);
+				chmod($file, $oldchmod);
+			}
 		} elseif (is_dir($arg)) {
 			fwrite(STDERR, $arg . PHP_EOL);
 
@@ -433,10 +451,11 @@ if (isset($opts['i'])) {
 					fwrite(STDERR, 'Starting ' . $workers . ' workers ...' . PHP_EOL);
 				}
 				for ($i = 0; $i < $workers; ++$i) {
-					cofunc(function ($fmt, $backup, $cache_fn, $chn, $chn_done, $lintBefore) {
+					cofunc(function ($fmt, $backup, $cache_fn, $chn, $chn_done, $lintBefore, $dryRun) {
 						$cache = new Cache($cache_fn);
 						$cacheHitCount = 0;
 						$cache_miss_count = 0;
+						$filesChanged = false;
 						while (true) {
 							$msg = $chn->out();
 							if (null === $msg) {
@@ -463,14 +482,20 @@ if (isset($opts['i'])) {
 							if (null !== $cache) {
 								$cache->upsert($target_dir, $file, $fmtCode);
 							}
-							file_put_contents($file . '-tmp', $fmtCode);
-							$backup && rename($file, $file . '~');
-							$oldchmod = fileperms($file);
-							rename($file . '-tmp', $file);
-							chmod($file, $oldchmod);
+							if ($dryRun) {
+								if ($fmtCode !== $content) {
+									$filesChanged = true;
+								}
+							} else {
+								file_put_contents($file . '-tmp', $fmtCode);
+								$backup && rename($file, $file . '~');
+								$oldchmod = fileperms($file);
+								rename($file . '-tmp', $file);
+								chmod($file, $oldchmod);
+							}
 						}
-						$chn_done->in([$cacheHitCount, $cache_miss_count]);
-					}, $fmt, $backup, $cache_fn, $chn, $chn_done, $lintBefore);
+						$chn_done->in([$cacheHitCount, $cache_miss_count, $filesChanged]);
+					}, $fmt, $backup, $cache_fn, $chn, $chn_done, $lintBefore, $dryRun);
 				}
 			}
 
@@ -515,11 +540,17 @@ if (isset($opts['i'])) {
 					if (null !== $cache) {
 						$cache->upsert($target_dir, $file, $fmtCode);
 					}
-					file_put_contents($file . '-tmp', $fmtCode);
-					$backup && rename($file, $file . '~');
-					$oldchmod = fileperms($file);
-					rename($file . '-tmp', $file);
-					chmod($file, $oldchmod);
+					if ($dryRun) {
+						if ($fmtCode !== $content) {
+							$filesChanged = true;
+						}
+					} else {
+						file_put_contents($file . '-tmp', $fmtCode);
+						$backup && rename($file, $file . '~');
+						$oldchmod = fileperms($file);
+						rename($file . '-tmp', $file);
+						chmod($file, $oldchmod);
+					}
 				}
 			}
 			if ($concurrent) {
@@ -527,7 +558,7 @@ if (isset($opts['i'])) {
 					$chn->in(null);
 				}
 				for ($i = 0; $i < $workers; ++$i) {
-					list($cache_hit, $cache_miss) = $chn_done->out();
+					list($cache_hit, $cache_miss, $filesChanged) = $chn_done->out();
 					$cacheHitCount += $cache_hit;
 				}
 				$chn_done->close();
@@ -560,6 +591,9 @@ if (isset($opts['i'])) {
 		foreach ($missingFiles as $file) {
 			fwrite(STDERR, "\t - " . $file . PHP_EOL);
 		}
+	}
+	if ($dryRun && $filesChanged) {
+		exit(1);
 	}
 	if ($fileNotFound) {
 		exit(255);
