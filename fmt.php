@@ -2461,7 +2461,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.1.0");
+	define('VERSION', '16.1.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3561,14 +3561,6 @@ abstract class FormatterPass {
  * @codeCoverageIgnore
  */
 abstract class BaseCodeFormatter {
-	private $hasAfterExecutedPass = false;
-
-	private $hasAfterFormat = false;
-
-	private $hasBeforeFormat = false;
-
-	private $hasBeforePass = false;
-
 	protected $passes = [
 		'StripSpaces' => false,
 		'ExtractMethods' => false,
@@ -3694,6 +3686,14 @@ abstract class BaseCodeFormatter {
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
 	];
+
+	private $hasAfterExecutedPass = false;
+
+	private $hasAfterFormat = false;
+
+	private $hasBeforeFormat = false;
+
+	private $hasBeforePass = false;
 
 	private $shortcircuit = [
 		'ReindentAndAlignObjOps' => 'ReindentObjOps',
@@ -5007,7 +5007,7 @@ final class AutoImportPass extends FormatterPass {
 			$this->ptr = $index;
 
 			if (ST_SEMI_COLON == $id) {
-				$index--;
+				--$index;
 				$this->scanUntilEqual($index);
 			}
 		}
@@ -5164,7 +5164,10 @@ final class AutoImportPass extends FormatterPass {
 	const ALIGN_WITH_INDENT = 1;
 
 	public function candidate($source, $foundTokens) {
-		if (isset($foundTokens[T_OBJECT_OPERATOR])) {
+		if (
+			isset($foundTokens[T_OBJECT_OPERATOR]) ||
+			isset($foundTokens[T_DOUBLE_COLON])
+		) {
 			return true;
 		}
 
@@ -5255,6 +5258,7 @@ final class AutoImportPass extends FormatterPass {
 				$this->appendCode($text);
 				break;
 
+			case T_DOUBLE_COLON:
 			case T_OBJECT_OPERATOR:
 				if (!isset($touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]) || 0 == $touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]) {
 					if (!isset($touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]])) {
@@ -5300,7 +5304,7 @@ final class AutoImportPass extends FormatterPass {
 					$this->appendCode($this->getIndent(+1));
 				}
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;
@@ -5316,7 +5320,7 @@ final class AutoImportPass extends FormatterPass {
 
 			case T_WHITESPACE:
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;
@@ -10896,7 +10900,10 @@ EOT;
 	const ALIGN_WITH_SPACES = 2;
 
 	public function candidate($source, $foundTokens) {
-		if (isset($foundTokens[T_OBJECT_OPERATOR])) {
+		if (
+			isset($foundTokens[T_OBJECT_OPERATOR]) ||
+			isset($foundTokens[T_DOUBLE_COLON])
+		) {
 			return true;
 		}
 
@@ -11025,6 +11032,11 @@ EOT;
 				$this->appendCode($text);
 				break;
 
+			case T_DOUBLE_COLON:
+				if (!$this->hasLnBefore()) {
+					$this->appendCode($text);
+					break;
+				}
 			case T_OBJECT_OPERATOR:
 				if ($levelCounter < 0) {
 					$levelCounter = 0;
@@ -11140,7 +11152,7 @@ EOT;
 					}
 				}
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;
@@ -11157,7 +11169,7 @@ EOT;
 
 			case T_WHITESPACE:
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;

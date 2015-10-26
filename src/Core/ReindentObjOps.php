@@ -3,7 +3,10 @@ final class ReindentObjOps extends FormatterPass {
 	const ALIGN_WITH_INDENT = 1;
 
 	public function candidate($source, $foundTokens) {
-		if (isset($foundTokens[T_OBJECT_OPERATOR])) {
+		if (
+			isset($foundTokens[T_OBJECT_OPERATOR]) ||
+			isset($foundTokens[T_DOUBLE_COLON])
+		) {
 			return true;
 		}
 
@@ -94,6 +97,7 @@ final class ReindentObjOps extends FormatterPass {
 				$this->appendCode($text);
 				break;
 
+			case T_DOUBLE_COLON:
 			case T_OBJECT_OPERATOR:
 				if (!isset($touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]) || 0 == $touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]]) {
 					if (!isset($touchCounter[$levelCounter][$levelEntranceCounter[$levelCounter]])) {
@@ -139,7 +143,7 @@ final class ReindentObjOps extends FormatterPass {
 					$this->appendCode($this->getIndent(+1));
 				}
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;
@@ -155,7 +159,7 @@ final class ReindentObjOps extends FormatterPass {
 
 			case T_WHITESPACE:
 				$this->appendCode($text);
-				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR]) && $this->hasLn($text)) {
+				if ($this->leftUsefulTokenIs([T_OBJECT_OPERATOR, T_DOUBLE_COLON]) && $this->hasLn($text)) {
 					$this->appendCode($this->getIndent(+1));
 				}
 				break;
