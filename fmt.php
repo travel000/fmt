@@ -14425,8 +14425,8 @@ if (isset($opts['i'])) {
 								}
 							} else {
 								file_put_contents($file . '-tmp', $fmtCode);
-								$backup && rename($file, $file . '~');
 								$oldchmod = fileperms($file);
+								$backup && rename($file, $file . '~');
 								rename($file . '-tmp', $file);
 								chmod($file, $oldchmod);
 							}
@@ -14483,8 +14483,8 @@ if (isset($opts['i'])) {
 						}
 					} else {
 						file_put_contents($file . '-tmp', $fmtCode);
-						$backup && rename($file, $file . '~');
 						$oldchmod = fileperms($file);
+						$backup && rename($file, $file . '~');
 						rename($file . '-tmp', $file);
 						chmod($file, $oldchmod);
 					}
