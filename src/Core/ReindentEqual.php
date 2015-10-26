@@ -29,6 +29,19 @@ final class ReindentEqual extends FormatterPass {
 			$this->ptr = $index;
 
 			switch ($id) {
+
+			case ST_QUOTE:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, ST_QUOTE);
+				break;
+
+			case T_OPEN_TAG:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, T_CLOSE_TAG);
+				break;
+
+			case T_END_HEREDOC:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, T_START_HEREDOC);
+				break;
+
 			case ST_CURLY_CLOSE:
 				$this->refWalkCurlyBlockReverse($this->tkns, $index);
 				break;

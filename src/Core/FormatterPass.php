@@ -616,7 +616,7 @@ abstract class FormatterPass {
 	protected function refWalkUsefulUntilReverse($tkns, &$ptr, $expectedId) {
 		do {
 			$ptr = $this->walkLeft($tkns, $ptr, $this->ignoreFutileTokens);
-		} while ($expectedId != $tkns[$ptr][0]);
+		} while ($ptr >= 0 && $expectedId != $tkns[$ptr][0]);
 	}
 
 	protected function render($tkns = null) {

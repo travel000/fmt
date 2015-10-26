@@ -3228,6 +3228,12 @@ abstract class FormatterPass {
 		} while ($expectedId != $tkns[$ptr][0]);
 	}
 
+	protected function refWalkUsefulUntilReverse($tkns, &$ptr, $expectedId) {
+		do {
+			$ptr = $this->walkLeft($tkns, $ptr, $this->ignoreFutileTokens);
+		} while ($ptr >= 0 && $expectedId != $tkns[$ptr][0]);
+	}
+
 	protected function render($tkns = null) {
 		if (null == $tkns) {
 			$tkns = $this->tkns;
@@ -5022,6 +5028,19 @@ final class AutoImportPass extends FormatterPass {
 			$this->ptr = $index;
 
 			switch ($id) {
+
+			case ST_QUOTE:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, ST_QUOTE);
+				break;
+
+			case T_OPEN_TAG:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, T_CLOSE_TAG);
+				break;
+
+			case T_END_HEREDOC:
+				$this->refWalkUsefulUntilReverse($this->tkns, $index, T_START_HEREDOC);
+				break;
+
 			case ST_CURLY_CLOSE:
 				$this->refWalkCurlyBlockReverse($this->tkns, $index);
 				break;
