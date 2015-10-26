@@ -54,14 +54,18 @@ final class ReindentEqual extends FormatterPass {
 				$this->refWalkBlockReverse($this->tkns, $index, ST_BRACKET_OPEN, ST_BRACKET_CLOSE);
 				break;
 
-			case ST_CONCAT:
 			case T_STRING:
-			case T_VARIABLE:
-			case ST_TIMES:
+				if ($this->rightUsefulTokenIs(ST_PARENTHESES_OPEN) && !$this->leftUsefulTokenIs(ST_EQUAL)) {
+					return;
+				}
+			case ST_CONCAT:
 			case ST_DIVIDE:
-			case ST_PLUS:
 			case ST_MINUS:
+			case ST_PLUS:
+			case ST_TIMES:
+			case T_CONSTANT_ENCAPSED_STRING:
 			case T_POW:
+			case T_VARIABLE:
 				break;
 
 			case T_WHITESPACE:

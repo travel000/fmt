@@ -9,7 +9,7 @@ if (true) {
 }
 
 echo
-'                                                                             ';
+    '                                                                             ';
 
 $obj->prop->prop->prop->prop->prop->prop->prop->prop->prop->prop->prop->prop
     ->prop->f();

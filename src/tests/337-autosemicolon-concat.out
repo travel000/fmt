@@ -10,4 +10,4 @@ implode(
 		}, array_keys($row), $row
 	)
 )
-. '';
+	. '';
