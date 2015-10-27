@@ -30,6 +30,10 @@ class OrganizeClass extends AdditionalPass {
 			case T_CLASS:
 			case T_INTERFACE:
 			case T_TRAIT:
+				if ($this->leftUsefulTokenIs(T_DOUBLE_COLON)) {
+					$this->appendCode($text);
+					break;
+				}
 				$return = $text;
 				$return .= $this->walkAndAccumulateUntil($this->tkns, ST_CURLY_OPEN);
 				$classBlock = $this->walkAndAccumulateCurlyBlock($this->tkns);
