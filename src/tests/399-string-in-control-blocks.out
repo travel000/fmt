@@ -1,0 +1,6 @@
+<?php
+//passes: SpaceAroundControlStructures
+
+if (true) {
+	$label = "{$foo}{$bar}";
+}

@@ -29,7 +29,6 @@ final class ReindentEqual extends FormatterPass {
 			$this->ptr = $index;
 
 			switch ($id) {
-
 			case ST_QUOTE:
 				$this->refWalkUsefulUntilReverse($this->tkns, $index, ST_QUOTE);
 				break;

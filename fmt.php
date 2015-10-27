@@ -5028,7 +5028,6 @@ final class AutoImportPass extends FormatterPass {
 			$this->ptr = $index;
 
 			switch ($id) {
-
 			case ST_QUOTE:
 				$this->refWalkUsefulUntilReverse($this->tkns, $index, ST_QUOTE);
 				break;
@@ -11994,6 +11993,10 @@ EOT;
 }
 
 	final class SpaceAroundControlStructures extends AdditionalPass {
+	/**
+	 * @param $source
+	 * @param $foundTokens
+	 */
 	public function candidate($source, $foundTokens) {
 		if (
 			isset($foundTokens[T_IF]) ||
@@ -12009,13 +12012,22 @@ EOT;
 		return false;
 	}
 
+	/**
+	 * @param $source
+	 * @return mixed
+	 */
 	public function format($source) {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
+		$inQuote = false;
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
+			case ST_QUOTE:
+				$this->appendCode($text);
+				$inQuote = !$inQuote;
+				break;
 			case T_IF:
 			case T_DO:
 			case T_FOR:
@@ -12039,7 +12051,7 @@ EOT;
 			case ST_CURLY_CLOSE:
 				$this->appendCode($text);
 
-				if (!$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON])) {
+				if (!$inQuote && !$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON])) {
 					$this->appendCode($this->newLine);
 				}
 				break;
