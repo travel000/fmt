@@ -155,20 +155,6 @@ namespace {
 	require 'Additionals/WrongConstructorName.php';
 	require 'Additionals/YodaComparisons.php';
 
-	require 'Laravel/AlignEqualsByConsecutiveBlocks.php';
-	require 'Laravel/LaravelAllmanStyleBraces.php';
-	require 'Laravel/LaravelDecorator.php';
-	require 'Laravel/NamespaceMergeWithOpenTag.php';
-	require 'Laravel/NoneDocBlockMinorCleanUp.php';
-	require 'Laravel/NoSpaceBetweenFunctionAndBracket.php';
-	require 'Laravel/SortUseNamespace.php';
-	require 'Laravel/SpaceAroundExclamationMark.php';
-
-	require 'Php2Go/ExtractMethods.php';
-	require 'Php2Go/Php2GoDecorator.php';
-	require 'Php2Go/TranslateNativeCalls.php';
-	require 'Php2Go/UpdateVisibility.php';
-
 	if (!isset($inPhar)) {
 		$inPhar = false;
 	}

@@ -1,2 +1,0 @@
-<?php
-sprintf("%s", $b);

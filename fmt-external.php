@@ -2461,7 +2461,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "16.3.0");
+	define("VERSION", "17.0.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3569,9 +3569,6 @@ abstract class FormatterPass {
 abstract class BaseCodeFormatter {
 	protected $passes = [
 		'StripSpaces' => false,
-		'ExtractMethods' => false,
-		'UpdateVisibility' => false,
-		'TranslateNativeCalls' => false,
 
 		'ReplaceBooleanAndOr' => false,
 		'EliminateDuplicatedEmptyLines' => false,
@@ -3598,11 +3595,6 @@ abstract class BaseCodeFormatter {
 		'StripNewlineAfterClassOpen' => false,
 		'StripNewlineAfterCurlyOpen' => false,
 
-		'AlignEqualsByConsecutiveBlocks' => false,
-		'SortUseNameSpace' => false,
-		'NonDocBlockMinorCleanUp' => false,
-		'SpaceAroundExclamationMark' => false,
-		'NoSpaceBetweenFunctionAndBracket' => false,
 		'TightConcat' => false,
 
 		'PSR2IndentWithSpace' => false,

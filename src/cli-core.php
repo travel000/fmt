@@ -12,7 +12,6 @@ function showHelp($argv, $enableCache, $inPhar) {
 		'--help-pass' => 'show specific information for one pass',
 		'--ignore=PATTERN-1,PATTERN-N,...' => 'ignore file names whose names contain any PATTERN-N',
 		'--indent_with_space=SIZE' => 'use spaces instead of tabs for indentation. Default 4',
-		'--laravel' => 'Apply Laravel coding style (deprecated)',
 		'--lint-before' => 'lint files before pretty printing (PHP must be declared in %PATH%/$PATH)',
 		'--list' => 'list possible transformations',
 		'--list-simple' => 'list possible transformations - greppable',
@@ -63,7 +62,6 @@ $getoptLongOptions = [
 	'help-pass:',
 	'ignore:',
 	'indent_with_space::',
-	'laravel',
 	'lint-before',
 	'list',
 	'list-simple',
@@ -268,32 +266,32 @@ if (isset($opts['enable_auto_align'])) {
 	$argv = extractFromArgv($argv, 'enable_auto_align');
 }
 
-if (isset($opts['psr']) && !isset($opts['laravel'])) {
+if (isset($opts['psr'])) {
 	PsrDecorator::decorate($fmt);
 	$argv = extractFromArgv($argv, 'psr');
 }
 
-if (isset($opts['psr1']) && !isset($opts['laravel'])) {
+if (isset($opts['psr1'])) {
 	PsrDecorator::PSR1($fmt);
 	$argv = extractFromArgv($argv, 'psr1');
 }
 
-if (isset($opts['psr1-naming']) && !isset($opts['laravel'])) {
+if (isset($opts['psr1-naming'])) {
 	PsrDecorator::PSR1Naming($fmt);
 	$argv = extractFromArgv($argv, 'psr1-naming');
 }
 
-if (isset($opts['psr2']) && !isset($opts['laravel'])) {
+if (isset($opts['psr2'])) {
 	PsrDecorator::PSR2($fmt);
 	$argv = extractFromArgv($argv, 'psr2');
 }
 
-if (isset($opts['indent_with_space']) && !isset($opts['laravel'])) {
+if (isset($opts['indent_with_space'])) {
 	$fmt->enablePass('PSR2IndentWithSpace', $opts['indent_with_space']);
 	$argv = extractFromArgv($argv, 'indent_with_space');
 }
 
-if ((isset($opts['psr1']) || isset($opts['psr2']) || isset($opts['psr'])) && isset($opts['enable_auto_align']) && !isset($opts['laravel'])) {
+if ((isset($opts['psr1']) || isset($opts['psr2']) || isset($opts['psr'])) && isset($opts['enable_auto_align'])) {
 	$fmt->enablePass('PSR2AlignObjOp');
 }
 
@@ -310,19 +308,6 @@ if (isset($opts['passes'])) {
 		$fmt->enablePass($optPass);
 	}
 	$argv = extractFromArgv($argv, 'passes');
-}
-
-if (isset($opts['laravel'])) {
-	fwrite(STDERR, 'Laravel support is deprecated, as of Laravel 5.1 they will adhere to PSR2 standard' . PHP_EOL);
-	fwrite(STDERR, 'See: https://laravel-news.com/2015/02/laravel-5-1/' . PHP_EOL);
-
-	LaravelDecorator::decorate($fmt);
-	$argv = extractFromArgv($argv, 'laravel');
-	$argv = extractFromArgv($argv, 'psr');
-	$argv = extractFromArgv($argv, 'psr1');
-	$argv = extractFromArgv($argv, 'psr1-naming');
-	$argv = extractFromArgv($argv, 'psr2');
-	$argv = extractFromArgv($argv, 'indent_with_space');
 }
 
 if (isset($opts['cakephp'])) {

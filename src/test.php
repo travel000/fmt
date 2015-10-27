@@ -125,54 +125,22 @@ foreach ($cases as $caseIn) {
 					$pass = explode('|', $pass);
 					$fmt->enablePass($pass[0], $pass[1]);
 				} else {
-					if ('default' == strtolower($pass)) {
-						$fmt->enablePass('TwoCommandsInSameLine');
-						$fmt->enablePass('RemoveIncludeParentheses');
-						$fmt->enablePass('NormalizeIsNotEquals');
-						$fmt->enablePass('OrderAndRemoveUseClauses');
-						$fmt->enablePass('AddMissingCurlyBraces');
-						$fmt->enablePass('ExtraCommaInArray');
-						$fmt->enablePass('NormalizeLnAndLtrimLines');
-						$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-						$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-						$fmt->enablePass('MergeDoubleArrowAndArray');
-						$fmt->enablePass('ResizeSpaces');
-						$fmt->enablePass('ReindentColonBlocks');
+					if ('default' != strtolower($pass)) {
+						$fmt->enablePass($pass);
+					} else {
 						$fmt->enablePass('AlignEquals');
 						$fmt->enablePass('AlignDoubleArrow');
 						$fmt->enablePass('ReindentAndAlignObjOps');
-						$fmt->enablePass('Reindent');
-						$fmt->enablePass('EliminateDuplicatedEmptyLines');
-						$fmt->enablePass('LeftAlignComment');
-						$fmt->enablePass('RTrim');
 						$fmt->enablePass('ReindentSwitchBlocks');
-					} else {
-						$fmt->enablePass($pass);
 					}
 				}
 			}
 		}
 	}
 	if (!$specialPasses) {
-		$fmt->enablePass('TwoCommandsInSameLine');
-		$fmt->enablePass('RemoveIncludeParentheses');
-		$fmt->enablePass('NormalizeIsNotEquals');
-		$fmt->enablePass('OrderAndRemoveUseClauses');
-		$fmt->enablePass('AddMissingCurlyBraces');
-		$fmt->enablePass('ExtraCommaInArray');
-		$fmt->enablePass('NormalizeLnAndLtrimLines');
-		$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-		$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-		$fmt->enablePass('MergeDoubleArrowAndArray');
-		$fmt->enablePass('ResizeSpaces');
-		$fmt->enablePass('ReindentColonBlocks');
 		$fmt->enablePass('AlignEquals');
 		$fmt->enablePass('AlignDoubleArrow');
 		$fmt->enablePass('ReindentAndAlignObjOps');
-		$fmt->enablePass('Reindent');
-		$fmt->enablePass('EliminateDuplicatedEmptyLines');
-		$fmt->enablePass('LeftAlignComment');
-		$fmt->enablePass('RTrim');
 		$fmt->enablePass('ReindentSwitchBlocks');
 	}
 
@@ -224,26 +192,9 @@ if (!$bailOut) {
 				foreach ($passes as $pass) {
 					$pass = trim($pass);
 					if ('default' == strtolower($pass)) {
-						$fmt->enablePass('TwoCommandsInSameLine');
-						$fmt->enablePass('RemoveIncludeParentheses');
-						$fmt->enablePass('NormalizeIsNotEquals');
-						$fmt->enablePass('OrderAndRemoveUseClauses');
-						$fmt->enablePass('AddMissingCurlyBraces');
-						$fmt->enablePass('ExtraCommaInArray');
-						$fmt->enablePass('NormalizeLnAndLtrimLines');
-						$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-						$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-						$fmt->enablePass('MergeDoubleArrowAndArray');
-						$fmt->enablePass('ResizeSpaces');
-						$fmt->enablePass('ReindentColonBlocks');
 						$fmt->enablePass('AlignEquals');
 						$fmt->enablePass('AlignDoubleArrow');
 						$fmt->enablePass('ReindentAndAlignObjOps');
-						$fmt->enablePass('Reindent');
-						$fmt->enablePass('EliminateDuplicatedEmptyLines');
-						$fmt->enablePass('PSR2AlignObjOp');
-						$fmt->enablePass('LeftAlignComment');
-						$fmt->enablePass('RTrim');
 						$fmt->enablePass('ReindentSwitchBlocks');
 						PsrDecorator::decorate($fmt);
 					} else {
@@ -253,209 +204,11 @@ if (!$bailOut) {
 			}
 		}
 		if (!$specialPasses) {
-			$fmt->enablePass('TwoCommandsInSameLine');
-			$fmt->enablePass('RemoveIncludeParentheses');
-			$fmt->enablePass('NormalizeIsNotEquals');
-			$fmt->enablePass('OrderAndRemoveUseClauses');
-			$fmt->enablePass('AddMissingCurlyBraces');
-			$fmt->enablePass('ExtraCommaInArray');
-			$fmt->enablePass('NormalizeLnAndLtrimLines');
-			$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-			$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-			$fmt->enablePass('MergeDoubleArrowAndArray');
-			$fmt->enablePass('ResizeSpaces');
-			$fmt->enablePass('ReindentColonBlocks');
 			$fmt->enablePass('AlignEquals');
 			$fmt->enablePass('AlignDoubleArrow');
 			$fmt->enablePass('ReindentAndAlignObjOps');
-			$fmt->enablePass('Reindent');
-			$fmt->enablePass('EliminateDuplicatedEmptyLines');
-			$fmt->enablePass('PSR2AlignObjOp');
-			$fmt->enablePass('LeftAlignComment');
-			$fmt->enablePass('RTrim');
 			$fmt->enablePass('ReindentSwitchBlocks');
 			PsrDecorator::decorate($fmt);
-		}
-
-		$got = $fmt->formatCode($content);
-		$expected = '';
-		if (file_exists($caseOut)) {
-			$expected = file_get_contents($caseOut);
-		}
-		if ($got != $expected) {
-			$brokenTests[$caseOut] = $got;
-			if (isset($opt['stop'])) {
-				$bailOut = true;
-				break;
-			}
-			echo '!';
-		} else {
-			echo '.';
-		}
-		stopAtStep();
-		$isCoverage && $coverage->stop();
-	}
-}
-
-$cases = glob(__DIR__ . '/tests-laravel/' . $testNumber . '*.in');
-if (!$bailOut) {
-	foreach ($cases as $caseIn) {
-		++$count;
-		$isCoverage && $coverage->start($caseIn);
-		$fmt = new CodeFormatter();
-		$caseOut = str_replace('.in', '.out', $caseIn);
-		$content = file_get_contents($caseIn);
-		$tokens = token_get_all($content);
-		$specialPasses = false;
-		foreach ($tokens as $token) {
-			list($id, $text) = getToken($token);
-			if (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
-				$version = str_replace('//version:', '', $text);
-				if (version_compare(PHP_VERSION, $version, '<')) {
-					$skippedTests[] = $caseIn;
-					echo 'S';
-					continue 2;
-				}
-			} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
-				$skippedTests[] = $caseIn;
-				$skippedTests[] = $caseIn;
-				echo 'S';
-				continue 2;
-			} elseif (T_COMMENT == $id && '//passes:' == substr($text, 0, 9)) {
-				$passes = explode(',', str_replace('//passes:', '', $text));
-				$skippedTests[] = $caseIn;
-				$specialPasses = true;
-				foreach ($passes as $pass) {
-					$pass = trim($pass);
-					$fmt->enablePass($pass);
-				}
-			}
-		}
-		if (!$specialPasses) {
-			$fmt->enablePass('TwoCommandsInSameLine');
-			$fmt->enablePass('RemoveIncludeParentheses');
-			$fmt->enablePass('NormalizeIsNotEquals');
-			$fmt->enablePass('OrderAndRemoveUseClauses');
-			$fmt->enablePass('AddMissingCurlyBraces');
-			$fmt->enablePass('ExtraCommaInArray');
-			$fmt->enablePass('NormalizeLnAndLtrimLines');
-			$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-			$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-			$fmt->enablePass('MergeDoubleArrowAndArray');
-			$fmt->enablePass('ResizeSpaces');
-			$fmt->enablePass('ReindentColonBlocks');
-			$fmt->enablePass('AlignEquals');
-			$fmt->enablePass('AlignDoubleArrow');
-			$fmt->enablePass('ReindentAndAlignObjOps');
-			$fmt->enablePass('Reindent');
-			$fmt->enablePass('EliminateDuplicatedEmptyLines');
-			$fmt->enablePass('PSR2AlignObjOp');
-			$fmt->enablePass('LeftAlignComment');
-			$fmt->enablePass('RTrim');
-			$fmt->enablePass('ReindentSwitchBlocks');
-			LaravelDecorator::decorate($fmt);
-		}
-
-		$got = $fmt->formatCode($content);
-		$expected = '';
-		if (file_exists($caseOut)) {
-			$expected = file_get_contents($caseOut);
-		}
-		if ($got != $expected) {
-			$brokenTests[$caseOut] = $got;
-			if (isset($opt['stop'])) {
-				$bailOut = true;
-				break;
-			}
-			echo '!';
-		} else {
-			echo '.';
-		}
-		stopAtStep();
-		$isCoverage && $coverage->stop();
-	}
-}
-
-$cases = glob(__DIR__ . '/tests-Php2Go/' . $testNumber . '*.in');
-if (!$bailOut) {
-	foreach ($cases as $caseIn) {
-		++$count;
-		$isCoverage && $coverage->start($caseIn);
-		$fmt = new CodeFormatter();
-		$caseOut = str_replace('.in', '.out', $caseIn);
-		$content = file_get_contents($caseIn);
-		$tokens = token_get_all($content);
-		$specialPasses = false;
-		foreach ($tokens as $token) {
-			list($id, $text) = getToken($token);
-			if (T_COMMENT == $id && '//version:' == substr($text, 0, 10)) {
-				$version = str_replace('//version:', '', $text);
-				if (version_compare(PHP_VERSION, $version, '<')) {
-					$skippedTests[] = $caseIn;
-					echo 'S';
-					continue 2;
-				}
-			} elseif (!$shortTagEnabled && (T_INLINE_HTML == $id) && false !== strpos($text, '//skipShortTag')) {
-				$skippedTests[] = $caseIn;
-				echo 'S';
-				continue 2;
-			} elseif (T_COMMENT == $id && '//passes:' == substr($text, 0, 9)) {
-				$passes = explode(',', str_replace('//passes:', '', $text));
-				$specialPasses = true;
-				foreach ($passes as $pass) {
-					$pass = trim($pass);
-					if ('default' == strtolower($pass)) {
-						$fmt->enablePass('TwoCommandsInSameLine');
-						$fmt->enablePass('RemoveIncludeParentheses');
-						$fmt->enablePass('NormalizeIsNotEquals');
-						$fmt->enablePass('OrderAndRemoveUseClauses');
-						$fmt->enablePass('AddMissingCurlyBraces');
-						$fmt->enablePass('ExtraCommaInArray');
-						$fmt->enablePass('NormalizeLnAndLtrimLines');
-						$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-						$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-						$fmt->enablePass('MergeDoubleArrowAndArray');
-						$fmt->enablePass('ResizeSpaces');
-						$fmt->enablePass('ReindentColonBlocks');
-						$fmt->enablePass('AlignEquals');
-						$fmt->enablePass('AlignDoubleArrow');
-						$fmt->enablePass('ReindentAndAlignObjOps');
-						$fmt->enablePass('Reindent');
-						$fmt->enablePass('EliminateDuplicatedEmptyLines');
-						$fmt->enablePass('PSR2AlignObjOp');
-						$fmt->enablePass('LeftAlignComment');
-						$fmt->enablePass('RTrim');
-						$fmt->enablePass('ReindentSwitchBlocks');
-						Php2GoDecorator::decorate($fmt);
-					} else {
-						$fmt->enablePass($pass);
-					}
-				}
-			}
-		}
-		if (!$specialPasses) {
-			$fmt->enablePass('TwoCommandsInSameLine');
-			$fmt->enablePass('RemoveIncludeParentheses');
-			$fmt->enablePass('NormalizeIsNotEquals');
-			$fmt->enablePass('OrderAndRemoveUseClauses');
-			$fmt->enablePass('AddMissingCurlyBraces');
-			$fmt->enablePass('ExtraCommaInArray');
-			$fmt->enablePass('NormalizeLnAndLtrimLines');
-			$fmt->enablePass('MergeParenCloseWithCurlyOpen');
-			$fmt->enablePass('MergeCurlyCloseAndDoWhile');
-			$fmt->enablePass('MergeDoubleArrowAndArray');
-			$fmt->enablePass('ResizeSpaces');
-			$fmt->enablePass('ReindentColonBlocks');
-			$fmt->enablePass('AlignEquals');
-			$fmt->enablePass('AlignDoubleArrow');
-			$fmt->enablePass('ReindentAndAlignObjOps');
-			$fmt->enablePass('Reindent');
-			$fmt->enablePass('EliminateDuplicatedEmptyLines');
-			$fmt->enablePass('PSR2AlignObjOp');
-			$fmt->enablePass('LeftAlignComment');
-			$fmt->enablePass('RTrim');
-			$fmt->enablePass('ReindentSwitchBlocks');
-			Php2GoDecorator::decorate($fmt);
 		}
 
 		$got = $fmt->formatCode($content);
