@@ -12019,14 +12019,24 @@ EOT;
 	public function format($source) {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
-		$inQuote = false;
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
 			case ST_QUOTE:
 				$this->appendCode($text);
-				$inQuote = !$inQuote;
+				$this->printUntilTheEndOfString();
+				break;
+			case T_CLOSE_TAG:
+				$this->appendCode($text);
+				$this->printUntil(T_OPEN_TAG);
+				break;
+			case T_START_HEREDOC:
+				$this->appendCode($text);
+				$this->printUntil(T_END_HEREDOC);
+				break;
+			case T_CONSTANT_ENCAPSED_STRING:
+				$this->appendCode($text);
 				break;
 			case T_IF:
 			case T_DO:
@@ -12051,7 +12061,7 @@ EOT;
 			case ST_CURLY_CLOSE:
 				$this->appendCode($text);
 
-				if (!$inQuote && !$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON])) {
+				if (!$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON])) {
 					$this->appendCode($this->newLine);
 				}
 				break;
