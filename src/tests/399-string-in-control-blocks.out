@@ -4,3 +4,7 @@
 if (true) {
 	$label = "{$foo}{$bar}";
 }
+
+echo <<<EOT
+{$foo}{$bar}
+EOT;
