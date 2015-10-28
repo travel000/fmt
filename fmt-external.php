@@ -2461,7 +2461,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "17.0.0");
+	define("VERSION", "17.1.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3741,6 +3741,10 @@ abstract class BaseCodeFormatter {
 		}
 
 		if (!class_exists($pass)) {
+			$passName = sprintf('ExternalPass%s', $pass);
+			$passes = array_reverse($this->passes, true);
+			$passes[$passName] = new ExternalPass($pass);
+			$this->passes = array_reverse($passes, true);
 			return;
 		}
 
