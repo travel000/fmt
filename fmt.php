@@ -12039,12 +12039,16 @@ EOT;
 			case T_FOR:
 			case T_FOREACH:
 			case T_SWITCH:
-				$this->appendCode($this->newLine);
+				if (!$this->leftTokenIs([T_COMMENT])) {
+					$this->appendCode($this->newLine);
+				}
 				$this->appendCode($text);
 				break;
 
 			case T_WHILE:
-				$this->appendCode($this->newLine);
+				if (!$this->leftTokenIs([T_COMMENT])) {
+					$this->appendCode($this->newLine);
+				}
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
