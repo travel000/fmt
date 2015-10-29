@@ -244,7 +244,7 @@ In `core/BaseCodeFormatter.php`, for execution order, we want it to live closer 
 
 Note that so far, we have not coded adhering to php.tools coding style, i.e., K&R indentation with tabs. For every commit you make, you must use fmt.phar to fix itself. Thus, on the command line call:
 
-`$ php fmt.src.php Core/ Additionals/ PSR/ Laravel/ fmt.src.php refactor.src.php`
+`$ php fmt.src.php Core/ Additionals/ PSR/ fmt.src.php refactor.src.php`
 
 This will fix all the coding style mistakes. Now you need to test your changes.
 
