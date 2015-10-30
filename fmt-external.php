@@ -1,204 +1,92 @@
 <?php
-//Copyright (c) 2014, Carlos C
-//All rights reserved.
-//
-//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-//
-//1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//
-//2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//
-//3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-//
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Copyright (c) 2015, phpfmt and its authors
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Formatter{
 
-/**
- * Formatter interface for console output.
- *
- * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
- */
+
 interface OutputFormatterInterface
 {
-    /**
-     * Sets the decorated flag.
-     *
-     * @param bool $decorated Whether to decorate the messages or not
-     *
-     * @api
-     */
+    
     public function setDecorated($decorated);
 
-    /**
-     * Gets the decorated flag.
-     *
-     * @return bool true if the output will decorate messages, false otherwise
-     *
-     * @api
-     */
+    
     public function isDecorated();
 
-    /**
-     * Sets a new style.
-     *
-     * @param string                        $name  The style name
-     * @param OutputFormatterStyleInterface $style The style instance
-     *
-     * @api
-     */
+    
     public function setStyle($name, OutputFormatterStyleInterface $style);
 
-    /**
-     * Checks if output formatter has style with specified name.
-     *
-     * @param string $name
-     *
-     * @return bool
-     *
-     * @api
-     */
+    
     public function hasStyle($name);
 
-    /**
-     * Gets style options from style with specified name.
-     *
-     * @param string $name
-     *
-     * @return OutputFormatterStyleInterface
-     *
-     * @api
-     */
+    
     public function getStyle($name);
 
-    /**
-     * Formats a message according to the given styles.
-     *
-     * @param string $message The message to style
-     *
-     * @return string The styled message
-     *
-     * @api
-     */
+    
     public function format($message);
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Helper{
 
-/**
- * HelperInterface is the interface all helpers must implement.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
+
 interface HelperInterface
 {
-    /**
-     * Sets the helper set associated with this helper.
-     *
-     * @param HelperSet $helperSet A HelperSet instance
-     *
-     * @api
-     */
+    
     public function setHelperSet(HelperSet $helperSet = null);
 
-    /**
-     * Gets the helper set associated with this helper.
-     *
-     * @return HelperSet A HelperSet instance
-     *
-     * @api
-     */
+    
     public function getHelperSet();
 
-    /**
-     * Returns the canonical name of this helper.
-     *
-     * @return string The canonical name
-     *
-     * @api
-     */
+    
     public function getName();
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Helper{
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
-/**
- * Helper is the base class for all helper classes.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
+
 abstract class Helper implements HelperInterface
 {
     protected $helperSet = null;
 
-    /**
-     * Sets the helper set associated with this helper.
-     *
-     * @param HelperSet $helperSet A HelperSet instance
-     */
+    
     public function setHelperSet(HelperSet $helperSet = null)
     {
         $this->helperSet = $helperSet;
     }
 
-    /**
-     * Gets the helper set associated with this helper.
-     *
-     * @return HelperSet A HelperSet instance
-     */
+    
     public function getHelperSet()
     {
         return $this->helperSet;
     }
 
-    /**
-     * Returns the length of a string, using mb_strwidth if it is available.
-     *
-     * @param string $string The string to check its length
-     *
-     * @return int The length of the string
-     */
+    
     public static function strlen($string)
     {
         if (!function_exists('mb_strwidth')) {
@@ -260,10 +148,8 @@ abstract class Helper implements HelperInterface
     {
         $isDecorated = $formatter->isDecorated();
         $formatter->setDecorated(false);
-        // remove <...> formatting
-        $string = $formatter->format($string);
-        // remove already formatted characters
-        $string = preg_replace("/\033\[[^m]*m/", '', $string);
+                $string = $formatter->format($string);
+                $string = preg_replace("/\033\[[^m]*m/", '', $string);
         $formatter->setDecorated($isDecorated);
 
         return self::strlen($string);
@@ -273,70 +159,39 @@ abstract class Helper implements HelperInterface
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Formatter{
 
-/**
- * @author Jean-François Simon <contact@jfsimon.fr>
- */
+
 class OutputFormatterStyleStack
 {
-    /**
-     * @var OutputFormatterStyleInterface[]
-     */
+    
     private $styles;
 
-    /**
-     * @var OutputFormatterStyleInterface
-     */
+    
     private $emptyStyle;
 
-    /**
-     * Constructor.
-     *
-     * @param OutputFormatterStyleInterface|null $emptyStyle
-     */
+    
     public function __construct(OutputFormatterStyleInterface $emptyStyle = null)
     {
         $this->emptyStyle = $emptyStyle ?: new OutputFormatterStyle();
         $this->reset();
     }
 
-    /**
-     * Resets stack (ie. empty internal arrays).
-     */
+    
     public function reset()
     {
         $this->styles = array();
     }
 
-    /**
-     * Pushes a style in the stack.
-     *
-     * @param OutputFormatterStyleInterface $style
-     */
+    
     public function push(OutputFormatterStyleInterface $style)
     {
         $this->styles[] = $style;
     }
 
-    /**
-     * Pops a style from the stack.
-     *
-     * @param OutputFormatterStyleInterface|null $style
-     *
-     * @return OutputFormatterStyleInterface
-     *
-     * @throws \InvalidArgumentException When style tags incorrectly nested
-     */
+    
     public function pop(OutputFormatterStyleInterface $style = null)
     {
         if (empty($this->styles)) {
@@ -358,11 +213,7 @@ class OutputFormatterStyleStack
         throw new \InvalidArgumentException('Incorrectly nested style tag found.');
     }
 
-    /**
-     * Computes current style with stacks top codes.
-     *
-     * @return OutputFormatterStyle
-     */
+    
     public function getCurrent()
     {
         if (empty($this->styles)) {
@@ -372,11 +223,7 @@ class OutputFormatterStyleStack
         return $this->styles[count($this->styles) - 1];
     }
 
-    /**
-     * @param OutputFormatterStyleInterface $emptyStyle
-     *
-     * @return OutputFormatterStyleStack
-     */
+    
     public function setEmptyStyle(OutputFormatterStyleInterface $emptyStyle)
     {
         $this->emptyStyle = $emptyStyle;
@@ -384,9 +231,7 @@ class OutputFormatterStyleStack
         return $this;
     }
 
-    /**
-     * @return OutputFormatterStyleInterface
-     */
+    
     public function getEmptyStyle()
     {
         return $this->emptyStyle;
@@ -396,98 +241,40 @@ class OutputFormatterStyleStack
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Formatter{
 
-/**
- * Formatter style interface for defining styles.
- *
- * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
- */
+
 interface OutputFormatterStyleInterface
 {
-    /**
-     * Sets style foreground color.
-     *
-     * @param string $color The color name
-     *
-     * @api
-     */
+    
     public function setForeground($color = null);
 
-    /**
-     * Sets style background color.
-     *
-     * @param string $color The color name
-     *
-     * @api
-     */
+    
     public function setBackground($color = null);
 
-    /**
-     * Sets some specific style option.
-     *
-     * @param string $option The option name
-     *
-     * @api
-     */
+    
     public function setOption($option);
 
-    /**
-     * Unsets some specific style option.
-     *
-     * @param string $option The option name
-     */
+    
     public function unsetOption($option);
 
-    /**
-     * Sets multiple style options at once.
-     *
-     * @param array $options
-     */
+    
     public function setOptions(array $options);
 
-    /**
-     * Applies the style to a given text.
-     *
-     * @param string $text The text to style
-     *
-     * @return string
-     */
+    
     public function apply($text);
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Formatter{
 
-/**
- * Formatter style class for defining styles.
- *
- * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
- */
+
 class OutputFormatterStyle implements OutputFormatterStyleInterface
 {
     private static $availableForegroundColors = array(
@@ -524,15 +311,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
     private $background;
     private $options = array();
 
-    /**
-     * Initializes output formatter style.
-     *
-     * @param string|null $foreground The style foreground color name
-     * @param string|null $background The style background color name
-     * @param array       $options    The style options
-     *
-     * @api
-     */
+    
     public function __construct($foreground = null, $background = null, array $options = array())
     {
         if (null !== $foreground) {
@@ -546,15 +325,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         }
     }
 
-    /**
-     * Sets style foreground color.
-     *
-     * @param string|null $color The color name
-     *
-     * @throws \InvalidArgumentException When the color name isn't defined
-     *
-     * @api
-     */
+    
     public function setForeground($color = null)
     {
         if (null === $color) {
@@ -574,15 +345,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->foreground = static::$availableForegroundColors[$color];
     }
 
-    /**
-     * Sets style background color.
-     *
-     * @param string|null $color The color name
-     *
-     * @throws \InvalidArgumentException When the color name isn't defined
-     *
-     * @api
-     */
+    
     public function setBackground($color = null)
     {
         if (null === $color) {
@@ -602,15 +365,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->background = static::$availableBackgroundColors[$color];
     }
 
-    /**
-     * Sets some specific style option.
-     *
-     * @param string $option The option name
-     *
-     * @throws \InvalidArgumentException When the option name isn't defined
-     *
-     * @api
-     */
+    
     public function setOption($option)
     {
         if (!isset(static::$availableOptions[$option])) {
@@ -626,13 +381,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         }
     }
 
-    /**
-     * Unsets some specific style option.
-     *
-     * @param string $option The option name
-     *
-     * @throws \InvalidArgumentException When the option name isn't defined
-     */
+    
     public function unsetOption($option)
     {
         if (!isset(static::$availableOptions[$option])) {
@@ -649,11 +398,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         }
     }
 
-    /**
-     * Sets multiple style options at once.
-     *
-     * @param array $options
-     */
+    
     public function setOptions(array $options)
     {
         $this->options = array();
@@ -663,13 +408,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         }
     }
 
-    /**
-     * Applies the style to a given text.
-     *
-     * @param string $text The text to style
-     *
-     * @return string
-     */
+    
     public function apply($text)
     {
         $setCodes = array();
@@ -701,50 +440,24 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Formatter{
 
-/**
- * Formatter class for console output.
- *
- * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
- */
+
 class OutputFormatter implements OutputFormatterInterface
 {
     private $decorated;
     private $styles = array();
     private $styleStack;
 
-    /**
-     * Escapes "<" special char in given text.
-     *
-     * @param string $text Text to escape
-     *
-     * @return string Escaped text
-     */
+    
     public static function escape($text)
     {
         return preg_replace('/([^\\\\]?)</', '$1\\<', $text);
     }
 
-    /**
-     * Initializes console output formatter.
-     *
-     * @param bool                            $decorated Whether this formatter should actually decorate strings
-     * @param OutputFormatterStyleInterface[] $styles    Array of "name => FormatterStyle" instances
-     *
-     * @api
-     */
+    
     public function __construct($decorated = false, array $styles = array())
     {
         $this->decorated = (bool) $decorated;
@@ -761,68 +474,31 @@ class OutputFormatter implements OutputFormatterInterface
         $this->styleStack = new OutputFormatterStyleStack();
     }
 
-    /**
-     * Sets the decorated flag.
-     *
-     * @param bool $decorated Whether to decorate the messages or not
-     *
-     * @api
-     */
+    
     public function setDecorated($decorated)
     {
         $this->decorated = (bool) $decorated;
     }
 
-    /**
-     * Gets the decorated flag.
-     *
-     * @return bool true if the output will decorate messages, false otherwise
-     *
-     * @api
-     */
+    
     public function isDecorated()
     {
         return $this->decorated;
     }
 
-    /**
-     * Sets a new style.
-     *
-     * @param string                        $name  The style name
-     * @param OutputFormatterStyleInterface $style The style instance
-     *
-     * @api
-     */
+    
     public function setStyle($name, OutputFormatterStyleInterface $style)
     {
         $this->styles[strtolower($name)] = $style;
     }
 
-    /**
-     * Checks if output formatter has style with specified name.
-     *
-     * @param string $name
-     *
-     * @return bool
-     *
-     * @api
-     */
+    
     public function hasStyle($name)
     {
         return isset($this->styles[strtolower($name)]);
     }
 
-    /**
-     * Gets style options from style with specified name.
-     *
-     * @param string $name
-     *
-     * @return OutputFormatterStyleInterface
-     *
-     * @throws \InvalidArgumentException When style isn't defined
-     *
-     * @api
-     */
+    
     public function getStyle($name)
     {
         if (!$this->hasStyle($name)) {
@@ -832,15 +508,7 @@ class OutputFormatter implements OutputFormatterInterface
         return $this->styles[strtolower($name)];
     }
 
-    /**
-     * Formats a message according to the given styles.
-     *
-     * @param string $message The message to style
-     *
-     * @return string The styled message
-     *
-     * @api
-     */
+    
     public function format($message)
     {
         $message = (string) $message;
@@ -856,20 +524,17 @@ class OutputFormatter implements OutputFormatterInterface
                 continue;
             }
 
-            // add the text up to the next tag
-            $output .= $this->applyCurrentStyle(substr($message, $offset, $pos - $offset));
+                        $output .= $this->applyCurrentStyle(substr($message, $offset, $pos - $offset));
             $offset = $pos + strlen($text);
 
-            // opening tag?
-            if ($open = '/' != $text[1]) {
+                        if ($open = '/' != $text[1]) {
                 $tag = $matches[1][$i][0];
             } else {
                 $tag = isset($matches[3][$i][0]) ? $matches[3][$i][0] : '';
             }
 
             if (!$open && !$tag) {
-                // </>
-                $this->styleStack->pop();
+                                $this->styleStack->pop();
             } elseif (false === $style = $this->createStyleFromString(strtolower($tag))) {
                 $output .= $this->applyCurrentStyle($text);
             } elseif ($open) {
@@ -884,21 +549,13 @@ class OutputFormatter implements OutputFormatterInterface
         return str_replace('\\<', '<', $output);
     }
 
-    /**
-     * @return OutputFormatterStyleStack
-     */
+    
     public function getStyleStack()
     {
         return $this->styleStack;
     }
 
-    /**
-     * Tries to create new style instance from string.
-     *
-     * @param string $string
-     *
-     * @return OutputFormatterStyle|bool false if string is not format string
-     */
+    
     private function createStyleFromString($string)
     {
         if (isset($this->styles[$string])) {
@@ -929,13 +586,7 @@ class OutputFormatter implements OutputFormatterInterface
         return $style;
     }
 
-    /**
-     * Applies current style from stack to text, if must be applied.
-     *
-     * @param string $text Input text
-     *
-     * @return string Styled text
-     */
+    
     private function applyCurrentStyle($text)
     {
         return $this->isDecorated() && strlen($text) > 0 ? $this->styleStack->getCurrent()->apply($text) : $text;
@@ -945,26 +596,13 @@ class OutputFormatter implements OutputFormatterInterface
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Output{
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
-/**
- * OutputInterface is the interface implemented by all Output classes.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
+
 interface OutputInterface
 {
     const VERBOSITY_QUIET = 0;
@@ -977,169 +615,65 @@ interface OutputInterface
     const OUTPUT_RAW = 1;
     const OUTPUT_PLAIN = 2;
 
-    /**
-     * Writes a message to the output.
-     *
-     * @param string|array $messages The message as an array of lines or a single string
-     * @param bool         $newline  Whether to add a newline
-     * @param int          $type     The type of output (one of the OUTPUT constants)
-     *
-     * @throws \InvalidArgumentException When unknown output type is given
-     *
-     * @api
-     */
+    
     public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL);
 
-    /**
-     * Writes a message to the output and adds a newline at the end.
-     *
-     * @param string|array $messages The message as an array of lines of a single string
-     * @param int          $type     The type of output (one of the OUTPUT constants)
-     *
-     * @throws \InvalidArgumentException When unknown output type is given
-     *
-     * @api
-     */
+    
     public function writeln($messages, $type = self::OUTPUT_NORMAL);
 
-    /**
-     * Sets the verbosity of the output.
-     *
-     * @param int $level The level of verbosity (one of the VERBOSITY constants)
-     *
-     * @api
-     */
+    
     public function setVerbosity($level);
 
-    /**
-     * Gets the current verbosity of the output.
-     *
-     * @return int The current level of verbosity (one of the VERBOSITY constants)
-     *
-     * @api
-     */
+    
     public function getVerbosity();
 
-    /**
-     * Sets the decorated flag.
-     *
-     * @param bool $decorated Whether to decorate the messages
-     *
-     * @api
-     */
+    
     public function setDecorated($decorated);
 
-    /**
-     * Gets the decorated flag.
-     *
-     * @return bool true if the output will decorate messages, false otherwise
-     *
-     * @api
-     */
+    
     public function isDecorated();
 
-    /**
-     * Sets output formatter.
-     *
-     * @param OutputFormatterInterface $formatter
-     *
-     * @api
-     */
+    
     public function setFormatter(OutputFormatterInterface $formatter);
 
-    /**
-     * Returns current output formatter instance.
-     *
-     * @return OutputFormatterInterface
-     *
-     * @api
-     */
+    
     public function getFormatter();
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Output{
 
-/**
- * ConsoleOutputInterface is the interface implemented by ConsoleOutput class.
- * This adds information about stderr output stream.
- *
- * @author Dariusz Górecki <darek.krk@gmail.com>
- */
+
 interface ConsoleOutputInterface extends OutputInterface
 {
-    /**
-     * Gets the OutputInterface for errors.
-     *
-     * @return OutputInterface
-     */
+    
     public function getErrorOutput();
 
-    /**
-     * Sets the OutputInterface used for errors.
-     *
-     * @param OutputInterface $error
-     */
+    
     public function setErrorOutput(OutputInterface $error);
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Output{
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
-/**
- * Base class for output classes.
- *
- * There are five levels of verbosity:
- *
- *  * normal: no option passed (normal output)
- *  * verbose: -v (more output)
- *  * very verbose: -vv (highly extended output)
- *  * debug: -vvv (all debug output)
- *  * quiet: -q (no output)
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
+
 abstract class Output implements OutputInterface
 {
     private $verbosity;
     private $formatter;
 
-    /**
-     * Constructor.
-     *
-     * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
-     * @param bool                          $decorated Whether to decorate messages
-     * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
-     *
-     * @api
-     */
+    
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = false, OutputFormatterInterface $formatter = null)
     {
         $this->verbosity = null === $verbosity ? self::VERBOSITY_NORMAL : $verbosity;
@@ -1147,49 +681,37 @@ abstract class Output implements OutputInterface
         $this->formatter->setDecorated($decorated);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setFormatter(OutputFormatterInterface $formatter)
     {
         $this->formatter = $formatter;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function getFormatter()
     {
         return $this->formatter;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setDecorated($decorated)
     {
         $this->formatter->setDecorated($decorated);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function isDecorated()
     {
         return $this->formatter->isDecorated();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setVerbosity($level)
     {
         $this->verbosity = (int) $level;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function getVerbosity()
     {
         return $this->verbosity;
@@ -1215,17 +737,13 @@ abstract class Output implements OutputInterface
         return self::VERBOSITY_DEBUG <= $this->verbosity;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function writeln($messages, $type = self::OUTPUT_NORMAL)
     {
         $this->write($messages, true, $type);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL)
     {
         if (self::VERBOSITY_QUIET === $this->verbosity) {
@@ -1252,62 +770,25 @@ abstract class Output implements OutputInterface
         }
     }
 
-    /**
-     * Writes a message to the output.
-     *
-     * @param string $message A message to write to the output
-     * @param bool   $newline Whether to add a newline or not
-     */
+    
     abstract protected function doWrite($message, $newline);
 }
 
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Output{
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
-/**
- * StreamOutput writes the output to a given stream.
- *
- * Usage:
- *
- * $output = new StreamOutput(fopen('php://stdout', 'w'));
- *
- * As `StreamOutput` can use any stream, you can also use a file:
- *
- * $output = new StreamOutput(fopen('/path/to/output.log', 'a', false));
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
+
 class StreamOutput extends Output
 {
     private $stream;
 
-    /**
-     * Constructor.
-     *
-     * @param mixed                         $stream    A stream resource
-     * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
-     * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
-     * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
-     *
-     * @throws \InvalidArgumentException When first argument is not a real stream
-     *
-     * @api
-     */
+    
     public function __construct($stream, $verbosity = self::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
     {
         if (!is_resource($stream) || 'stream' !== get_resource_type($stream)) {
@@ -1323,39 +804,23 @@ class StreamOutput extends Output
         parent::__construct($verbosity, $decorated, $formatter);
     }
 
-    /**
-     * Gets the stream attached to this StreamOutput instance.
-     *
-     * @return resource A stream resource
-     */
+    
     public function getStream()
     {
         return $this->stream;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     protected function doWrite($message, $newline)
     {
         if (false === @fwrite($this->stream, $message.($newline ? PHP_EOL : ''))) {
-            // should never happen
-            throw new \RuntimeException('Unable to write output.');
+                        throw new \RuntimeException('Unable to write output.');
         }
 
         fflush($this->stream);
     }
 
-    /**
-     * Returns true if the stream supports colorization.
-     *
-     * Colorization is disabled if not supported by the stream:
-     *
-     *  -  Windows without Ansicon and ConEmu
-     *  -  non tty consoles
-     *
-     * @return bool true if the stream supports colorization, false otherwise
-     */
+    
     protected function hasColorSupport()
     {
         if (DIRECTORY_SEPARATOR === '\\') {
@@ -1369,50 +834,19 @@ class StreamOutput extends Output
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Output{
 
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
-/**
- * ConsoleOutput is the default class for all CLI output. It uses STDOUT.
- *
- * This class is a convenient wrapper around `StreamOutput`.
- *
- *     $output = new ConsoleOutput();
- *
- * This is equivalent to:
- *
- *     $output = new StreamOutput(fopen('php://stdout', 'w'));
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
+
 class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
-    /**
-     * @var StreamOutput
-     */
+    
     private $stderr;
 
-    /**
-     * Constructor.
-     *
-     * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
-     * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
-     * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
-     *
-     * @api
-     */
+    
     public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
     {
         $outputStream = $this->hasStdoutSupport() ? 'php://stdout' : 'php://output';
@@ -1423,77 +857,52 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
         $this->stderr = new StreamOutput(fopen($errorStream, 'w'), $verbosity, $decorated, $this->getFormatter());
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setDecorated($decorated)
     {
         parent::setDecorated($decorated);
         $this->stderr->setDecorated($decorated);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setFormatter(OutputFormatterInterface $formatter)
     {
         parent::setFormatter($formatter);
         $this->stderr->setFormatter($formatter);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setVerbosity($level)
     {
         parent::setVerbosity($level);
         $this->stderr->setVerbosity($level);
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function getErrorOutput()
     {
         return $this->stderr;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    
     public function setErrorOutput(OutputInterface $error)
     {
         $this->stderr = $error;
     }
 
-    /**
-     * Returns true if current environment supports writing console output to
-     * STDOUT.
-     *
-     * @return bool
-     */
+    
     protected function hasStdoutSupport()
     {
         return false === $this->isRunningOS400();
     }
 
-    /**
-     * Returns true if current environment supports writing console output to
-     * STDERR.
-     *
-     * @return bool
-     */
+    
     protected function hasStderrSupport()
     {
         return false === $this->isRunningOS400();
     }
 
-    /**
-     * Checks if current executing environment is IBM iSeries (OS400), which
-     * doesn't properly convert character-encodings between ASCII to EBCDIC.
-     *
-     * @return bool
-     */
+    
     private function isRunningOS400()
     {
         return 'OS400' === php_uname('s');
@@ -1503,38 +912,23 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 }
 
 	
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
 
 namespace Symfony\Component\Console\Helper{
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * The ProgressBar provides helpers to display progress output.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Chris Jones <leeked@gmail.com>
- */
+
 class ProgressBar
 {
-    // options
-    private $barWidth = 28;
+        private $barWidth = 28;
     private $barChar;
     private $emptyBarChar = '-';
     private $progressChar = '>';
     private $format = null;
     private $redrawFreq = 1;
 
-    /**
-     * @var OutputInterface
-     */
+    
     private $output;
     private $step = 0;
     private $max;
@@ -1549,24 +943,17 @@ class ProgressBar
     private static $formatters;
     private static $formats;
 
-    /**
-     * Constructor.
-     *
-     * @param OutputInterface $output An OutputInterface instance
-     * @param int             $max    Maximum steps (0 if unknown)
-     */
+    
     public function __construct(OutputInterface $output, $max = 0)
     {
         $this->output = $output;
         $this->setMaxSteps($max);
 
         if (!$this->output->isDecorated()) {
-            // disable overwrite when output does not support ANSI codes.
-            $this->overwrite = false;
+                        $this->overwrite = false;
 
             if ($this->max > 10) {
-                // set a reasonable redraw frequency so output isn't flooded
-                $this->setRedrawFrequency($max / 10);
+                                $this->setRedrawFrequency($max / 10);
             }
         }
 
@@ -1575,14 +962,7 @@ class ProgressBar
         $this->startTime = time();
     }
 
-    /**
-     * Sets a placeholder formatter for a given name.
-     *
-     * This method also allow you to override an existing placeholder.
-     *
-     * @param string   $name     The placeholder name (including the delimiter char like %)
-     * @param callable $callable A PHP callable
-     */
+    
     public static function setPlaceholderFormatterDefinition($name, $callable)
     {
         if (!self::$formatters) {
@@ -1592,13 +972,7 @@ class ProgressBar
         self::$formatters[$name] = $callable;
     }
 
-    /**
-     * Gets the placeholder formatter for a given name.
-     *
-     * @param string $name The placeholder name (including the delimiter char like %)
-     *
-     * @return callable|null A PHP callable
-     */
+    
     public static function getPlaceholderFormatterDefinition($name)
     {
         if (!self::$formatters) {
@@ -1608,14 +982,7 @@ class ProgressBar
         return isset(self::$formatters[$name]) ? self::$formatters[$name] : null;
     }
 
-    /**
-     * Sets a format for a given name.
-     *
-     * This method also allow you to override an existing format.
-     *
-     * @param string $name   The format name
-     * @param string $format A format string
-     */
+    
     public static function setFormatDefinition($name, $format)
     {
         if (!self::$formats) {
@@ -1625,13 +992,7 @@ class ProgressBar
         self::$formats[$name] = $format;
     }
 
-    /**
-     * Gets the format for a given name.
-     *
-     * @param string $name The format name
-     *
-     * @return string|null A format string
-     */
+    
     public static function getFormatDefinition($name)
     {
         if (!self::$formats) {
@@ -1651,33 +1012,19 @@ class ProgressBar
         return $this->messages[$name];
     }
 
-    /**
-     * Gets the progress bar start time.
-     *
-     * @return int The progress bar start time
-     */
+    
     public function getStartTime()
     {
         return $this->startTime;
     }
 
-    /**
-     * Gets the progress bar maximal steps.
-     *
-     * @return int The progress bar max steps
-     */
+    
     public function getMaxSteps()
     {
         return $this->max;
     }
 
-    /**
-     * Gets the progress bar step.
-     *
-     * @deprecated since version 2.6, to be removed in 3.0. Use {@link getProgress()} instead.
-     *
-     * @return int The progress bar step
-     */
+    
     public function getStep()
     {
         @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0. Use the getProgress() method instead.', E_USER_DEPRECATED);
@@ -1685,73 +1032,43 @@ class ProgressBar
         return $this->getProgress();
     }
 
-    /**
-     * Gets the current step position.
-     *
-     * @return int The progress bar step
-     */
+    
     public function getProgress()
     {
         return $this->step;
     }
 
-    /**
-     * Gets the progress bar step width.
-     *
-     * @internal This method is public for PHP 5.3 compatibility, it should not be used.
-     *
-     * @return int The progress bar step width
-     */
+    
     public function getStepWidth()
     {
         return $this->stepWidth;
     }
 
-    /**
-     * Gets the current progress bar percent.
-     *
-     * @return float The current progress bar percent
-     */
+    
     public function getProgressPercent()
     {
         return $this->percent;
     }
 
-    /**
-     * Sets the progress bar width.
-     *
-     * @param int $size The progress bar size
-     */
+    
     public function setBarWidth($size)
     {
         $this->barWidth = (int) $size;
     }
 
-    /**
-     * Gets the progress bar width.
-     *
-     * @return int The progress bar size
-     */
+    
     public function getBarWidth()
     {
         return $this->barWidth;
     }
 
-    /**
-     * Sets the bar character.
-     *
-     * @param string $char A character
-     */
+    
     public function setBarCharacter($char)
     {
         $this->barChar = $char;
     }
 
-    /**
-     * Gets the bar character.
-     *
-     * @return string A character
-     */
+    
     public function getBarCharacter()
     {
         if (null === $this->barChar) {
@@ -1761,55 +1078,34 @@ class ProgressBar
         return $this->barChar;
     }
 
-    /**
-     * Sets the empty bar character.
-     *
-     * @param string $char A character
-     */
+    
     public function setEmptyBarCharacter($char)
     {
         $this->emptyBarChar = $char;
     }
 
-    /**
-     * Gets the empty bar character.
-     *
-     * @return string A character
-     */
+    
     public function getEmptyBarCharacter()
     {
         return $this->emptyBarChar;
     }
 
-    /**
-     * Sets the progress bar character.
-     *
-     * @param string $char A character
-     */
+    
     public function setProgressCharacter($char)
     {
         $this->progressChar = $char;
     }
 
-    /**
-     * Gets the progress bar character.
-     *
-     * @return string A character
-     */
+    
     public function getProgressCharacter()
     {
         return $this->progressChar;
     }
 
-    /**
-     * Sets the progress bar format.
-     *
-     * @param string $format The format
-     */
+    
     public function setFormat($format)
     {
-        // try to use the _nomax variant if available
-        if (!$this->max && null !== self::getFormatDefinition($format.'_nomax')) {
+                if (!$this->max && null !== self::getFormatDefinition($format.'_nomax')) {
             $this->format = self::getFormatDefinition($format.'_nomax');
         } elseif (null !== self::getFormatDefinition($format)) {
             $this->format = self::getFormatDefinition($format);
@@ -1820,21 +1116,13 @@ class ProgressBar
         $this->formatLineCount = substr_count($this->format, "\n");
     }
 
-    /**
-     * Sets the redraw frequency.
-     *
-     * @param int $freq The frequency in steps
-     */
+    
     public function setRedrawFrequency($freq)
     {
         $this->redrawFreq = (int) $freq;
     }
 
-    /**
-     * Starts the progress output.
-     *
-     * @param int|null $max Number of steps to complete the bar (0 if indeterminate), null to leave unchanged
-     */
+    
     public function start($max = null)
     {
         $this->startTime = time();
@@ -1848,27 +1136,13 @@ class ProgressBar
         $this->display();
     }
 
-    /**
-     * Advances the progress output X steps.
-     *
-     * @param int $step Number of steps to advance
-     *
-     * @throws \LogicException
-     */
+    
     public function advance($step = 1)
     {
         $this->setProgress($this->step + $step);
     }
 
-    /**
-     * Sets the current progress.
-     *
-     * @deprecated since version 2.6, to be removed in 3.0. Use {@link setProgress()} instead.
-     *
-     * @param int $step The current progress
-     *
-     * @throws \LogicException
-     */
+    
     public function setCurrent($step)
     {
         @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0. Use the setProgress() method instead.', E_USER_DEPRECATED);
@@ -1876,23 +1150,13 @@ class ProgressBar
         $this->setProgress($step);
     }
 
-    /**
-     * Sets whether to overwrite the progressbar, false for new line.
-     *
-     * @param bool $overwrite
-     */
+    
     public function setOverwrite($overwrite)
     {
         $this->overwrite = (bool) $overwrite;
     }
 
-    /**
-     * Sets the current progress.
-     *
-     * @param int $step The current progress
-     *
-     * @throws \LogicException
-     */
+    
     public function setProgress($step)
     {
         $step = (int) $step;
@@ -1913,9 +1177,7 @@ class ProgressBar
         }
     }
 
-    /**
-     * Finishes the progress output.
-     */
+    
     public function finish()
     {
         if (!$this->max) {
@@ -1923,24 +1185,20 @@ class ProgressBar
         }
 
         if ($this->step === $this->max && !$this->overwrite) {
-            // prevent double 100% output
-            return;
+                        return;
         }
 
         $this->setProgress($this->max);
     }
 
-    /**
-     * Outputs the current progress string.
-     */
+    
     public function display()
     {
         if (OutputInterface::VERBOSITY_QUIET === $this->output->getVerbosity()) {
             return;
         }
 
-        // these 3 variables can be removed in favor of using $this in the closure when support for PHP 5.3 will be dropped.
-        $self = $this;
+                $self = $this;
         $output = $this->output;
         $messages = $this->messages;
         $this->overwrite(preg_replace_callback("{%([a-z\-_]+)(?:\:([^%]+))?%}i", function ($matches) use ($self, $output, $messages) {
@@ -1960,13 +1218,7 @@ class ProgressBar
         }, $this->format));
     }
 
-    /**
-     * Removes the progress bar from the current line.
-     *
-     * This is useful if you wish to write some output
-     * while a progress bar is running.
-     * Call display() to show the progress bar again.
-     */
+    
     public function clear()
     {
         if (!$this->overwrite) {
@@ -1976,28 +1228,19 @@ class ProgressBar
         $this->overwrite(str_repeat("\n", $this->formatLineCount));
     }
 
-    /**
-     * Sets the progress bar maximal steps.
-     *
-     * @param int     The progress bar max steps
-     */
+    
     private function setMaxSteps($max)
     {
         $this->max = max(0, (int) $max);
         $this->stepWidth = $this->max ? Helper::strlen($this->max) : 4;
     }
 
-    /**
-     * Overwrites a previous message to the output.
-     *
-     * @param string $message The message
-     */
+    
     private function overwrite($message)
     {
         $lines = explode("\n", $message);
 
-        // append whitespace to match the line's length
-        if (null !== $this->lastMessagesLength) {
+                if (null !== $this->lastMessagesLength) {
             foreach ($lines as $i => $line) {
                 if ($this->lastMessagesLength > Helper::strlenWithoutDecoration($this->output->getFormatter(), $line)) {
                     $lines[$i] = str_pad($line, $this->lastMessagesLength, "\x20", STR_PAD_RIGHT);
@@ -2006,11 +1249,9 @@ class ProgressBar
         }
 
         if ($this->overwrite) {
-            // move back to the beginning of the progress bar before redrawing it
-            $this->output->write("\x0D");
+                        $this->output->write("\x0D");
         } elseif ($this->step > 0) {
-            // move to new line
-            $this->output->writeln('');
+                        $this->output->writeln('');
         }
 
         if ($this->formatLineCount) {
@@ -2030,8 +1271,7 @@ class ProgressBar
     private function determineBestFormat()
     {
         switch ($this->output->getVerbosity()) {
-            // OutputInterface::VERBOSITY_QUIET: display is disabled anyway
-            case OutputInterface::VERBOSITY_VERBOSE:
+                        case OutputInterface::VERBOSITY_VERBOSE:
                 return $this->max ? 'verbose' : 'verbose_nomax';
             case OutputInterface::VERBOSITY_VERY_VERBOSE:
                 return $this->max ? 'very_verbose' : 'very_verbose_nomax';
@@ -2124,28 +1364,7 @@ class ProgressBar
 namespace {
 	$concurrent = function_exists('pcntl_fork');
 	if ($concurrent) {
-		// The MIT License (MIT)
-//
-// Copyright (c) 2014 Carlos Cirello
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
+		
 define('PHP_INT_LENGTH', strlen(sprintf('%u', PHP_INT_MAX)));
 function cofunc(callable $fn) {
 	$pid = pcntl_fork();
@@ -2305,23 +1524,7 @@ function make_channel() {
 	return new CSP_Channel();
 }
 
-/*
-$chn = &$chn;
-$var = &$var;
-$var2 = &$var2;
 
-select_channel([
-[$chn, $var, function () {
-echo "Message Sent";
-}],
-[$var, $chn, function ($msg) {
-echo "Message Received";
-}],
-['default', function () {
-echo "Default";
-}, $var2],
-]);
- */
 function select_channel(array $actions) {
 	while (true) {
 		foreach ($actions as $action) {
@@ -2358,7 +1561,8 @@ function select_channel(array $actions) {
 }
 
 	}
-	interface Cacher {
+	
+interface Cacher {
 	const DEFAULT_CACHE_FILENAME = '.php.tools.cache';
 
 	public function create_db();
@@ -2371,9 +1575,8 @@ function select_channel(array $actions) {
 	$enableCache = false;
 	if (class_exists('SQLite3')) {
 		$enableCache = true;
-		/**
- * @codeCoverageIgnore
- */
+		
+
 final class Cache implements Cacher {
 	private $db;
 
@@ -2447,9 +1650,8 @@ final class Cache implements Cacher {
 }
 
 	} else {
-		/**
- * @codeCoverageIgnore
- */
+		
+
 final class Cache implements Cacher {
 	public function create_db() {}
 	public function is_changed($target, $filename) {
@@ -2461,7 +1663,8 @@ final class Cache implements Cacher {
 
 	}
 
-	define("VERSION", "17.3.0");
+	
+define("VERSION", "17.3.0");
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2523,8 +1726,7 @@ function selfupdate($argv, $inPhar) {
 
 	$context = stream_context_create($opts);
 
-	// current release
-	$releases = json_decode(file_get_contents('https://api.github.com/repos/phpfmt/php.tools/tags', false, $context), true);
+		$releases = json_decode(file_get_contents('https://api.github.com/repos/phpfmt/php.tools/tags', false, $context), true);
 	$commit = json_decode(file_get_contents($releases[0]['commit']['url'], false, $context), true);
 	$files = json_decode(file_get_contents($commit['commit']['tree']['url'], false, $context), true);
 	foreach ($files['tree'] as $file) {
@@ -2554,18 +1756,7 @@ function selfupdate($argv, $inPhar) {
 }
 
 
-	//Copyright (c) 2014, Carlos C
-//All rights reserved.
-//
-//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-//
-//1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-//
-//2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//
-//3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-//
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	
 define('ST_AT', '@');
 define('ST_BRACKET_CLOSE', ']');
 define('ST_BRACKET_OPEN', '[');
@@ -2615,16 +1806,12 @@ define('ST_PARENTHESES_BLOCK', 'ST_PARENTHESES_BLOCK');
 define('ST_BRACKET_BLOCK', 'ST_BRACKET_BLOCK');
 define('ST_CURLY_BLOCK', 'ST_CURLY_BLOCK');
 	
-//FormatterPass holds all data structures necessary to traverse a stream of
-//tokens, following the concept of bottom-up it works as a platform on which
-//other passes can be built on.
 abstract class FormatterPass {
 	protected $cache = [];
 
 	protected $code = '';
 
-	// stream of tokens
-	protected $ignoreFutileTokens = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
+		protected $ignoreFutileTokens = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
 
 	protected $indent = 0;
 
@@ -2632,8 +1819,7 @@ abstract class FormatterPass {
 
 	protected $newLine = "\n";
 
-	// holds the final outputed code
-	protected $ptr = 0;
+		protected $ptr = 0;
 
 	protected $tkns = [];
 
@@ -3557,15 +2743,15 @@ abstract class FormatterPass {
 	}
 }
 
-	abstract class AdditionalPass extends FormatterPass {
+	
+abstract class AdditionalPass extends FormatterPass {
 	abstract public function getDescription();
 
 	abstract public function getExample();
 }
 
-	/**
- * @codeCoverageIgnore
- */
+	
+
 abstract class BaseCodeFormatter {
 	protected $passes = [
 		'StripSpaces' => false,
@@ -3801,7 +2987,8 @@ abstract class BaseCodeFormatter {
 }
 
 
-	class SandboxedPass extends FormatterPass {
+	
+class SandboxedPass extends FormatterPass {
 	public function candidate($source, $foundTokens) {
 		return static::candidate($source, $foundTokens);
 	}
@@ -4074,9 +3261,8 @@ abstract class BaseCodeFormatter {
 		return parent::walkUntil($tknid);
 	}
 }
-	/**
- * @codeCoverageIgnore
- */
+	
+
 final class CodeFormatter extends BaseCodeFormatter {
 	public function __construct($passName) {
 		if (get_parent_class($passName) != 'SandboxedPass') {
@@ -4095,7 +3281,8 @@ final class CodeFormatter extends BaseCodeFormatter {
 		$inPhar = false;
 	}
 	if (!isset($testEnv)) {
-		function showHelp($argv, $enableCache, $inPhar) {
+		
+function showHelp($argv, $enableCache, $inPhar) {
 	echo 'Usage: ' . $argv[0] . ' [-h] --pass=Pass ', PHP_EOL;
 
 	$options = [];
