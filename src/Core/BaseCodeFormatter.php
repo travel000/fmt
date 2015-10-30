@@ -31,6 +31,8 @@ abstract class BaseCodeFormatter {
 		'StripNewlineAfterClassOpen' => false,
 		'StripNewlineAfterCurlyOpen' => false,
 
+		'SortUseNameSpace' => false,
+
 		'TightConcat' => false,
 
 		'PSR2IndentWithSpace' => false,

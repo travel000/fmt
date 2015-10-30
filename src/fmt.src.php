@@ -140,6 +140,7 @@ namespace {
 	require 'Additionals/ReturnNull.php';
 	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
+	require 'Additionals/SortUseNameSpace.php';
 	require 'Additionals/SpaceAroundControlStructures.php';
 	require 'Additionals/SpaceBetweenMethods.php';
 	require 'Additionals/StrictBehavior.php';
