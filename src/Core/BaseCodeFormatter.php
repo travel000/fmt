@@ -36,7 +36,6 @@ abstract class BaseCodeFormatter {
 		'PSR2IndentWithSpace' => false,
 
 		'AllmanStyleBraces' => false,
-		'LaravelAllmanStyleBraces' => false,
 		'NamespaceMergeWithOpenTag' => false,
 		'MergeNamespaceWithOpenTag' => false,
 
