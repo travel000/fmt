@@ -1,5 +1,12 @@
 #!/usr/bin/env php
 <?php
+if (!ini_get('short_open_tag')) {
+	unset($argv[0]);
+	$ret = 0;
+	passthru($_SERVER['_'] . ' -dshort_open_tag=1 test.php ' . implode(' ', $argv) . ' 2>&1', $ret);
+	exit($ret);
+}
+
 # Copyright (c) 2014, Carlos C
 # All rights reserved.
 #
