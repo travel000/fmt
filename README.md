@@ -34,7 +34,6 @@ Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [op
   --help-pass                       show specific information for one pass
   --ignore=PATTERN-1,PATTERN-N,...  ignore file names whose names contain any PATTERN-N
   --indent_with_space=SIZE          use spaces instead of tabs for indentation. Default 4
-  --laravel                         Apply Laravel coding style (deprecated)
   --lint-before                     lint files before pretty printing (PHP must be declared in %PATH%/$PATH)
   --list                            list possible transformations
   --list-simple                     list possible transformations - greppable
