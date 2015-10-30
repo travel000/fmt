@@ -22,3 +22,9 @@ while ($x) {
 }
 
 $someothercode;
+
+$someothercode;
+//comment that explain the if
+while ($x) {
+	//body
+}

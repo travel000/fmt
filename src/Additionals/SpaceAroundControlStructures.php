@@ -20,7 +20,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	}
 
 	/**
-	 * @param $source
+	 * @param  $source
 	 * @return mixed
 	 */
 	public function format($source) {
@@ -45,6 +45,25 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 			case T_CONSTANT_ENCAPSED_STRING:
 				$this->appendCode($text);
 				break;
+
+			case T_COMMENT:
+				if (
+					!$this->leftUsefulTokenIs([T_OPEN_TAG]) &&
+					$this->rightUsefulTokenIs([
+						T_IF,
+						T_DO,
+						T_FOR,
+						T_FOREACH,
+						T_SWITCH,
+						T_WHILE,
+					]) &&
+					!$this->rightTokenIs([T_COMMENT, T_DOC_COMMENT])
+				) {
+					$this->appendCode($this->newLine);
+				}
+				$this->appendCode($text);
+				break;
+
 			case T_IF:
 			case T_DO:
 			case T_FOR:
