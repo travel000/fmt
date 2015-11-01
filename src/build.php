@@ -28,15 +28,14 @@ require 'version.php';
 error_reporting(E_ALL);
 $opt = getopt('Mmp');
 $newver = '';
+$verPattern = '<?php define(\'VERSION\', \'%d.%d.%d\');';
+$tmp = explode('.', VERSION);
 if (isset($opt['M'])) {
-	$tmp = explode('.', VERSION);
-	$newver = '<?php define("VERSION", "' . ($tmp[0] + 1) . '.0.0");';
+	$newver = sprintf($verPattern, $tmp[0] + 1, 0, 0);
 } elseif (isset($opt['m'])) {
-	$tmp = explode('.', VERSION);
-	$newver = '<?php define("VERSION", "' . ($tmp[0]) . '.' . ($tmp[1] + 1) . '.0");';
+	$newver = sprintf($verPattern, $tmp[0], $tmp[1] + 1, 0);
 } elseif (isset($opt['p'])) {
-	$tmp = explode('.', VERSION);
-	$newver = '<?php define("VERSION", "' . ($tmp[0]) . '.' . ($tmp[1]) . '.' . ($tmp[2] + 1) . '");';
+	$newver = sprintf($verPattern, $tmp[0], $tmp[1], $tmp[2] + 1);
 }
 if (!empty($newver)) {
 	echo 'Bumping version to: ', $newver, PHP_EOL;
