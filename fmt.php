@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.3.1');
+	define('VERSION', '17.4.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -7896,10 +7896,18 @@ class ClassToSelf extends AdditionalPass {
 		$this->code = '';
 		$tknsLen = sizeof($this->tkns);
 
+		$touchedDoubleColon = false;
 		for ($ptr = 0; $ptr < $tknsLen; ++$ptr) {
 			$token = $this->tkns[$ptr];
 			list($id) = $this->getToken($token);
 
+			if (T_DOUBLE_COLON == $id) {
+				$touchedDoubleColon = true;
+			}
+			if ($touchedDoubleColon && T_CLASS == $id) {
+				$touchedDoubleColon = false;
+				break;
+			}
 			if (
 				T_CLASS == $id ||
 				T_INTERFACE == $id ||

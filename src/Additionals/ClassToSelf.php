@@ -32,10 +32,18 @@ class ClassToSelf extends AdditionalPass {
 		$this->code = '';
 		$tknsLen = sizeof($this->tkns);
 
+		$touchedDoubleColon = false;
 		for ($ptr = 0; $ptr < $tknsLen; ++$ptr) {
 			$token = $this->tkns[$ptr];
 			list($id) = $this->getToken($token);
 
+			if (T_DOUBLE_COLON == $id) {
+				$touchedDoubleColon = true;
+			}
+			if ($touchedDoubleColon && T_CLASS == $id) {
+				$touchedDoubleColon = false;
+				break;
+			}
 			if (
 				T_CLASS == $id ||
 				T_INTERFACE == $id ||
