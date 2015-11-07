@@ -29,3 +29,7 @@ $someothercode;
 while ($x) {
 	//body
 }
+
+?>
+
+<?php //comment should stay

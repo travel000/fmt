@@ -11099,6 +11099,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	public function format($source) {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
+		$isComment = false;
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -11118,8 +11119,8 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 			case T_CONSTANT_ENCAPSED_STRING:
 				$this->appendCode($text);
 				break;
-
 			case T_COMMENT:
+				$isComment = false;
 				if (
 					!$this->leftUsefulTokenIs([T_OPEN_TAG]) &&
 					$this->rightUsefulTokenIs([
@@ -11133,6 +11134,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 					!$this->rightTokenIs([T_COMMENT, T_DOC_COMMENT])
 				) {
 					$this->appendCode($this->newLine);
+					$isComment = true;
 				}
 				$this->appendCode($text);
 				break;
@@ -11142,14 +11144,14 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 			case T_FOR:
 			case T_FOREACH:
 			case T_SWITCH:
-				if (!$this->leftTokenIs([T_COMMENT])) {
+				if (!$isComment) {
 					$this->appendCode($this->newLine);
 				}
 				$this->appendCode($text);
 				break;
 
 			case T_WHILE:
-				if (!$this->leftTokenIs([T_COMMENT])) {
+				if (!$isComment) {
 					$this->appendCode($this->newLine);
 				}
 				$this->appendCode($text);
