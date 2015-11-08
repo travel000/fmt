@@ -11123,15 +11123,16 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 				$isComment = false;
 				if (
 					!$this->leftUsefulTokenIs([T_OPEN_TAG]) &&
-					$this->rightUsefulTokenIs([
+					$this->rightTokenIs([
 						T_IF,
 						T_DO,
 						T_FOR,
 						T_FOREACH,
 						T_SWITCH,
 						T_WHILE,
-					]) &&
-					!$this->rightTokenIs([T_COMMENT, T_DOC_COMMENT])
+						T_COMMENT,
+						T_DOC_COMMENT,
+					])
 				) {
 					$this->appendCode($this->newLine);
 					$isComment = true;
