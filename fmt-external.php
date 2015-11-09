@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.5.0');
+	define('VERSION', '17.6.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2781,6 +2781,7 @@ abstract class BaseCodeFormatter {
 		'StripNewlineAfterCurlyOpen' => false,
 
 		'SortUseNamespace' => false,
+		'SpaceAroundExclamationMark' => false,
 
 		'TightConcat' => false,
 

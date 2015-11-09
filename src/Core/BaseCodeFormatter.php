@@ -45,6 +45,7 @@ abstract class BaseCodeFormatter {
 		'StripNewlineAfterCurlyOpen' => false,
 
 		'SortUseNamespace' => false,
+		'SpaceAroundExclamationMark' => false,
 
 		'TightConcat' => false,
 

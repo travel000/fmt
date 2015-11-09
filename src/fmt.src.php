@@ -141,6 +141,7 @@ namespace {
 	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
 	require 'Additionals/SortUseNameSpace.php';
+	require 'Additionals/SpaceAroundExclamationMark.php';
 	require 'Additionals/SpaceAroundControlStructures.php';
 	require 'Additionals/SpaceBetweenMethods.php';
 	require 'Additionals/StrictBehavior.php';
