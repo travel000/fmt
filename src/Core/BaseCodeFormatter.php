@@ -134,6 +134,7 @@ abstract class BaseCodeFormatter {
 		'OrganizeClass' => false,
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
+		'PHPDocTypesToFunctionTypehint' => false,
 	];
 
 	private $hasAfterExecutedPass = false;

@@ -128,6 +128,7 @@ namespace {
 	require 'Additionals/OrderMethodAndVisibility.php';
 	require 'Additionals/OrderAndRemoveUseClauses.php';
 	require 'Additionals/OnlyOrderUseClauses.php';
+	require 'Additionals/PHPDocTypesToFunctionTypehint.php';
 	require 'Additionals/PrettyPrintDocBlocks.php';
 	require 'Additionals/PSR2EmptyFunction.php';
 	require 'Additionals/PSR2MultilineFunctionParams.php';
