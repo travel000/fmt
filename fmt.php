@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.7.0');
+	define('VERSION', '17.8.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -12774,10 +12774,12 @@ if (isset($opts['h']) || isset($opts['help'])) {
 
 if (isset($opts['help-pass'])) {
 	$optPass = $opts['help-pass'];
-	if (class_exists($optPass)) {
+	if (class_exists($optPass) && method_exists($optPass, 'getDescription')) {
 		$pass = new $optPass();
 		echo $argv[0], ': "', $optPass, '" - ', $pass->getDescription(), PHP_EOL, PHP_EOL;
 		echo 'Example:', PHP_EOL, $pass->getExample(), PHP_EOL;
+	} else {
+		echo $argv[0], ': Core pass.';
 	}
 	die();
 }
