@@ -38,7 +38,6 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 				$this->appendCode($text);
 				$this->printUntil(T_END_HEREDOC);
 				break;
-			case T_COMMENT:
 			case T_DOC_COMMENT:
 				list($prevId, $prevText) = $this->inspectToken(-1);
 
@@ -58,6 +57,16 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 
 				$this->appendCode(ltrim($newText));
 				break;
+
+			case T_COMMENT:
+				list($prevId, $prevText) = $this->inspectToken(-1);
+
+				if (T_WHITESPACE === $prevId && ("\n" === $prevText || "\n\n" == substr($prevText, -2, 2))) {
+					$this->appendCode(LeftAlignComment::NON_INDENTABLE_COMMENT);
+				}
+				$this->appendCode($text);
+				break;
+
 			case T_CONSTANT_ENCAPSED_STRING:
 				$this->appendCode($text);
 				break;
