@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.8.0');
+	define('VERSION', '17.9.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -3745,7 +3745,6 @@ final class LeftAlignComment extends FormatterPass {
 				continue;
 			}
 			switch ($id) {
-			case T_COMMENT:
 			case T_DOC_COMMENT:
 				if ($touchedNonIndentableComment) {
 					$touchedNonIndentableComment = false;
@@ -3759,6 +3758,13 @@ final class LeftAlignComment extends FormatterPass {
 					}, $lines);
 					$this->appendCode(implode($this->newLine, $lines));
 					break;
+				}
+				$this->appendCode($text);
+				break;
+
+			case T_COMMENT:
+				if ($touchedNonIndentableComment) {
+					$touchedNonIndentableComment = false;
 				}
 				$this->appendCode($text);
 				break;
@@ -4003,7 +4009,6 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 				$this->appendCode($text);
 				$this->printUntil(T_END_HEREDOC);
 				break;
-			case T_COMMENT:
 			case T_DOC_COMMENT:
 				list($prevId, $prevText) = $this->inspectToken(-1);
 
@@ -4023,6 +4028,16 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 
 				$this->appendCode(ltrim($newText));
 				break;
+
+			case T_COMMENT:
+				list($prevId, $prevText) = $this->inspectToken(-1);
+
+				if (T_WHITESPACE === $prevId && ("\n" === $prevText || "\n\n" == substr($prevText, -2, 2))) {
+					$this->appendCode(LeftAlignComment::NON_INDENTABLE_COMMENT);
+				}
+				$this->appendCode($text);
+				break;
+
 			case T_CONSTANT_ENCAPSED_STRING:
 				$this->appendCode($text);
 				break;
