@@ -39,7 +39,6 @@ final class LeftAlignComment extends FormatterPass {
 				continue;
 			}
 			switch ($id) {
-			case T_COMMENT:
 			case T_DOC_COMMENT:
 				if ($touchedNonIndentableComment) {
 					$touchedNonIndentableComment = false;
@@ -53,6 +52,13 @@ final class LeftAlignComment extends FormatterPass {
 					}, $lines);
 					$this->appendCode(implode($this->newLine, $lines));
 					break;
+				}
+				$this->appendCode($text);
+				break;
+
+			case T_COMMENT:
+				if ($touchedNonIndentableComment) {
+					$touchedNonIndentableComment = false;
 				}
 				$this->appendCode($text);
 				break;
