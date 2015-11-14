@@ -138,6 +138,7 @@ namespace {
 	require 'Additionals/RemoveUseLeadingSlash.php';
 	require 'Additionals/ReplaceBooleanAndOr.php';
 	require 'Additionals/ReplaceIsNull.php';
+	require 'Additionals/RestoreComments.php';
 	require 'Additionals/ReturnNull.php';
 	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';

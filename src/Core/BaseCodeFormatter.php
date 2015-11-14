@@ -27,6 +27,7 @@ abstract class BaseCodeFormatter {
 
 		'AlignPHPCode' => false,
 		'ConvertOpenTagWithEcho' => false,
+		'RestoreComments' => false,
 		'UpgradeToPreg' => false,
 		'DocBlockToComment' => false,
 		'LongArray' => false,
@@ -215,11 +216,14 @@ abstract class BaseCodeFormatter {
 			},
 			array_filter($this->passes)
 		);
-		$foundTokens = $this->getFoundTokens($source);
+		list($foundTokens, $commentStack) = $this->getFoundTokens($source);
 		$this->hasBeforeFormat && $this->beforeFormat($source);
 		while (($pass = array_pop($passes))) {
 			$this->hasBeforePass && $this->beforePass($source, $pass);
 			if ($pass->candidate($source, $foundTokens)) {
+				if (isset($pass->commentStack)) {
+					$pass->commentStack = $commentStack;
+				}
 				$source = $pass->format($source);
 				$this->hasAfterExecutedPass && $this->afterExecutedPass($source, $pass);
 			}
@@ -242,11 +246,15 @@ abstract class BaseCodeFormatter {
 
 	private function getFoundTokens($source) {
 		$foundTokens = [];
+		$commentStack = [];
 		$tkns = token_get_all($source);
 		foreach ($tkns as $token) {
 			list($id, $text) = $this->getToken($token);
 			$foundTokens[$id] = $id;
+			if (T_COMMENT === $id) {
+				$commentStack[] = [$id, $text];
+			}
 		}
-		return $foundTokens;
+		return [$foundTokens, $commentStack];
 	}
 }

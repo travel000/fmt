@@ -30,8 +30,8 @@ function dataState() {
 
 	} elseif ($tch === $this->EOF) {
 /*
-		Multiline comment
-		Comment 8 */
+Multiline comment
+Comment 8 */
 		funcE();
 
 	}

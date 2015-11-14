@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.9.0');
+	define('VERSION', '17.8.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2763,6 +2763,7 @@ abstract class BaseCodeFormatter {
 
 		'AlignPHPCode' => false,
 		'ConvertOpenTagWithEcho' => false,
+		'RestoreComments' => false,
 		'UpgradeToPreg' => false,
 		'DocBlockToComment' => false,
 		'LongArray' => false,
@@ -2951,11 +2952,14 @@ abstract class BaseCodeFormatter {
 			},
 			array_filter($this->passes)
 		);
-		$foundTokens = $this->getFoundTokens($source);
+		list($foundTokens, $commentStack) = $this->getFoundTokens($source);
 		$this->hasBeforeFormat && $this->beforeFormat($source);
 		while (($pass = array_pop($passes))) {
 			$this->hasBeforePass && $this->beforePass($source, $pass);
 			if ($pass->candidate($source, $foundTokens)) {
+				if (isset($pass->commentStack)) {
+					$pass->commentStack = $commentStack;
+				}
 				$source = $pass->format($source);
 				$this->hasAfterExecutedPass && $this->afterExecutedPass($source, $pass);
 			}
@@ -2978,12 +2982,16 @@ abstract class BaseCodeFormatter {
 
 	private function getFoundTokens($source) {
 		$foundTokens = [];
+		$commentStack = [];
 		$tkns = token_get_all($source);
 		foreach ($tkns as $token) {
 			list($id, $text) = $this->getToken($token);
 			$foundTokens[$id] = $id;
+			if (T_COMMENT === $id) {
+				$commentStack[] = [$id, $text];
+			}
 		}
-		return $foundTokens;
+		return [$foundTokens, $commentStack];
 	}
 }
 
@@ -3745,6 +3753,7 @@ final class LeftAlignComment extends FormatterPass {
 				continue;
 			}
 			switch ($id) {
+			case T_COMMENT:
 			case T_DOC_COMMENT:
 				if ($touchedNonIndentableComment) {
 					$touchedNonIndentableComment = false;
@@ -3758,13 +3767,6 @@ final class LeftAlignComment extends FormatterPass {
 					}, $lines);
 					$this->appendCode(implode($this->newLine, $lines));
 					break;
-				}
-				$this->appendCode($text);
-				break;
-
-			case T_COMMENT:
-				if ($touchedNonIndentableComment) {
-					$touchedNonIndentableComment = false;
 				}
 				$this->appendCode($text);
 				break;
@@ -4009,6 +4011,8 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 				$this->appendCode($text);
 				$this->printUntil(T_END_HEREDOC);
 				break;
+
+			case T_COMMENT:
 			case T_DOC_COMMENT:
 				list($prevId, $prevText) = $this->inspectToken(-1);
 
@@ -4027,15 +4031,6 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 				}
 
 				$this->appendCode(ltrim($newText));
-				break;
-
-			case T_COMMENT:
-				list($prevId, $prevText) = $this->inspectToken(-1);
-
-				if (T_WHITESPACE === $prevId && ("\n" === $prevText || "\n\n" == substr($prevText, -2, 2))) {
-					$this->appendCode(LeftAlignComment::NON_INDENTABLE_COMMENT);
-				}
-				$this->appendCode($text);
 				break;
 
 			case T_CONSTANT_ENCAPSED_STRING:
@@ -10926,6 +10921,42 @@ EOT;
 	}
 }
 
+	final class RestoreComments extends AdditionalPass {
+	public $commentStack = [];
+
+	
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[T_COMMENT])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$commentStack = array_reverse($this->commentStack);
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			$this->tkns[$this->ptr] = [$id, $text];
+			if (T_COMMENT == $id) {
+				$comment = array_pop($commentStack);
+				$this->tkns[$this->ptr] = $comment;
+			}
+		}
+		return $this->renderLight($this->tkns);
+	}
+
+	public function getDescription() {
+		return 'Revert any formatting of comments content.';
+	}
+
+	public function getExample() {
+		return '';
+	}
+}
 	
 final class ReturnNull extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
