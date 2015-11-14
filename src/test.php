@@ -143,25 +143,25 @@ foreach ($cases as $caseIn) {
 				$pass = trim($pass);
 				if (false !== strpos($pass, '|')) {
 					$pass = explode('|', $pass);
-					$fmt->enablePass($pass[0], $pass[1]);
+					$fmt->forcePass($pass[0], $pass[1]);
 				} else {
 					if ('default' != strtolower($pass)) {
-						$fmt->enablePass($pass);
+						$fmt->forcePass($pass);
 					} else {
-						$fmt->enablePass('AlignEquals');
-						$fmt->enablePass('AlignDoubleArrow');
-						$fmt->enablePass('ReindentAndAlignObjOps');
-						$fmt->enablePass('ReindentSwitchBlocks');
+						$fmt->forcePass('AlignEquals');
+						$fmt->forcePass('AlignDoubleArrow');
+						$fmt->forcePass('ReindentAndAlignObjOps');
+						$fmt->forcePass('ReindentSwitchBlocks');
 					}
 				}
 			}
 		}
 	}
 	if (!$specialPasses) {
-		$fmt->enablePass('AlignEquals');
-		$fmt->enablePass('AlignDoubleArrow');
-		$fmt->enablePass('ReindentAndAlignObjOps');
-		$fmt->enablePass('ReindentSwitchBlocks');
+		$fmt->forcePass('AlignEquals');
+		$fmt->forcePass('AlignDoubleArrow');
+		$fmt->forcePass('ReindentAndAlignObjOps');
+		$fmt->forcePass('ReindentSwitchBlocks');
 	}
 
 	$got = $fmt->formatCode($content);
@@ -212,22 +212,22 @@ if (!$bailOut) {
 				foreach ($passes as $pass) {
 					$pass = trim($pass);
 					if ('default' == strtolower($pass)) {
-						$fmt->enablePass('AlignEquals');
-						$fmt->enablePass('AlignDoubleArrow');
-						$fmt->enablePass('ReindentAndAlignObjOps');
-						$fmt->enablePass('ReindentSwitchBlocks');
+						$fmt->forcePass('AlignEquals');
+						$fmt->forcePass('AlignDoubleArrow');
+						$fmt->forcePass('ReindentAndAlignObjOps');
+						$fmt->forcePass('ReindentSwitchBlocks');
 						PsrDecorator::decorate($fmt);
 					} else {
-						$fmt->enablePass($pass);
+						$fmt->forcePass($pass);
 					}
 				}
 			}
 		}
 		if (!$specialPasses) {
-			$fmt->enablePass('AlignEquals');
-			$fmt->enablePass('AlignDoubleArrow');
-			$fmt->enablePass('ReindentAndAlignObjOps');
-			$fmt->enablePass('ReindentSwitchBlocks');
+			$fmt->forcePass('AlignEquals');
+			$fmt->forcePass('AlignDoubleArrow');
+			$fmt->forcePass('ReindentAndAlignObjOps');
+			$fmt->forcePass('ReindentSwitchBlocks');
 			PsrDecorator::decorate($fmt);
 		}
 

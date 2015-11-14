@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '17.8.0');
+	define('VERSION', '18.0.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2810,6 +2810,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'ReindentComments' => false,
 		'ReindentEqual' => false,
 		'Reindent' => false,
 		'ReindentAndAlignObjOps' => false,
@@ -2883,14 +2884,19 @@ abstract class BaseCodeFormatter {
 	private $hasBeforePass = false;
 
 	private $shortcircuit = [
-		'ReindentAndAlignObjOps' => 'ReindentObjOps',
-		'ReindentObjOps' => 'ReindentAndAlignObjOps',
-		'AllmanStyleBraces' => 'PSR2CurlyOpenNextLine',
-		'AlignGroupDoubleArrow' => 'AlignDoubleArrow',
-		'AlignDoubleArrow' => 'AlignGroupDoubleArrow',
-		'OnlyOrderUseClauses' => 'OrderAndRemoveUseClauses',
-		'OrderAndRemoveUseClauses' => 'OnlyOrderUseClauses',
+		'ReindentAndAlignObjOps' => ['ReindentObjOps'],
+		'ReindentObjOps' => ['ReindentAndAlignObjOps'],
+		'AllmanStyleBraces' => ['PSR2CurlyOpenNextLine'],
+		'AlignGroupDoubleArrow' => ['AlignDoubleArrow'],
+		'AlignDoubleArrow' => ['AlignGroupDoubleArrow'],
+		'OnlyOrderUseClauses' => ['OrderAndRemoveUseClauses'],
+		'OrderAndRemoveUseClauses' => ['OnlyOrderUseClauses'],
+		'ReindentComments' => ['OrganizeClass', 'RestoreComments'],
+		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
+		'OrganizeClass' => ['ReindentComments', 'RestoreComments'],
 	];
+
+	private $shortcircuits = [];
 
 	public function __construct() {
 		$this->passes['AddMissingCurlyBraces'] = new AddMissingCurlyBraces();
@@ -2904,6 +2910,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentComments'] = new ReindentComments();
 		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
@@ -2937,12 +2944,25 @@ abstract class BaseCodeFormatter {
 			return;
 		}
 
+		if (isset($this->shortcircuits[$pass])) {
+			return;
+		}
+
 		$this->passes[$pass] = new $pass($args[1]);
 
-		$scPass = &$this->shortcircuit[$pass];
-		if (isset($scPass)) {
-			$this->disablePass($scPass);
+		$scPasses = &$this->shortcircuit[$pass];
+		if (isset($scPasses)) {
+			foreach ($scPasses as $scPass) {
+				$this->disablePass($scPass);
+				$this->shortcircuits[$scPass] = $pass;
+			}
 		}
+	}
+
+	public function forcePass($pass) {
+		$this->shortcircuits = [];
+		$args = func_get_args();
+		return call_user_func_array([$this, 'enablePass'], $args);
 	}
 
 	public function formatCode($source = '') {
@@ -4180,6 +4200,182 @@ final class Reindent extends FormatterPass {
 }
 
 	
+final class ReindentColonBlocks extends FormatterPass {
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[T_ENDIF]) || isset($foundTokens[T_ENDWHILE]) || isset($foundTokens[T_ENDFOREACH]) || isset($foundTokens[T_ENDFOR])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+
+			if (
+				T_ENDIF == $id || T_ELSEIF == $id ||
+				T_ENDFOR == $id || T_ENDFOREACH == $id || T_ENDWHILE == $id ||
+				(T_ELSE == $id && !$this->rightUsefulTokenIs(ST_CURLY_OPEN))
+			) {
+				$this->setIndent(-1);
+			}
+			switch ($id) {
+			case T_ENDFOR:
+			case T_ENDFOREACH:
+			case T_ENDWHILE:
+			case T_ENDIF:
+				$this->appendCode($text);
+				break;
+
+			case T_ELSE:
+				$this->appendCode($text);
+				$this->indentBlock();
+				break;
+
+			case T_FOR:
+			case T_FOREACH:
+			case T_WHILE:
+			case T_ELSEIF:
+			case T_IF:
+				$this->appendCode($text);
+				$this->printUntil(ST_PARENTHESES_OPEN);
+				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
+				$this->indentBlock();
+				break;
+
+			case T_START_HEREDOC:
+				$this->appendCode($text);
+				$this->printUntil(T_END_HEREDOC);
+				break;
+
+			default:
+				$hasLn = $this->hasLn($text);
+				if ($hasLn) {
+					if ($this->rightTokenIs([T_ENDIF, T_ELSE, T_ELSEIF, T_ENDFOR, T_ENDFOREACH, T_ENDWHILE])) {
+						$this->setIndent(-1);
+						$text = str_replace($this->newLine, $this->newLine . $this->getIndent(), $text);
+						$this->setIndent(+1);
+					} else {
+						$text = str_replace($this->newLine, $this->newLine . $this->getIndent(), $text);
+					}
+				}
+				$this->appendCode($text);
+				break;
+			}
+		}
+		return $this->code;
+	}
+
+	private function indentBlock() {
+		$foundId = $this->printUntilAny([ST_COLON, ST_SEMI_COLON, ST_CURLY_OPEN]);
+		if (ST_COLON === $foundId && !$this->rightTokenIs([T_CLOSE_TAG])) {
+			$this->setIndent(+1);
+		}
+	}
+}
+	
+final class ReindentComments extends FormatterPass {
+	public $commentStack = [];
+
+	
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[T_COMMENT])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$commentStack = array_reverse($this->commentStack);
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			$this->tkns[$this->ptr] = [$id, $text];
+			if (T_COMMENT == $id) {
+				if (LeftAlignComment::NON_INDENTABLE_COMMENT == $text) {
+					continue;
+				}
+
+				$oldComment = array_pop($commentStack);
+				if (substr($text, 0, 2) != '/*') {
+					continue;
+				}
+
+				list($ptId, $ptText) = $this->inspectToken(-1);
+				if (T_WHITESPACE != $ptId) {
+					continue;
+				}
+
+				$indent = substr(strrchr($ptText, 10), 1);
+				$indentLevel = strlen($indent);
+				$innerIndentLevel = $indentLevel + 1;
+				$innerIndent = str_repeat($this->indentChar, $innerIndentLevel);
+
+				$lines = explode($this->newLine, $oldComment[1]);
+				$forceIndentation = false;
+				$leftMostIndentation = -1;
+				foreach ($lines as $idx => $line) {
+					if (substr($line, 0, 2) == '/*') {
+						continue;
+					}
+					if (substr($line, -2, 2) == '*/') {
+						continue;
+					}
+					if (trim($line) == '') {
+						continue;
+					}
+
+					if (substr($line, 0, $innerIndentLevel) != $innerIndent) {
+						$forceIndentation = true;
+					}
+
+					if (!$forceIndentation) {
+						continue;
+					}
+
+					$lenLine = strlen($line);
+					for ($i = 0; $i < $lenLine; $i++) {
+						if ("\t" != $line[$i]) {
+							break;
+						}
+					}
+					if (-1 == $leftMostIndentation) {
+						$leftMostIndentation = $i;
+					}
+					$leftMostIndentation = min($leftMostIndentation, $i);
+				}
+
+				if ($forceIndentation) {
+					foreach ($lines as $idx => $line) {
+						if (substr($line, 0, 2) == '/*') {
+							continue;
+						}
+						if (substr($line, -2, 2) == '*/') {
+							$lines[$idx] = str_repeat($this->indentChar, $indentLevel) . '*/';
+							continue;
+						}
+						if (trim($line) == '') {
+							continue;
+						}
+						$lines[$idx] = $innerIndent . substr($line, $leftMostIndentation);
+					}
+				}
+				$this->tkns[$this->ptr] = [T_COMMENT, implode($this->newLine, $lines)];
+			}
+		}
+
+		return $this->renderLight($this->tkns);
+	}
+}
+	
 final class ReindentEqual extends FormatterPass {
 	public function candidate($source, $foundTokens) {
 		return true;
@@ -4302,85 +4498,6 @@ final class ReindentEqual extends FormatterPass {
 	}
 }
 
-	
-final class ReindentColonBlocks extends FormatterPass {
-	public function candidate($source, $foundTokens) {
-		if (isset($foundTokens[T_ENDIF]) || isset($foundTokens[T_ENDWHILE]) || isset($foundTokens[T_ENDFOREACH]) || isset($foundTokens[T_ENDFOR])) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public function format($source) {
-		$this->tkns = token_get_all($source);
-		$this->code = '';
-
-		while (list($index, $token) = each($this->tkns)) {
-			list($id, $text) = $this->getToken($token);
-			$this->ptr = $index;
-
-			if (
-				T_ENDIF == $id || T_ELSEIF == $id ||
-				T_ENDFOR == $id || T_ENDFOREACH == $id || T_ENDWHILE == $id ||
-				(T_ELSE == $id && !$this->rightUsefulTokenIs(ST_CURLY_OPEN))
-			) {
-				$this->setIndent(-1);
-			}
-			switch ($id) {
-			case T_ENDFOR:
-			case T_ENDFOREACH:
-			case T_ENDWHILE:
-			case T_ENDIF:
-				$this->appendCode($text);
-				break;
-
-			case T_ELSE:
-				$this->appendCode($text);
-				$this->indentBlock();
-				break;
-
-			case T_FOR:
-			case T_FOREACH:
-			case T_WHILE:
-			case T_ELSEIF:
-			case T_IF:
-				$this->appendCode($text);
-				$this->printUntil(ST_PARENTHESES_OPEN);
-				$this->printBlock(ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
-				$this->indentBlock();
-				break;
-
-			case T_START_HEREDOC:
-				$this->appendCode($text);
-				$this->printUntil(T_END_HEREDOC);
-				break;
-
-			default:
-				$hasLn = $this->hasLn($text);
-				if ($hasLn) {
-					if ($this->rightTokenIs([T_ENDIF, T_ELSE, T_ELSEIF, T_ENDFOR, T_ENDFOREACH, T_ENDWHILE])) {
-						$this->setIndent(-1);
-						$text = str_replace($this->newLine, $this->newLine . $this->getIndent(), $text);
-						$this->setIndent(+1);
-					} else {
-						$text = str_replace($this->newLine, $this->newLine . $this->getIndent(), $text);
-					}
-				}
-				$this->appendCode($text);
-				break;
-			}
-		}
-		return $this->code;
-	}
-
-	private function indentBlock() {
-		$foundId = $this->printUntilAny([ST_COLON, ST_SEMI_COLON, ST_CURLY_OPEN]);
-		if (ST_COLON === $foundId && !$this->rightTokenIs([T_CLOSE_TAG])) {
-			$this->setIndent(+1);
-		}
-	}
-}
 	
 final class ReindentObjOps extends FormatterPass {
 	const ALIGN_WITH_INDENT = 1;
@@ -10921,7 +11038,8 @@ EOT;
 	}
 }
 
-	final class RestoreComments extends AdditionalPass {
+	
+final class RestoreComments extends AdditionalPass {
 	public $commentStack = [];
 
 	

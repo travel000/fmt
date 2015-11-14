@@ -12,7 +12,7 @@
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-final class RestoreComments extends AdditionalPass {
+final class ReindentComments extends FormatterPass {
 	public $commentStack = [];
 
 	/**
@@ -35,18 +35,78 @@ final class RestoreComments extends AdditionalPass {
 			$this->ptr = $index;
 			$this->tkns[$this->ptr] = [$id, $text];
 			if (T_COMMENT == $id) {
-				$comment = array_pop($commentStack);
-				$this->tkns[$this->ptr] = $comment;
+				if (LeftAlignComment::NON_INDENTABLE_COMMENT == $text) {
+					continue;
+				}
+
+				$oldComment = array_pop($commentStack);
+				if (substr($text, 0, 2) != '/*') {
+					continue;
+				}
+
+				list($ptId, $ptText) = $this->inspectToken(-1);
+				if (T_WHITESPACE != $ptId) {
+					continue;
+				}
+
+				$indent = substr(strrchr($ptText, 10), 1);
+				$indentLevel = strlen($indent);
+				$innerIndentLevel = $indentLevel + 1;
+				$innerIndent = str_repeat($this->indentChar, $innerIndentLevel);
+
+				$lines = explode($this->newLine, $oldComment[1]);
+				$forceIndentation = false;
+				$leftMostIndentation = -1;
+				foreach ($lines as $idx => $line) {
+					if (substr($line, 0, 2) == '/*') {
+						continue;
+					}
+					if (substr($line, -2, 2) == '*/') {
+						continue;
+					}
+					if (trim($line) == '') {
+						continue;
+					}
+
+					if (substr($line, 0, $innerIndentLevel) != $innerIndent) {
+						$forceIndentation = true;
+					}
+
+					if (!$forceIndentation) {
+						continue;
+					}
+
+					$lenLine = strlen($line);
+					for ($i = 0; $i < $lenLine; $i++) {
+						if ("\t" != $line[$i]) {
+							break;
+						}
+					}
+					if (-1 == $leftMostIndentation) {
+						$leftMostIndentation = $i;
+					}
+					$leftMostIndentation = min($leftMostIndentation, $i);
+				}
+
+				if ($forceIndentation) {
+					foreach ($lines as $idx => $line) {
+						if (substr($line, 0, 2) == '/*') {
+							continue;
+						}
+						if (substr($line, -2, 2) == '*/') {
+							$lines[$idx] = str_repeat($this->indentChar, $indentLevel) . '*/';
+							continue;
+						}
+						if (trim($line) == '') {
+							continue;
+						}
+						$lines[$idx] = $innerIndent . substr($line, $leftMostIndentation);
+					}
+				}
+				$this->tkns[$this->ptr] = [T_COMMENT, implode($this->newLine, $lines)];
 			}
 		}
+
 		return $this->renderLight($this->tkns);
-	}
-
-	public function getDescription() {
-		return 'Revert any formatting of comments content.';
-	}
-
-	public function getExample() {
-		return '';
 	}
 }

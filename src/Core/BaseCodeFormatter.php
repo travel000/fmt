@@ -74,6 +74,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'ReindentComments' => false,
 		'ReindentEqual' => false,
 		'Reindent' => false,
 		'ReindentAndAlignObjOps' => false,
@@ -147,14 +148,19 @@ abstract class BaseCodeFormatter {
 	private $hasBeforePass = false;
 
 	private $shortcircuit = [
-		'ReindentAndAlignObjOps' => 'ReindentObjOps',
-		'ReindentObjOps' => 'ReindentAndAlignObjOps',
-		'AllmanStyleBraces' => 'PSR2CurlyOpenNextLine',
-		'AlignGroupDoubleArrow' => 'AlignDoubleArrow',
-		'AlignDoubleArrow' => 'AlignGroupDoubleArrow',
-		'OnlyOrderUseClauses' => 'OrderAndRemoveUseClauses',
-		'OrderAndRemoveUseClauses' => 'OnlyOrderUseClauses',
+		'ReindentAndAlignObjOps' => ['ReindentObjOps'],
+		'ReindentObjOps' => ['ReindentAndAlignObjOps'],
+		'AllmanStyleBraces' => ['PSR2CurlyOpenNextLine'],
+		'AlignGroupDoubleArrow' => ['AlignDoubleArrow'],
+		'AlignDoubleArrow' => ['AlignGroupDoubleArrow'],
+		'OnlyOrderUseClauses' => ['OrderAndRemoveUseClauses'],
+		'OrderAndRemoveUseClauses' => ['OnlyOrderUseClauses'],
+		'ReindentComments' => ['OrganizeClass', 'RestoreComments'],
+		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
+		'OrganizeClass' => ['ReindentComments', 'RestoreComments'],
 	];
+
+	private $shortcircuits = [];
 
 	public function __construct() {
 		$this->passes['AddMissingCurlyBraces'] = new AddMissingCurlyBraces();
@@ -168,6 +174,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentComments'] = new ReindentComments();
 		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
@@ -201,12 +208,25 @@ abstract class BaseCodeFormatter {
 			return;
 		}
 
+		if (isset($this->shortcircuits[$pass])) {
+			return;
+		}
+
 		$this->passes[$pass] = new $pass($args[1]);
 
-		$scPass = &$this->shortcircuit[$pass];
-		if (isset($scPass)) {
-			$this->disablePass($scPass);
+		$scPasses = &$this->shortcircuit[$pass];
+		if (isset($scPasses)) {
+			foreach ($scPasses as $scPass) {
+				$this->disablePass($scPass);
+				$this->shortcircuits[$scPass] = $pass;
+			}
 		}
+	}
+
+	public function forcePass($pass) {
+		$this->shortcircuits = [];
+		$args = func_get_args();
+		return call_user_func_array([$this, 'enablePass'], $args);
 	}
 
 	public function formatCode($source = '') {
