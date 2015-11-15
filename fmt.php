@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '18.0.0');
+	define('VERSION', '18.1.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -4794,6 +4794,7 @@ final class ResizeSpaces extends FormatterPass {
 		$touchedFunction = false;
 		$touchedUse = false;
 		$touchedGroupedUse = false;
+		$hasEchoAfterOpenTag = false;
 
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -5160,6 +5161,25 @@ final class ResizeSpaces extends FormatterPass {
 			case T_CONSTANT_ENCAPSED_STRING:
 				$this->appendCode($text);
 				$this->appendCode($this->getSpace($this->rightTokenIs(T_COMMENT) && !$this->hasLnAfter()));
+				break;
+
+			case T_CLOSE_TAG:
+				$this->appendCode($this->getSpace(!$hasEchoAfterOpenTag && !$this->hasLnBefore()));
+				$this->appendCode($text);
+				$hasEchoAfterOpenTag = false;
+				break;
+
+			case T_OPEN_TAG_WITH_ECHO:
+				$hasEchoAfterOpenTag = true;
+				$this->appendCode($text);
+				break;
+
+			case T_OPEN_TAG:
+				$hasEchoAfterOpenTag = true;
+				if ($this->rightUsefulTokenIs(T_ECHO)) {
+					$hasEchoAfterOpenTag = false;
+				}
+				$this->appendCode($text);
 				break;
 
 			default:
