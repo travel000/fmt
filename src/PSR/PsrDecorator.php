@@ -17,11 +17,13 @@ final class PsrDecorator {
 		$fmt->enablePass('PSR1OpenTags');
 		$fmt->enablePass('PSR1BOMMark');
 		$fmt->enablePass('PSR1ClassConstants');
+		$fmt->disablePass('ReindentComments');
 	}
 
 	public static function PSR1Naming(CodeFormatter $fmt) {
 		$fmt->enablePass('PSR1ClassNames');
 		$fmt->enablePass('PSR1MethodNames');
+		$fmt->disablePass('ReindentComments');
 	}
 
 	public static function PSR2(CodeFormatter $fmt) {
@@ -32,6 +34,7 @@ final class PsrDecorator {
 		$fmt->enablePass('PSR2ModifierVisibilityStaticOrder');
 		$fmt->enablePass('PSR2SingleEmptyLineAndStripClosingTag');
 		$fmt->enablePass('ReindentSwitchBlocks');
+		$fmt->disablePass('ReindentComments');
 	}
 
 	public static function decorate(CodeFormatter $fmt) {

@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '18.1.0');
+	define('VERSION', '18.2.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2884,16 +2884,28 @@ abstract class BaseCodeFormatter {
 	private $hasBeforePass = false;
 
 	private $shortcircuit = [
-		'ReindentAndAlignObjOps' => ['ReindentObjOps'],
-		'ReindentObjOps' => ['ReindentAndAlignObjOps'],
-		'AllmanStyleBraces' => ['PSR2CurlyOpenNextLine'],
-		'AlignGroupDoubleArrow' => ['AlignDoubleArrow'],
 		'AlignDoubleArrow' => ['AlignGroupDoubleArrow'],
+		'AlignGroupDoubleArrow' => ['AlignDoubleArrow'],
+		'AllmanStyleBraces' => ['PSR2CurlyOpenNextLine'],
 		'OnlyOrderUseClauses' => ['OrderAndRemoveUseClauses'],
 		'OrderAndRemoveUseClauses' => ['OnlyOrderUseClauses'],
-		'ReindentComments' => ['OrganizeClass', 'RestoreComments'],
-		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
 		'OrganizeClass' => ['ReindentComments', 'RestoreComments'],
+		'ReindentAndAlignObjOps' => ['ReindentObjOps'],
+		'ReindentComments' => ['OrganizeClass', 'RestoreComments'],
+		'ReindentObjOps' => ['ReindentAndAlignObjOps'],
+		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
+
+		'PSR1OpenTags' => ['ReindentComments'],
+		'PSR1BOMMark' => ['ReindentComments'],
+		'PSR1ClassConstants' => ['ReindentComments'],
+		'PSR1ClassNames' => ['ReindentComments'],
+		'PSR1MethodNames' => ['ReindentComments'],
+		'PSR2KeywordsLowerCase' => ['ReindentComments'],
+		'PSR2IndentWithSpace' => ['ReindentComments'],
+		'PSR2LnAfterNamespace' => ['ReindentComments'],
+		'PSR2CurlyOpenNextLine' => ['ReindentComments'],
+		'PSR2ModifierVisibilityStaticOrder' => ['ReindentComments'],
+		'PSR2SingleEmptyLineAndStripClosingTag' => ['ReindentComments'],
 	];
 
 	private $shortcircuits = [];
