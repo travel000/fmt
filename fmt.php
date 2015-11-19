@@ -3613,7 +3613,7 @@ final class EliminateDuplicatedEmptyLines extends FormatterPass {
 		} while ($count > 0);
 		$ret = str_replace(self::EMPTY_LINE, '', $ret);
 
-		list($id) = $this->getToken(array_pop($this->tkns));
+		list($id) = $this->getToken(end($this->tkns));
 		if (T_WHITESPACE === $id) {
 			$ret = rtrim($ret) . $this->newLine;
 		}
@@ -5537,8 +5537,7 @@ final class StripExtraCommaInList extends FormatterPass {
 
 			case ST_PARENTHESES_OPEN:
 				if (isset($contextStack[0]) && T_LIST == end($contextStack) && $this->rightTokenIs(ST_PARENTHESES_CLOSE)) {
-					array_pop($contextStack);
-					$contextStack[] = self::EMPTY_LIST;
+					$contextStack[sizeof($contextStack) - 1] = self::EMPTY_LIST;
 				} elseif (!$touchedListArrayString) {
 					$contextStack[] = ST_PARENTHESES_OPEN;
 				}
@@ -7275,12 +7274,11 @@ final class AllmanStyleBraces extends AdditionalPass {
 			case T_CLASS:
 			case T_FUNCTION:
 				$currentIndentation = 0;
-				$poppedID = array_pop($foundStack);
+				$poppedID = end($foundStack);
 				if (true === $poppedID['implicit']) {
 					list($prevId, $prevText) = $this->inspectToken(-1);
 					$currentIndentation = substr_count($prevText, $this->indentChar, strrpos($prevText, "\n"));
 				}
-				$foundStack[] = $poppedID;
 				$this->appendCode($text);
 				break;
 
@@ -8913,8 +8911,7 @@ final class LongArray extends AdditionalPass {
 				break;
 			case ST_PARENTHESES_OPEN:
 				if (isset($contextStack[0]) && T_ARRAY == end($contextStack) && $this->rightTokenIs(ST_PARENTHESES_CLOSE)) {
-					array_pop($contextStack);
-					$contextStack[] = self::EMPTY_ARRAY;
+					$contextStack[sizeof($contextStack) - 1] = self::EMPTY_ARRAY;
 				} elseif (!$this->leftTokenIs([T_ARRAY, T_STRING])) {
 					$contextStack[] = ST_PARENTHESES_OPEN;
 				}
@@ -11830,8 +11827,7 @@ final class StripExtraCommaInArray extends AdditionalPass {
 				break;
 			case ST_PARENTHESES_OPEN:
 				if (isset($contextStack[0]) && T_ARRAY == end($contextStack) && $this->rightTokenIs(ST_PARENTHESES_CLOSE)) {
-					array_pop($contextStack);
-					$contextStack[] = self::EMPTY_ARRAY;
+					$contextStack[sizeof($contextStack) - 1] = self::EMPTY_ARRAY;
 				} elseif (!$this->leftTokenIs([T_ARRAY, T_STRING])) {
 					$contextStack[] = ST_PARENTHESES_OPEN;
 				}

@@ -54,7 +54,7 @@ final class EliminateDuplicatedEmptyLines extends FormatterPass {
 		} while ($count > 0);
 		$ret = str_replace(self::EMPTY_LINE, '', $ret);
 
-		list($id) = $this->getToken(array_pop($this->tkns));
+		list($id) = $this->getToken(end($this->tkns));
 		if (T_WHITESPACE === $id) {
 			$ret = rtrim($ret) . $this->newLine;
 		}

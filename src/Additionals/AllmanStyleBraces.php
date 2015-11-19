@@ -50,12 +50,11 @@ final class AllmanStyleBraces extends AdditionalPass {
 			case T_CLASS:
 			case T_FUNCTION:
 				$currentIndentation = 0;
-				$poppedID = array_pop($foundStack);
+				$poppedID = end($foundStack);
 				if (true === $poppedID['implicit']) {
 					list($prevId, $prevText) = $this->inspectToken(-1);
 					$currentIndentation = substr_count($prevText, $this->indentChar, strrpos($prevText, "\n"));
 				}
-				$foundStack[] = $poppedID;
 				$this->appendCode($text);
 				break;
 

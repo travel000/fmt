@@ -57,8 +57,7 @@ final class StripExtraCommaInArray extends AdditionalPass {
 				break;
 			case ST_PARENTHESES_OPEN:
 				if (isset($contextStack[0]) && T_ARRAY == end($contextStack) && $this->rightTokenIs(ST_PARENTHESES_CLOSE)) {
-					array_pop($contextStack);
-					$contextStack[] = self::EMPTY_ARRAY;
+					$contextStack[sizeof($contextStack) - 1] = self::EMPTY_ARRAY;
 				} elseif (!$this->leftTokenIs([T_ARRAY, T_STRING])) {
 					$contextStack[] = ST_PARENTHESES_OPEN;
 				}
