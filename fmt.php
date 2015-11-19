@@ -4304,7 +4304,7 @@ final class ReindentComments extends FormatterPass {
 	}
 
 	public function format($source) {
-		$commentStack = array_reverse($this->commentStack);
+		reset($this->commentStack);
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -4316,7 +4316,8 @@ final class ReindentComments extends FormatterPass {
 					continue;
 				}
 
-				$oldComment = array_pop($commentStack);
+				$oldComment = current($this->commentStack);
+				next($this->commentStack);
 				if (substr($text, 0, 2) != '/*') {
 					continue;
 				}
@@ -11089,7 +11090,7 @@ final class RestoreComments extends AdditionalPass {
 	}
 
 	public function format($source) {
-		$commentStack = array_reverse($this->commentStack);
+		reset($this->commentStack);
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -11097,8 +11098,9 @@ final class RestoreComments extends AdditionalPass {
 			$this->ptr = $index;
 			$this->tkns[$this->ptr] = [$id, $text];
 			if (T_COMMENT == $id) {
-				$comment = array_pop($commentStack);
-				$this->tkns[$this->ptr] = $comment;
+				$oldComment = current($this->commentStack);
+				next($this->commentStack);
+				$this->tkns[$this->ptr] = $oldComment;
 			}
 		}
 		return $this->renderLight($this->tkns);
