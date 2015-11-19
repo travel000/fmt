@@ -222,9 +222,14 @@ final class ResizeSpaces extends FormatterPass {
 				$this->appendCode($text . $this->getSpace(!$this->rightTokenIs([ST_SEMI_COLON, T_NS_SEPARATOR, T_DOUBLE_COLON])));
 				break;
 
+			case T_ECHO:
+				if ($this->leftMemoUsefulTokenIs(T_OPEN_TAG)) {
+					$hasEchoAfterOpenTag = false;
+				}
+				$this->appendCode($text . $this->getSpace(!$this->rightTokenIs(ST_SEMI_COLON)));
+				break;
 			case T_RETURN:
 			case T_YIELD:
-			case T_ECHO:
 			case T_VAR:
 			case T_NEW:
 			case T_CONST:
@@ -418,9 +423,6 @@ final class ResizeSpaces extends FormatterPass {
 
 			case T_OPEN_TAG:
 				$hasEchoAfterOpenTag = true;
-				if ($this->rightUsefulTokenIs(T_ECHO)) {
-					$hasEchoAfterOpenTag = false;
-				}
 				$this->appendCode($text);
 				break;
 

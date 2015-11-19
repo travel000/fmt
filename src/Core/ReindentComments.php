@@ -58,13 +58,13 @@ final class ReindentComments extends FormatterPass {
 				$forceIndentation = false;
 				$leftMostIndentation = -1;
 				foreach ($lines as $idx => $line) {
+					if (trim($line) == '') {
+						continue;
+					}
 					if (substr($line, 0, 2) == '/*') {
 						continue;
 					}
 					if (substr($line, -2, 2) == '*/') {
-						continue;
-					}
-					if (trim($line) == '') {
 						continue;
 					}
 
@@ -90,14 +90,14 @@ final class ReindentComments extends FormatterPass {
 
 				if ($forceIndentation) {
 					foreach ($lines as $idx => $line) {
+						if (trim($line) == '') {
+							continue;
+						}
 						if (substr($line, 0, 2) == '/*') {
 							continue;
 						}
 						if (substr($line, -2, 2) == '*/') {
 							$lines[$idx] = str_repeat($this->indentChar, $indentLevel) . '*/';
-							continue;
-						}
-						if (trim($line) == '') {
 							continue;
 						}
 						$lines[$idx] = $innerIndent . substr($line, $leftMostIndentation);
