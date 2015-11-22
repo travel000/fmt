@@ -275,6 +275,15 @@ if ($isCoverage && !$isCoveralls) {
 if ($isCoveralls) {
 	$writer = new PHP_CodeCoverage_Report_Clover();
 	$writer->process($coverage, './clover.xml');
+	// $report = $coverage->getReport();
+	// foreach ($report as $item) {
+	// 	if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
+	// 		continue;
+	// 	}
+
+	// 	print_r($item->getClassesAndTraits());
+	// 	print_r($item->getCoverageData());
+	// }
 }
 
 if (sizeof($brokenTests) > 0) {
