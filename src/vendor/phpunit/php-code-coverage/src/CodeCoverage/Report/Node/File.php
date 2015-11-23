@@ -13,9 +13,11 @@
  *
  * @category   PHP
  * @package    CodeCoverage
+ *
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ *
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 1.1.0
  */
@@ -44,22 +46,22 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * @var array
      */
-    protected $classes = array();
+    protected $classes = [];
 
     /**
      * @var array
      */
-    protected $traits = array();
+    protected $traits = [];
 
     /**
      * @var array
      */
-    protected $functions = array();
+    protected $functions = [];
 
     /**
      * @var array
      */
-    protected $linesOfCode = array();
+    protected $linesOfCode = [];
 
     /**
      * @var integer
@@ -89,12 +91,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
     /**
      * @var array
      */
-    protected $startLines = array();
+    protected $startLines = [];
 
     /**
      * @var array
      */
-    protected $endLines = array();
+    protected $endLines = [];
 
     /**
      * @var boolean
@@ -266,7 +268,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     public function getNumMethods()
     {
-        if ($this->numMethods === null) {
+        if (null === $this->numMethods) {
             $this->numMethods = 0;
 
             foreach ($this->classes as $class) {
@@ -296,13 +298,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedMethods()
     {
-        if ($this->numTestedMethods === null) {
+        if (null === $this->numTestedMethods) {
             $this->numTestedMethods = 0;
 
             foreach ($this->classes as $class) {
                 foreach ($class['methods'] as $method) {
-                    if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                    if ($method['executableLines'] > 0 && 100 == $method['coverage']) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -310,8 +311,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             foreach ($this->traits as $trait) {
                 foreach ($trait['methods'] as $method) {
-                    if ($method['executableLines'] > 0 &&
-                        $method['coverage'] == 100) {
+                    if ($method['executableLines'] > 0 && 100 == $method['coverage']) {
                         $this->numTestedMethods++;
                     }
                 }
@@ -338,12 +338,11 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      */
     public function getNumTestedFunctions()
     {
-        if ($this->numTestedFunctions === null) {
+        if (null === $this->numTestedFunctions) {
             $this->numTestedFunctions = 0;
 
             foreach ($this->functions as $function) {
-                if ($function['executableLines'] > 0 &&
-                    $function['coverage'] == 100) {
+                if ($function['executableLines'] > 0 && 100 == $function['coverage']) {
                     $this->numTestedFunctions++;
                 }
             }
@@ -386,8 +385,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                 }
             }
 
-            if (isset($this->coverageData[$lineNumber]) &&
-                $this->coverageData[$lineNumber] !== null) {
+            if (isset($this->coverageData[$lineNumber]) && null !== $this->coverageData[$lineNumber]) {
                 if (isset($currentClass)) {
                     $currentClass['executableLines']++;
                 }
@@ -448,7 +446,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             foreach ($trait['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
                     $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
+                        $method['executableLines']) * 100;
                 } else {
                     $method['coverage'] = 100;
                 }
@@ -463,12 +461,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             if ($trait['executableLines'] > 0) {
                 $trait['coverage'] = ($trait['executedLines'] /
-                        $trait['executableLines']) * 100;
+                    $trait['executableLines']) * 100;
             } else {
                 $trait['coverage'] = 100;
             }
 
-            if ($trait['coverage'] == 100) {
+            if (100 == $trait['coverage']) {
                 $this->numTestedClasses++;
             }
 
@@ -482,7 +480,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
             foreach ($class['methods'] as &$method) {
                 if ($method['executableLines'] > 0) {
                     $method['coverage'] = ($method['executedLines'] /
-                            $method['executableLines']) * 100;
+                        $method['executableLines']) * 100;
                 } else {
                     $method['coverage'] = 100;
                 }
@@ -497,12 +495,12 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
             if ($class['executableLines'] > 0) {
                 $class['coverage'] = ($class['executedLines'] /
-                        $class['executableLines']) * 100;
+                    $class['executableLines']) * 100;
             } else {
                 $class['coverage'] = 100;
             }
 
-            if ($class['coverage'] == 100) {
+            if (100 == $class['coverage']) {
                 $this->numTestedClasses++;
             }
 
@@ -524,24 +522,25 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $link = $this->getId() . '.html#';
 
         foreach ($classes as $className => $class) {
-            $this->classes[$className] = array(
+            $this->classes[$className] = [
                 'className'       => $className,
-                'methods'         => array(),
+                'methods'         => [],
                 'startLine'       => $class['startLine'],
+                'endLine'         => $class['endLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => 0,
                 'coverage'        => 0,
                 'crap'            => 0,
                 'package'         => $class['package'],
-                'link'            => $link . $class['startLine']
-            );
+                'link'            => $link . $class['startLine'],
+            ];
 
             $this->startLines[$class['startLine']] = &$this->classes[$className];
             $this->endLines[$class['endLine']]     = &$this->classes[$className];
 
             foreach ($class['methods'] as $methodName => $method) {
-                $this->classes[$className]['methods'][$methodName] = array(
+                $this->classes[$className]['methods'][$methodName] = [
                     'methodName'      => $methodName,
                     'signature'       => $method['signature'],
                     'startLine'       => $method['startLine'],
@@ -551,8 +550,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                     'ccn'             => $method['ccn'],
                     'coverage'        => 0,
                     'crap'            => 0,
-                    'link'            => $link . $method['startLine']
-                );
+                    'link'            => $link . $method['startLine'],
+                ];
 
                 $this->startLines[$method['startLine']] = &$this->classes[$className]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->classes[$className]['methods'][$methodName];
@@ -571,24 +570,25 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $link = $this->getId() . '.html#';
 
         foreach ($traits as $traitName => $trait) {
-            $this->traits[$traitName] = array(
+            $this->traits[$traitName] = [
                 'traitName'       => $traitName,
-                'methods'         => array(),
+                'methods'         => [],
                 'startLine'       => $trait['startLine'],
+                'endLine'         => $trait['endLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => 0,
                 'coverage'        => 0,
                 'crap'            => 0,
                 'package'         => $trait['package'],
-                'link'            => $link . $trait['startLine']
-            );
+                'link'            => $link . $trait['startLine'],
+            ];
 
             $this->startLines[$trait['startLine']] = &$this->traits[$traitName];
             $this->endLines[$trait['endLine']]     = &$this->traits[$traitName];
 
             foreach ($trait['methods'] as $methodName => $method) {
-                $this->traits[$traitName]['methods'][$methodName] = array(
+                $this->traits[$traitName]['methods'][$methodName] = [
                     'methodName'      => $methodName,
                     'signature'       => $method['signature'],
                     'startLine'       => $method['startLine'],
@@ -598,8 +598,8 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
                     'ccn'             => $method['ccn'],
                     'coverage'        => 0,
                     'crap'            => 0,
-                    'link'            => $link . $method['startLine']
-                );
+                    'link'            => $link . $method['startLine'],
+                ];
 
                 $this->startLines[$method['startLine']] = &$this->traits[$traitName]['methods'][$methodName];
                 $this->endLines[$method['endLine']]     = &$this->traits[$traitName]['methods'][$methodName];
@@ -618,17 +618,18 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
         $link = $this->getId() . '.html#';
 
         foreach ($functions as $functionName => $function) {
-            $this->functions[$functionName] = array(
+            $this->functions[$functionName] = [
                 'functionName'    => $functionName,
                 'signature'       => $function['signature'],
                 'startLine'       => $function['startLine'],
+                'endLine'         => $function['endLine'],
                 'executableLines' => 0,
                 'executedLines'   => 0,
                 'ccn'             => $function['ccn'],
                 'coverage'        => 0,
                 'crap'            => 0,
-                'link'            => $link . $function['startLine']
-            );
+                'link'            => $link . $function['startLine'],
+            ];
 
             $this->startLines[$function['startLine']] = &$this->functions[$functionName];
             $this->endLines[$function['endLine']]     = &$this->functions[$functionName];
@@ -639,14 +640,15 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
      * Calculates the Change Risk Anti-Patterns (CRAP) index for a unit of code
      * based on its cyclomatic complexity and percentage of code coverage.
      *
-     * @param  integer $ccn
-     * @param  float   $coverage
-     * @return string
      * @since  Method available since Release 1.2.0
+     *
+     * @param  integer  $ccn
+     * @param  float    $coverage
+     * @return string
      */
     protected function crap($ccn, $coverage)
     {
-        if ($coverage == 0) {
+        if (0 == $coverage) {
             return (string) pow($ccn, 2) + $ccn;
         }
 
@@ -656,7 +658,7 @@ class PHP_CodeCoverage_Report_Node_File extends PHP_CodeCoverage_Report_Node
 
         return sprintf(
             '%01.2F',
-            pow($ccn, 2) * pow(1 - $coverage/100, 3) + $ccn
+            pow($ccn, 2) * pow(1 - $coverage / 100, 3) + $ccn
         );
     }
 }

@@ -275,17 +275,46 @@ if ($isCoverage && !$isCoveralls) {
 if ($isCoveralls) {
 	$writer = new PHP_CodeCoverage_Report_Clover();
 	$writer->process($coverage, './clover.xml');
-	// $report = $coverage->getReport();
-	// foreach ($report as $item) {
-	// 	if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
-	// 		continue;
-	// 	}
+	$report = $coverage->getReport();
+	foreach ($report as $item) {
+		if (!$item instanceof PHP_CodeCoverage_Report_Node_File) {
+			continue;
+		}
 
-	// 	print_r($item->getClassesAndTraits());
-	// 	print_r($item->getCoverageData());
-	// }
+		$file = file($item->getPath());
+		$touchedLines = [];
+		$cts = $item->getClassesAndTraits();
+		foreach ($cts as $ct => $attr) {
+			foreach ($attr['methods'] as $method => $mAttr) {
+				if (0 == $mAttr['executableLines'] || $mAttr['executableLines'] > 0 && 0 == $mAttr['coverage']) {
+					continue;
+				}
+				$touchedLines[$attr['startLine']] = $attr['startLine'];
+				$touchedLines[$attr['endLine']] = $attr['endLine'];
+				$touchedLines[$mAttr['startLine']] = $mAttr['startLine'];
+				$touchedLines[$mAttr['endLine']] = $mAttr['endLine'];
+				foreach ($item->getCoverageData() as $line => $tests) {
+					if (empty($tests)) {
+						continue;
+					}
+					$touchedLines[$line] = $line;
+				}
+			}
+		}
+		if (empty($touchedLines)) {
+			continue;
+		}
+
+		$newFile = [];
+		sort($touchedLines, SORT_NUMERIC);
+		foreach ($touchedLines as $line) {
+			$newFile[] = $file[$line - 1];
+		}
+
+		echo implode('', $newFile), PHP_EOL;
+	}
+
 }
-
 if (sizeof($brokenTests) > 0) {
 	echo 'run test.php -v to see the error diffs', PHP_EOL;
 	exit(255);
