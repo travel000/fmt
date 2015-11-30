@@ -16,14 +16,14 @@ function selfupdate($argv, $inPhar) {
 	$opts = [
 		'http' => [
 			'method' => 'GET',
-			'header' => "User-agent: php.tools fmt.phar selfupdate\r\n",
+			'header' => "User-agent: phpfmt fmt.phar selfupdate\r\n",
 		],
 	];
 
 	$context = stream_context_create($opts);
 
 	// current release
-	$releases = json_decode(file_get_contents('https://api.github.com/repos/phpfmt/php.tools/tags', false, $context), true);
+	$releases = json_decode(file_get_contents('https://api.github.com/repos/phpfmt/fmt/tags', false, $context), true);
 	$commit = json_decode(file_get_contents($releases[0]['commit']['url'], false, $context), true);
 	$files = json_decode(file_get_contents($commit['commit']['tree']['url'], false, $context), true);
 	foreach ($files['tree'] as $file) {
