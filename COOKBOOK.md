@@ -1,7 +1,7 @@
-Cookbook - Making a new Fixer for php.tools
-===========================================
+Cookbook - Making a new Fixer for phpfmt
+========================================
 
-If you want to customize php.tools pretty printer (fmt.phar), follow this document.
+If you want to customize phpfmt pretty printer (fmt.phar), follow this document.
 
 ## Background
 
@@ -13,7 +13,7 @@ Try to get acquainted with the `FormatterPass` class, which holds all the calls 
 
 ## Assumptions
 
-* Forked phpfmt/php.tools into your own Github Account.
+* Forked phpfmt/fmt into your own Github Account.
 * Cloned your forked repository locally.
 * Installed php 5.6 or newer
 
@@ -26,7 +26,7 @@ We are calling it `RemoveComments` (class name).
 ### Step 1 - Creating files
 
 Create a new file in
-`php.tools/src/Additionals/RemoveComments.php`.
+`phpfmt/src/Additionals/RemoveComments.php`.
 Put this content inside:
 ```php
 <?php
@@ -64,12 +64,12 @@ EOT;
 ```
 
 Now let us create the test files at
-`php.tools/src/tests/352-remove-comments.in` and `php.tools/src/tests/352-remove-comments.in`. The number `352` should be replaced with the largest number of tests available within the tests folder.
+`phpfmt/src/tests/352-remove-comments.in` and `phpfmt/src/tests/352-remove-comments.in`. The number `352` should be replaced with the largest number of tests available within the tests folder.
 
 Tests files ending with `.in` are input and `.out` are the expected output for that
 particular test.
 
-Thus, `php.tools/src/tests/352-remove-comments.in`:
+Thus, `phpfmt/src/tests/352-remove-comments.in`:
 ```php
 <?php
 //passes:RemoveComments
@@ -78,7 +78,7 @@ Thus, `php.tools/src/tests/352-remove-comments.in`:
 $a = new SomeClass; // this comment not
 ```
 
-And `php.tools/src/tests/352-remove-comments.out`:
+And `phpfmt/src/tests/352-remove-comments.out`:
 ```php
 <?php
 //passes:RemoveComments
@@ -107,16 +107,16 @@ The method `candidate($source, $foundTokens)` returns a boolean value and it is 
 
 The method `format($source)` takes raw `$source` code and allows you to act on it.
 
-In the php.tools, passes work by iterating through pieces of codes (each being a Token), and inspecting what exists before that point in code  and making a decision of adding code, modifying, deleting or ignoring tokens
+In the phpfmt, passes work by iterating through pieces of codes (each being a Token), and inspecting what exists before that point in code  and making a decision of adding code, modifying, deleting or ignoring tokens
 
 In our case, we want to find all comments, and iterate through each one of them check if they are preceded by a semicolon symbol.
 
 Be sure to get acquainted with PHP default [list of parser
-tokens](http://php.net/manual/en/tokens.php), and php.tools special token list at `src/Core/constants.php`.
+tokens](http://php.net/manual/en/tokens.php), and phpfmt special token list at `src/Core/constants.php`.
 
 ### Step 2 - Implementation
 
-Thus, `php.tools/src/Additionals/RemoveComments.php` becomes:
+Thus, `phpfmt/src/Additionals/RemoveComments.php` becomes:
 ```php
 <?php
 class RemoveComments extends AdditionalPass {
@@ -242,7 +242,7 @@ In `core/BaseCodeFormatter.php`, for execution order, we want it to live closer 
 
 ### Step 4 - Test, Format, Build, Commit, PR.
 
-Note that so far, we have not coded adhering to php.tools coding style, i.e., K&R indentation with tabs. For every commit you make, you must use fmt.phar to fix itself. Thus, on the command line call:
+Note that so far, we have not coded adhering to phpfmt coding style, i.e., K&R indentation with tabs. For every commit you make, you must use fmt.phar to fix itself. Thus, on the command line call:
 
 `$ php fmt.src.php Core/ Additionals/ PSR/ fmt.src.php refactor.src.php`
 
