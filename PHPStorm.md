@@ -6,7 +6,7 @@ Configuration for PHPStorm
 * Git
 
 ```
-git clone https://github.com/phpfmt/php.tools.git
+git clone https://github.com/phpfmt/fmt.git
 ```
 
 * Composer
