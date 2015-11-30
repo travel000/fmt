@@ -4,7 +4,7 @@
     "description": "A script to automatically fix K&R and PSR-1/2 Coding Standard.",
     "license": "BSD-3-Clause",
     "keywords": ["language syntax", "formatter", "formatting", "psr1", "psr2", "coding", "style"],
-    "homepage": "https://github.com/phpfmt/php.tools",
+    "homepage": "https://github.com/phpfmt/fmt",
     "bin": ["fmt.php","fmt.phar","refactor.php","aphpfmt"],
     "authors": [
         {
@@ -13,8 +13,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/phpfmt/php.tools/issues",
-        "source": "https://github.com/phpfmt/php.tools"
+        "issues": "https://github.com/phpfmt/fmt/issues",
+        "source": "https://github.com/phpfmt/fmt"
     },
     "require":{
         "php": ">=5.6.0",
