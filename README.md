@@ -1,6 +1,8 @@
 phpfmt
 ======
 
+***[This project follows a Code of Conduct.](https://github.com/phpfmt/code-of-conduct)***
+
 ## Build statuses
 - Master: [![Build Status](https://travis-ci.org/phpfmt/fmt.svg?branch=master)](https://travis-ci.org/phpfmt/fmt)
 
