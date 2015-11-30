@@ -1,4 +1,4 @@
-php.tools is possible because these people helped. Star them.
+fmt is possible because these people helped. Star them.
 
 ## Maintainers
 
