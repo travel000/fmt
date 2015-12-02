@@ -246,7 +246,7 @@ EOT;
 
 	private function calculateAlias($use) {
 		if (false !== stripos($use, ' as ')) {
-			return substr(strstr($use, ' as '), strlen(' as '), -1);
+			return substr(stristr($use, ' as '), strlen(' as '), -1);
 		}
 		return basename(str_replace('\\', '/', trim(substr($use, strlen('use'), -1))));
 	}

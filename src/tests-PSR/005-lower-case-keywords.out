@@ -6,6 +6,7 @@
 namespace NS;
 
 use A\B as B;
+use A\C as C;
 
 class StdObject
 {
