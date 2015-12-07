@@ -78,7 +78,7 @@ final class ReindentComments extends FormatterPass {
 					}
 
 					$lenLine = strlen($line);
-					for ($i = 0; $i < $lenLine; $i++) {
+					for ($i = 0; $i < $lenLine; ++$i) {
 						if ("\t" != $line[$i]) {
 							break;
 						}

@@ -26,6 +26,8 @@ final class AutoSemicolon extends AdditionalPass {
 		$curlyStack = [];
 		$lastParen = null;
 		$lastCurly = null;
+		$ternary = 0;
+		$touchedSingleColon = false;
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -38,7 +40,10 @@ final class AutoSemicolon extends AdditionalPass {
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				break;
-
+			case ST_QUESTION:
+				++$ternary;
+				$this->appendCode($text);
+				break;
 			case ST_PARENTHESES_OPEN:
 				$parenStack[] = $id;
 				$this->appendCode($text);
@@ -70,11 +75,19 @@ final class AutoSemicolon extends AdditionalPass {
 				$lastCurly = array_pop($curlyStack);
 				$this->appendCode($text);
 				break;
+			case ST_COLON:
+				$touchedSingleColon = true;
+				$this->appendCode($text);
+				break;
 
 			case T_WHITESPACE:
 				if (!$this->hasLn($text)) {
 					$this->appendCode($text);
 					continue;
+				}
+				if ($touchedSingleColon && $ternary) {
+					$touchedSingleColon = false;
+					--$ternary;
 				}
 
 				if (
@@ -246,6 +259,11 @@ final class AutoSemicolon extends AdditionalPass {
 						T_FUNCTION == $lastCurly
 					)
 				) {
+					$this->appendCode($text);
+					continue;
+				}
+
+				if (0 != $ternary) {
 					$this->appendCode($text);
 					continue;
 				}
