@@ -40,10 +40,6 @@ final class AutoSemicolon extends AdditionalPass {
 				$this->appendCode($text);
 				$this->printUntil(ST_PARENTHESES_OPEN);
 				break;
-			case ST_QUESTION:
-				++$ternary;
-				$this->appendCode($text);
-				break;
 			case ST_PARENTHESES_OPEN:
 				$parenStack[] = $id;
 				$this->appendCode($text);
@@ -75,8 +71,14 @@ final class AutoSemicolon extends AdditionalPass {
 				$lastCurly = array_pop($curlyStack);
 				$this->appendCode($text);
 				break;
+			case ST_QUESTION:
+				++$ternary;
+				$this->appendCode($text);
+				break;
 			case ST_COLON:
-				$touchedSingleColon = true;
+				if ($ternary > 0) {
+					$touchedSingleColon = true;
+				}
 				$this->appendCode($text);
 				break;
 
