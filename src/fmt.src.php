@@ -125,10 +125,10 @@ namespace {
 	require 'Additionals/MildAutoPreincrement.php';
 	require 'Additionals/NoSpaceAfterPHPDocBlocks.php';
 	require 'Additionals/OrganizeClass.php';
-	require 'Additionals/OrderMethod.php';
-	require 'Additionals/OrderMethodAndVisibility.php';
 	require 'Additionals/OrderAndRemoveUseClauses.php';
 	require 'Additionals/OnlyOrderUseClauses.php';
+	require 'Additionals/OrderMethod.php';
+	require 'Additionals/OrderMethodAndVisibility.php';
 	require 'Additionals/PHPDocTypesToFunctionTypehint.php';
 	require 'Additionals/PrettyPrintDocBlocks.php';
 	require 'Additionals/PSR2EmptyFunction.php';
@@ -136,6 +136,7 @@ namespace {
 	require 'Additionals/ReindentAndAlignObjOps.php';
 	require 'Additionals/ReindentSwitchBlocks.php';
 	require 'Additionals/RemoveIncludeParentheses.php';
+	require 'Additionals/RemoveSemicolonAfterCurly.php';
 	require 'Additionals/RemoveUseLeadingSlash.php';
 	require 'Additionals/ReplaceBooleanAndOr.php';
 	require 'Additionals/ReplaceIsNull.php';
@@ -144,8 +145,8 @@ namespace {
 	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
 	require 'Additionals/SortUseNameSpace.php';
-	require 'Additionals/SpaceAroundExclamationMark.php';
 	require 'Additionals/SpaceAroundControlStructures.php';
+	require 'Additionals/SpaceAroundExclamationMark.php';
 	require 'Additionals/SpaceBetweenMethods.php';
 	require 'Additionals/StrictBehavior.php';
 	require 'Additionals/StrictComparison.php';

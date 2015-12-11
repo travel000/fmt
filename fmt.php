@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '18.4.0');
+	define('VERSION', '18.5.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -2873,6 +2873,7 @@ abstract class BaseCodeFormatter {
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
 		'PHPDocTypesToFunctionTypehint' => false,
+		'RemoveSemicolonAfterCurly' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
@@ -9420,14 +9421,6 @@ EOT;
 }
 
 	
-final class OrderMethod extends OrganizeClass {
-}
-
-	
-final class OrderMethodAndVisibility extends OrganizeClass {
-}
-
-	
 class OrderAndRemoveUseClauses extends AdditionalPass {
 	const BLANK_LINE_AFTER_USE_BLOCK = true;
 
@@ -9785,6 +9778,14 @@ EOT;
 		$removeUnused = false;
 		return parent::sortUseClauses($source, $splitComma, $removeUnused, $stripBlankLines, $blanklineAfterUseBlock);
 	}
+}
+
+	
+final class OrderMethod extends OrganizeClass {
+}
+
+	
+final class OrderMethodAndVisibility extends OrganizeClass {
 }
 
 	class PHPDocTypesToFunctionTypehint extends AdditionalPass {
@@ -10937,6 +10938,94 @@ EOT;
 }
 
 	
+final class RemoveSemicolonAfterCurly extends AdditionalPass {
+	const LAMBDA_CURLY_OPEN = 'LAMBDA_CURLY_OPEN';
+
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[ST_CURLY_CLOSE], $foundTokens[ST_SEMI_COLON])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		$curlyStack = [];
+
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			switch ($id) {
+			case T_WHILE:
+			case T_IF:
+			case T_SWITCH:
+			case T_FOR:
+			case T_FOREACH:
+				$touchedFunction = true;
+				$this->appendCode($text);
+				break;
+
+			case T_FUNCTION:
+				$touchedFunction = true;
+				if (!$this->rightUsefulTokenIs(T_STRING)) {
+					$touchedFunction = false;
+				}
+				$this->appendCode($text);
+				break;
+
+			case ST_CURLY_OPEN:
+				$curlyType = ST_CURLY_OPEN;
+				if (!$touchedFunction) {
+					$curlyType = self::LAMBDA_CURLY_OPEN;
+				}
+				$curlyStack[] = $curlyType;
+				$this->appendCode($text);
+				break;
+
+			case ST_CURLY_CLOSE:
+				$curlyType = array_pop($curlyStack);
+				$this->appendCode($text);
+
+				if (self::LAMBDA_CURLY_OPEN != $curlyType && $this->rightUsefulTokenIs(ST_SEMI_COLON)) {
+					$this->walkUntil(ST_SEMI_COLON);
+				}
+				break;
+
+			default:
+				$this->appendCode($text);
+				break;
+			}
+		}
+
+		return $this->code;
+	}
+
+	
+	public function getDescription() {
+		return 'Remove semicolon after closing curly brace.';
+	}
+
+	
+	public function getExample() {
+		return <<<'EOT'
+<?php
+// From:
+function xxx() {
+    // code
+};
+
+// To:
+function xxx() {
+    // code
+}
+?>
+EOT;
+	}
+}
+
+	
 final class RemoveUseLeadingSlash extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
 		if (isset($foundTokens[T_NAMESPACE]) || isset($foundTokens[T_TRAIT]) || isset($foundTokens[T_CLASS]) || isset($foundTokens[T_FUNCTION]) || isset($foundTokens[T_NS_SEPARATOR])) {
@@ -11408,49 +11497,6 @@ final class SortUseNameSpace extends AdditionalPass {
 		return '';
 	}
 }
-	final class SpaceAroundExclamationMark extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
-		if (isset($foundTokens[ST_EXCLAMATION])) {
-			return true;
-		}
-		return false;
-	}
-
-	public function format($source) {
-		$this->tkns = token_get_all($source);
-		$this->code = '';
-
-		while (list($index, $token) = each($this->tkns)) {
-			list($id, $text) = $this->getToken($token);
-			$this->ptr = $index;
-			switch ($id) {
-			case ST_EXCLAMATION:
-				$this->appendCode(" $text ");
-				break;
-			default:
-				$this->appendCode($text);
-				break;
-			}
-		}
-
-		return $this->code;
-	}
-
-	public function getDescription() {
-		return 'Add spaces around exclamation mark.';
-	}
-
-	public function getExample() {
-		echo '
-<?php
-// From:
-if (!true) foo();
-
-// To:
-if ( ! true) foo();
-';
-	}
-}
 	
 final class SpaceAroundControlStructures extends AdditionalPass {
 	
@@ -11585,6 +11631,49 @@ EOT;
 	}
 }
 
+	final class SpaceAroundExclamationMark extends AdditionalPass {
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[ST_EXCLAMATION])) {
+			return true;
+		}
+		return false;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			switch ($id) {
+			case ST_EXCLAMATION:
+				$this->appendCode(" $text ");
+				break;
+			default:
+				$this->appendCode($text);
+				break;
+			}
+		}
+
+		return $this->code;
+	}
+
+	public function getDescription() {
+		return 'Add spaces around exclamation mark.';
+	}
+
+	public function getExample() {
+		echo '
+<?php
+// From:
+if (!true) foo();
+
+// To:
+if ( ! true) foo();
+';
+	}
+}
 	
 final class SpaceBetweenMethods extends AdditionalPass {
 	public function candidate($source, $foundTokens) {

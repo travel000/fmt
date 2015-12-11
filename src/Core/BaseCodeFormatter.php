@@ -137,6 +137,7 @@ abstract class BaseCodeFormatter {
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
 		'PHPDocTypesToFunctionTypehint' => false,
+		'RemoveSemicolonAfterCurly' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
