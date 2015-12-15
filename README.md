@@ -26,7 +26,7 @@ $ php fmt.phar --help
 Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [options] <target>
   --cache[=FILENAME]                cache file. Default: .php.tools.cache
   --cakephp                         Apply CakePHP coding style
-  --config=FILENAME                 configuration file. Default: .php.tools.ini
+  --config=FILENAME                 configuration file. Default: .phpfmt.ini
   --constructor=type                analyse classes for attributes and generate constructor - camel, snake, golang
   --dry-run                         Runs the formatter without atually changing files;
                                     returns exit code 1 if changes would have been applied
