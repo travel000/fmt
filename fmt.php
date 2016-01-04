@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.0.0');
+	define('VERSION', '19.1.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -7341,6 +7341,15 @@ final class AllmanStyleBraces extends AdditionalPass {
 					$this->setIndent(+1);
 				}
 				$foundStack[] = $indentToken;
+				break;
+
+			case ST_COMMA:
+				$this->appendCode($text);
+				$foundIndent = &$foundStack[sizeof($foundStack) - 1];
+				if ($this->hasLnAfter() && $foundIndent['implicit']) {
+					$foundIndent['implicit'] = false;
+					$this->setIndent(+1);
+				}
 				break;
 
 			case ST_BRACKET_CLOSE:

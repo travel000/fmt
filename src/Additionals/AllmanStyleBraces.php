@@ -118,6 +118,15 @@ final class AllmanStyleBraces extends AdditionalPass {
 				$foundStack[] = $indentToken;
 				break;
 
+			case ST_COMMA:
+				$this->appendCode($text);
+				$foundIndent = &$foundStack[sizeof($foundStack) - 1];
+				if ($this->hasLnAfter() && $foundIndent['implicit']) {
+					$foundIndent['implicit'] = false;
+					$this->setIndent(+1);
+				}
+				break;
+
 			case ST_BRACKET_CLOSE:
 			case ST_PARENTHESES_CLOSE:
 			case ST_CURLY_CLOSE:
