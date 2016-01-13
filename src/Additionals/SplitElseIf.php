@@ -29,13 +29,6 @@ final class SplitElseIf extends AdditionalPass {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
-			case T_IF:
-				if ($this->leftTokenIs([T_ELSE]) && !$this->leftTokenIs([T_OPEN_TAG, T_OPEN_TAG_WITH_ECHO])) {
-					$this->rtrimAndAppendCode($text);
-					break;
-				}
-				$this->appendCode($text);
-				break;
 			case T_ELSEIF:
 				$this->appendCode('else if');
 				break;
