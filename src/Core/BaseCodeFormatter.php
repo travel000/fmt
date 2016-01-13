@@ -37,6 +37,7 @@ abstract class BaseCodeFormatter {
 		'RemoveUseLeadingSlash' => false,
 		'ShortArray' => false,
 		'MergeElseIf' => false,
+		'SplitElseIf' => false,
 		'AutoPreincrement' => false,
 		'MildAutoPreincrement' => false,
 

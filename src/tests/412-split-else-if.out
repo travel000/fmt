@@ -1,0 +1,8 @@
+<?php
+//passes: SplitElseIf
+
+if ($a) {
+	$b;
+} else if ($b) {
+	$c;
+}

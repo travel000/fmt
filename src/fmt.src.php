@@ -121,6 +121,7 @@ namespace {
 	require 'Additionals/LeftWordWrap.php';
 	require 'Additionals/LongArray.php';
 	require 'Additionals/MergeElseIf.php';
+	require 'Additionals/SplitElseIf.php';
 	require 'Additionals/MergeNamespaceWithOpenTag.php';
 	require 'Additionals/MildAutoPreincrement.php';
 	require 'Additionals/NoSpaceAfterPHPDocBlocks.php';
