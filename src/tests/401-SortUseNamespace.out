@@ -1,5 +1,5 @@
 <?php
-//passes:SortUseNamespace
+//passes:SortUseNameSpace
 namespace Laravel\Spark\Repositories;
 
 use DB;
