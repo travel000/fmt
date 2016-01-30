@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.2.2');
+	define('VERSION', '19.3.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -11704,7 +11704,17 @@ EOT;
 			$this->ptr = $index;
 			switch ($id) {
 			case ST_EXCLAMATION:
-				$this->appendCode(" $text ");
+				$this->appendCode(
+					$this->getSpace(!$this->leftUsefulTokenIs([
+						T_BOOLEAN_AND, T_BOOLEAN_OR,
+						T_LOGICAL_AND, T_LOGICAL_OR, T_LOGICAL_XOR,
+					]))
+					. $text .
+					$this->getSpace(!$this->rightUsefulTokenIs([
+						T_BOOLEAN_AND, T_BOOLEAN_OR,
+						T_LOGICAL_AND, T_LOGICAL_OR, T_LOGICAL_XOR,
+					]))
+				);
 				break;
 			default:
 				$this->appendCode($text);

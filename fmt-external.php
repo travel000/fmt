@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.2.2');
+	define('VERSION', '19.3.0');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
