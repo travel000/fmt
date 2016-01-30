@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.3.0');
+	define('VERSION', '19.3.1');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -5076,7 +5076,7 @@ final class ResizeSpaces extends FormatterPass {
 			case T_INSTEADOF:
 			case T_AS:
 			case T_COALESCE:
-				$this->appendCode(' ' . $text . ' ');
+				$this->rtrimAndAppendCode(' ' . $text . ' ');
 				break;
 
 			case T_LOGICAL_AND:
@@ -6222,6 +6222,7 @@ final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 				$found[] = T_CLASS;
 				$touchedClassInterfaceTrait = true;
 				$this->appendCode($text);
+				$this->printUntilAny([T_EXTENDS, T_IMPLEMENTS, ST_CURLY_OPEN]);
 				break;
 			case T_INTERFACE:
 				$found[] = T_INTERFACE;
