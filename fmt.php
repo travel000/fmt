@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.3.1');
+	define('VERSION', '19.3.2');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -7203,7 +7203,7 @@ final class AlignTypehint extends AdditionalPass {
 
 	
 	public function getDescription() {
-		return 'Vertically align "//" comments.';
+		return 'Vertically align function type hints.';
 	}
 
 	
@@ -7238,6 +7238,7 @@ function a(
 EOT;
 	}
 }
+
 	
 final class AllmanStyleBraces extends AdditionalPass {
 	const OTHER_BLOCK = '';

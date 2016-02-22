@@ -66,7 +66,7 @@ final class AlignTypehint extends AdditionalPass {
 	 * @codeCoverageIgnore
 	 */
 	public function getDescription() {
-		return 'Vertically align "//" comments.';
+		return 'Vertically align function type hints.';
 	}
 
 	/**
