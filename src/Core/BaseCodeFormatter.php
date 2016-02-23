@@ -86,6 +86,7 @@ abstract class BaseCodeFormatter {
 		'AlignGroupDoubleArrow' => false,
 		'AlignDoubleArrow' => false,
 		'AlignEquals' => false,
+		'AlignConstVisibilityEquals' => false,
 
 		'ReindentSwitchBlocks' => false,
 		'ReindentColonBlocks' => false,
