@@ -140,6 +140,7 @@ abstract class BaseCodeFormatter {
 		'PSR1OpenTags' => false,
 		'PHPDocTypesToFunctionTypehint' => false,
 		'RemoveSemicolonAfterCurly' => false,
+		'NewLineBeforeReturn' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
@@ -189,9 +190,9 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentComments'] = new ReindentComments();
 		$this->passes['ReindentEqual'] = new ReindentEqual();
-		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
 		$this->passes['ResizeSpaces'] = new ResizeSpaces();
@@ -199,6 +200,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['SplitCurlyCloseAndTokens'] = new SplitCurlyCloseAndTokens();
 		$this->passes['StripExtraCommaInList'] = new StripExtraCommaInList();
 		$this->passes['TwoCommandsInSameLine'] = new TwoCommandsInSameLine();
+
 		$this->hasAfterExecutedPass = method_exists($this, 'afterExecutedPass');
 		$this->hasAfterFormat = method_exists($this, 'afterFormat');
 		$this->hasBeforePass = method_exists($this, 'beforePass');

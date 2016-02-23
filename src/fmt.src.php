@@ -125,6 +125,7 @@ namespace {
 	require 'Additionals/SplitElseIf.php';
 	require 'Additionals/MergeNamespaceWithOpenTag.php';
 	require 'Additionals/MildAutoPreincrement.php';
+	require 'Additionals/NewLineBeforeReturn.php';
 	require 'Additionals/NoSpaceAfterPHPDocBlocks.php';
 	require 'Additionals/OrganizeClass.php';
 	require 'Additionals/OrderAndRemoveUseClauses.php';
