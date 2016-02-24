@@ -2892,6 +2892,7 @@ abstract class BaseCodeFormatter {
 		'RemoveSemicolonAfterCurly' => false,
 		'NewLineBeforeReturn' => false,
 		'EchoToPrint' => false,
+		'TrimSpaceBeforeSemicolon' => false,
 	];
 
 	private $hasAfterExecutedPass = false;

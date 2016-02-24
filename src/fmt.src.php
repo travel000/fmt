@@ -160,6 +160,7 @@ namespace {
 	require 'Additionals/StripSpaces.php';
 	require 'Additionals/StripSpaceWithinControlStructures.php';
 	require 'Additionals/TightConcat.php';
+	require 'Additionals/TrimSpaceBeforeSemicolon.php';
 	require 'Additionals/UpgradeToPreg.php';
 	require 'Additionals/WordWrap.php';
 	require 'Additionals/WrongConstructorName.php';
