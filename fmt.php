@@ -2694,6 +2694,20 @@ abstract class FormatterPass {
 		}
 	}
 
+	protected function walkUsefulRightUntil($tkns, $idx, $tokens) {
+		$ignoreList = $this->resolveIgnoreList($this->ignoreFutileTokens);
+		$tokens = array_flip($tokens);
+
+		while ($idx > 0 && isset($tkns[$idx])) {
+			$idx = $this->walkRight($tkns, $idx, $ignoreList);
+			if (isset($tokens[$tkns[$idx][0]])) {
+				return $idx;
+			}
+		}
+
+		return;
+	}
+
 	private function calculateCacheKey($direction, $ignoreList) {
 		return $direction . "\x2" . implode('', $ignoreList);
 	}
@@ -2876,6 +2890,8 @@ abstract class BaseCodeFormatter {
 		'PSR1OpenTags' => false,
 		'PHPDocTypesToFunctionTypehint' => false,
 		'RemoveSemicolonAfterCurly' => false,
+		'NewLineBeforeReturn' => false,
+		'EchoToPrint' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
@@ -2925,9 +2941,9 @@ abstract class BaseCodeFormatter {
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();
 		$this->passes['OrderAndRemoveUseClauses'] = new OrderAndRemoveUseClauses();
 		$this->passes['Reindent'] = new Reindent();
+		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentComments'] = new ReindentComments();
 		$this->passes['ReindentEqual'] = new ReindentEqual();
-		$this->passes['ReindentColonBlocks'] = new ReindentColonBlocks();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
 		$this->passes['ResizeSpaces'] = new ResizeSpaces();
@@ -2935,6 +2951,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['SplitCurlyCloseAndTokens'] = new SplitCurlyCloseAndTokens();
 		$this->passes['StripExtraCommaInList'] = new StripExtraCommaInList();
 		$this->passes['TwoCommandsInSameLine'] = new TwoCommandsInSameLine();
+
 		$this->hasAfterExecutedPass = method_exists($this, 'afterExecutedPass');
 		$this->hasAfterFormat = method_exists($this, 'afterFormat');
 		$this->hasBeforePass = method_exists($this, 'beforePass');
@@ -8576,6 +8593,63 @@ EOT;
 }
 
 	
+final class EchoToPrint extends AdditionalPass {
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[T_ECHO])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		while (list($index, $token) = each($this->tkns)) {
+			list($id) = $this->getToken($token);
+			$this->ptr = $index;
+
+			if (T_ECHO == $id) {
+				$start = $index;
+				$end = $this->walkUsefulRightUntil($this->tkns, $index, [ST_SEMI_COLON, T_CLOSE_TAG]);
+				$convert = true;
+				for ($i = $start; $i < $end; $i++) {
+					$tkn = $this->tkns[$i];
+					if (ST_PARENTHESES_OPEN === $tkn[0]) {
+						$this->refWalkBlock($tkns, $ptr, ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
+					} elseif (ST_BRACKET_OPEN === $tkn[0]) {
+						$this->refWalkBlock($tkns, $ptr, ST_BRACKET_OPEN, ST_BRACKET_CLOSE);
+					} elseif (ST_COMMA === $tkn[0]) {
+						$convert = false;
+						break;
+					}
+				}
+				if ($convert) {
+					$this->tkns[$start] = [T_PRINT, 'print'];
+				}
+			}
+		}
+
+		return $this->render();
+	}
+
+	
+	public function getDescription() {
+		return 'Convert from T_ECHO to print.';
+	}
+
+	
+	public function getExample() {
+		return <<<'EOT'
+<?php
+echo 1;
+
+print 2;
+?>
+EOT;
+	}
+
+}
+	
 final class EncapsulateNamespaces extends AdditionalPass {
 	public function candidate($source, $foundTokens) {
 		if (isset($foundTokens[T_NAMESPACE])) {
@@ -9258,6 +9332,61 @@ final class MildAutoPreincrement extends AutoPreincrement {
 		return 'Automatically convert postincrement to preincrement. (Deprecated pass. Use AutoPreincrement instead).';
 	}
 }
+	
+final class NewLineBeforeReturn extends AdditionalPass {
+	public function candidate($source, $foundTokens) {
+		if (isset($foundTokens[T_RETURN])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format($source) {
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			switch ($id) {
+			case T_RETURN:
+				$this->rtrimAndAppendCode($this->newLine . $this->newLine . $text);
+				break;
+			default:
+				$this->appendCode($text);
+				break;
+			}
+		}
+
+		return $this->code;
+	}
+
+	
+	public function getDescription() {
+		return 'Add an empty line before T_RETURN.';
+	}
+
+	
+	public function getExample() {
+		return <<<'EOT'
+<?php
+// From
+function a(){
+	$a = 1;
+	return $a;
+}
+
+// To
+function a(){
+	$a = 1;
+
+	return $a;
+}
+?>
+EOT;
+	}
+}
+
 	
 final class NoSpaceAfterPHPDocBlocks extends FormatterPass {
 	public function candidate($source, $foundTokens) {

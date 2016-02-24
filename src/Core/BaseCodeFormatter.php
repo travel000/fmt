@@ -141,6 +141,7 @@ abstract class BaseCodeFormatter {
 		'PHPDocTypesToFunctionTypehint' => false,
 		'RemoveSemicolonAfterCurly' => false,
 		'NewLineBeforeReturn' => false,
+		'EchoToPrint' => false,
 	];
 
 	private $hasAfterExecutedPass = false;

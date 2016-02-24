@@ -906,6 +906,20 @@ abstract class FormatterPass {
 		}
 	}
 
+	protected function walkUsefulRightUntil($tkns, $idx, $tokens) {
+		$ignoreList = $this->resolveIgnoreList($this->ignoreFutileTokens);
+		$tokens = array_flip($tokens);
+
+		while ($idx > 0 && isset($tkns[$idx])) {
+			$idx = $this->walkRight($tkns, $idx, $ignoreList);
+			if (isset($tokens[$tkns[$idx][0]])) {
+				return $idx;
+			}
+		}
+
+		return;
+	}
+
 	private function calculateCacheKey($direction, $ignoreList) {
 		return $direction . "\x2" . implode('', $ignoreList);
 	}

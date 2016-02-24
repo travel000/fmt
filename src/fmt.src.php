@@ -115,6 +115,7 @@ namespace {
 	require 'Additionals/ConvertOpenTagWithEcho.php';
 	require 'Additionals/DocBlockToComment.php';
 	require 'Additionals/DoubleToSingleQuote.php';
+	require 'Additionals/EchoToPrint.php';
 	require 'Additionals/EncapsulateNamespaces.php';
 	require 'Additionals/GeneratePHPDoc.php';
 	require 'Additionals/IndentTernaryConditions.php';
