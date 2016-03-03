@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.5.1');
+	define('VERSION', '19.5.2');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -9351,7 +9351,7 @@ final class NewLineBeforeReturn extends AdditionalPass {
 			$this->ptr = $index;
 			switch ($id) {
 			case T_RETURN:
-				if (!$this->leftUsefulTokenIs(ST_CURLY_OPEN)) {
+				if (!$this->leftUsefulTokenIs([ST_CURLY_OPEN, ST_COLON])) {
 					$this->rtrimAndAppendCode($this->newLine . $this->newLine . $text);
 					break;
 				}
