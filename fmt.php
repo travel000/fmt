@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.5.2');
+	define('VERSION', '19.5.3');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -11810,7 +11810,6 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 		) {
 			return true;
 		}
-
 		return false;
 	}
 
@@ -11819,9 +11818,11 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$isComment = false;
+
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
+
 			switch ($id) {
 			case ST_QUOTE:
 				$this->appendCode($text);
@@ -11858,7 +11859,6 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 				}
 				$this->appendCode($text);
 				break;
-
 			case T_IF:
 			case T_DO:
 			case T_FOR:
@@ -11867,9 +11867,9 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 				if (!$isComment) {
 					$this->appendCode($this->newLine);
 				}
+
 				$this->appendCode($text);
 				break;
-
 			case T_WHILE:
 				if (!$isComment) {
 					$this->appendCode($this->newLine);
@@ -11882,19 +11882,17 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 					$this->appendCode($this->newLine);
 				}
 				break;
-
 			case ST_CURLY_CLOSE:
 				$this->appendCode($text);
-
-				if (!$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON])) {
+				if (!$this->rightTokenIs([T_ENCAPSED_AND_WHITESPACE, ST_QUOTE, ST_COMMA, ST_SEMI_COLON, ST_PARENTHESES_CLOSE])) {
 					$this->appendCode($this->newLine);
 				}
 				break;
-
 			default:
 				$this->appendCode($text);
 				break;
 			}
+
 		}
 
 		return $this->code;
