@@ -5,3 +5,7 @@ function a() {
 
 	return $a;
 }
+
+function b() {
+	return 1;
+}
