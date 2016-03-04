@@ -157,6 +157,7 @@ namespace {
 	require 'Additionals/StripExtraCommaInArray.php';
 	require 'Additionals/StripNewlineAfterClassOpen.php';
 	require 'Additionals/StripNewlineAfterCurlyOpen.php';
+	require 'Additionals/StripNewlineWithinClassBody.php';
 	require 'Additionals/StripSpaces.php';
 	require 'Additionals/StripSpaceWithinControlStructures.php';
 	require 'Additionals/TightConcat.php';

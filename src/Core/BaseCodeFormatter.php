@@ -143,6 +143,7 @@ abstract class BaseCodeFormatter {
 		'NewLineBeforeReturn' => false,
 		'EchoToPrint' => false,
 		'TrimSpaceBeforeSemicolon' => false,
+		'StripNewlineWithinClassBody' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
