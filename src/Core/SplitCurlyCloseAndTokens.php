@@ -116,6 +116,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 						T_ELSEIF,
 						T_IF,
 						T_OBJECT_OPERATOR,
+						T_CLOSE_TAG,
 					])
 				) {
 					$this->appendCode($this->newLine);

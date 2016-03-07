@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.6.0');
+	define('VERSION', '19.6.1');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -5510,6 +5510,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 						T_ELSEIF,
 						T_IF,
 						T_OBJECT_OPERATOR,
+						T_CLOSE_TAG,
 					])
 				) {
 					$this->appendCode($this->newLine);
@@ -6415,6 +6416,7 @@ final class PsrDecorator {
 		$fmt->enablePass('PSR2SingleEmptyLineAndStripClosingTag');
 		$fmt->enablePass('ReindentSwitchBlocks');
 		$fmt->disablePass('ReindentComments');
+		$fmt->disablePass('StripNewlineWithinClassBody');
 	}
 
 	public static function decorate(CodeFormatter $fmt) {
