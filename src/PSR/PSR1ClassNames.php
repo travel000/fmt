@@ -30,7 +30,10 @@ final class PSR1ClassNames extends FormatterPass {
 			$this->ptr = $index;
 			switch ($id) {
 			case T_CLASS:
-				$foundClass = true;
+				if (!$this->leftUsefulTokenIs(T_DOUBLE_COLON)) {
+					$foundClass = true;
+				}
+
 				$this->appendCode($text);
 				break;
 			case T_STRING:
