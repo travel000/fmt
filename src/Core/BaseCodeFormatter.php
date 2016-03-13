@@ -25,7 +25,6 @@ abstract class BaseCodeFormatter {
 		'RTrim' => false,
 		'WordWrap' => false,
 
-		'AlignPHPCode' => false,
 		'ConvertOpenTagWithEcho' => false,
 		'RestoreComments' => false,
 		'UpgradeToPreg' => false,
@@ -52,7 +51,7 @@ abstract class BaseCodeFormatter {
 		'TightConcat' => false,
 
 		'PSR2IndentWithSpace' => false,
-
+		'AlignPHPCode' => false,
 		'AllmanStyleBraces' => false,
 		'NamespaceMergeWithOpenTag' => false,
 		'MergeNamespaceWithOpenTag' => false,
