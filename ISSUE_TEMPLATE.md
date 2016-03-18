@@ -16,10 +16,9 @@ Actual result:
 <insert the actual result>
 ```
 
-You configuration:
+Your configuration:
 ```
 <insert your phpfmt configuration and PHP related information>
 ```
-
 
 
