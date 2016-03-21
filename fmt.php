@@ -1663,7 +1663,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '19.6.3');
+	define('VERSION', '19.6.4');
 	
 function extractFromArgv($argv, $item) {
 	return array_values(
@@ -11262,6 +11262,12 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
+
+			case T_NAMESPACE:
+			case T_CLASS:
+			case T_TRAIT:
+			case T_INTERFACE:
+
 			case T_WHILE:
 			case T_IF:
 			case T_SWITCH:
