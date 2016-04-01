@@ -2796,6 +2796,7 @@ abstract class BaseCodeFormatter {
 		'StripNewlineAfterCurlyOpen' => false,
 
 		'SortUseNameSpace' => false,
+		'SpaceAfterExclamationMark' => false,
 		'SpaceAroundExclamationMark' => false,
 
 		'TightConcat' => false,

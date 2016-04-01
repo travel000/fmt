@@ -150,6 +150,7 @@ namespace {
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
 	require 'Additionals/SortUseNameSpace.php';
 	require 'Additionals/SpaceAroundControlStructures.php';
+	require 'Additionals/SpaceAfterExclamationMark.php';
 	require 'Additionals/SpaceAroundExclamationMark.php';
 	require 'Additionals/SpaceBetweenMethods.php';
 	require 'Additionals/StrictBehavior.php';
