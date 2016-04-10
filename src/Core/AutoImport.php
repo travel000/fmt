@@ -26,11 +26,11 @@ final class AutoImportPass extends FormatterPass {
 		$this->oracle = new SQLite3($oracleFn);
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source = '') {
+	public function format(string $source): string{
 		$namespaceCount = 0;
 		$tokens = token_get_all($source);
 		while (list(, $token) = each($tokens)) {

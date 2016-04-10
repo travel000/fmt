@@ -22,7 +22,7 @@ namespace {
 
 		private $passes = [];
 
-		public function __construct($debug = false) {
+		public function __construct(bool $debug = false) {
 			$this->debug = (bool) $debug;
 		}
 
@@ -30,7 +30,7 @@ namespace {
 			$this->passes[] = $pass;
 		}
 
-		public function formatCode($source = '') {
+		public function formatCode(string $source = ''): string{
 			gc_enable();
 			$passes = array_map(
 				function ($pass) {

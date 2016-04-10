@@ -13,7 +13,7 @@
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 final class EchoToPrint extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ECHO])) {
 			return true;
 		}
@@ -21,7 +21,7 @@ final class EchoToPrint extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		while (list($index, $token) = each($this->tkns)) {
 			list($id) = $this->getToken($token);
@@ -54,14 +54,14 @@ final class EchoToPrint extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert from T_ECHO to print.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 echo 1;

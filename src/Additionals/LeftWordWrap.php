@@ -19,11 +19,11 @@ final class LeftWordWrap extends AdditionalPass {
 
 	private static $tabSizeInSpace = 8;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -67,14 +67,14 @@ final class LeftWordWrap extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Word wrap at 80 columns - left justify.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return '';
 	}
 }

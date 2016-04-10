@@ -20,14 +20,14 @@ final class JoinToImplode extends AliasToMaster {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace implode() alias (join() -> implode()).';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = join(',', $arr);

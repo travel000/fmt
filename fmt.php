@@ -1,4 +1,6 @@
 <?php
+declare (strict_types = 1);
+
 # Copyright (c) 2015, phpfmt and its authors
 # All rights reserved.
 #
@@ -1567,9 +1569,9 @@ interface Cacher {
 
 	public function create_db();
 
-	public function is_changed($target, $filename);
+	public function is_changed(string $target, string $filename);
 
-	public function upsert($target, $filename, $content);
+	public function upsert(string $target, string $filename, string $content);
 }
 
 	$enableCache = false;
@@ -1582,7 +1584,7 @@ final class Cache implements Cacher {
 
 	private $noop = false;
 
-	public function __construct($filename) {
+	public function __construct(string $filename) {
 		if (empty($filename)) {
 			$this->noop = true;
 			return;
@@ -1617,7 +1619,7 @@ final class Cache implements Cacher {
 		$this->db->exec('CREATE TABLE cache (target TEXT, filename TEXT, hash TEXT, unique(target, filename));');
 	}
 
-	public function is_changed($target, $filename) {
+	public function is_changed(string $target, string $filename) {
 		$content = file_get_contents($filename);
 		if ($this->noop) {
 			return $content;
@@ -1632,7 +1634,7 @@ final class Cache implements Cacher {
 		return false;
 	}
 
-	public function upsert($target, $filename, $content) {
+	public function upsert(string $target, string $filename, string $content) {
 		if ($this->noop) {
 			return;
 		}
@@ -1640,7 +1642,7 @@ final class Cache implements Cacher {
 		$this->db->exec('REPLACE INTO cache VALUES ("' . SQLite3::escapeString($target) . '","' . SQLite3::escapeString($filename) . '", "' . SQLite3::escapeString($hash) . '")');
 	}
 
-	private function calculateHash($content) {
+	private function calculateHash(string $content): string {
 		return sprintf('%u', crc32($content));
 	}
 
@@ -1654,18 +1656,18 @@ final class Cache implements Cacher {
 
 final class Cache implements Cacher {
 	public function create_db() {}
-	public function is_changed($target, $filename) {
+	public function is_changed(string $target, string $filename): string {
 		return file_get_contents($filename);
 	}
 
-	public function upsert($target, $filename, $content) {}
+	public function upsert(string $target, string $filename, string $content) {}
 }
 
 	}
 
-	define('VERSION', '19.6.5');
+	define('VERSION', '20.0.0');
 	
-function extractFromArgv($argv, $item) {
+function extractFromArgv(array $argv, string $item) {
 	return array_values(
 		array_filter($argv,
 			function ($v) use ($item) {
@@ -1675,7 +1677,7 @@ function extractFromArgv($argv, $item) {
 	);
 }
 
-function extractFromArgvShort($argv, $item) {
+function extractFromArgvShort(array $argv, string $item) {
 	return array_values(
 		array_filter($argv,
 			function ($v) use ($item) {
@@ -1685,7 +1687,7 @@ function extractFromArgvShort($argv, $item) {
 	);
 }
 
-function lint($file) {
+function lint(string $file) {
 	$output = null;
 	$ret = null;
 	exec('php -l ' . escapeshellarg($file), $output, $ret);
@@ -1715,7 +1717,7 @@ function tabwriter(array $lines) {
 	return $final;
 }
 	
-function selfupdate($argv, $inPhar) {
+function selfupdate(array $argv, bool $inPhar) {
 	$opts = [
 		'http' => [
 			'method' => 'GET',
@@ -1828,11 +1830,11 @@ abstract class FormatterPass {
 
 	private $memoUseful = [null, null];
 
-	abstract public function candidate($source, $foundTokens);
+	abstract public function candidate(string $source, array $foundTokens): bool;
 
-	abstract public function format($source);
+	abstract public function format(string $source): string;
 
-	protected function alignPlaceholders($origPlaceholder, $contextCounter) {
+	protected function alignPlaceholders(string $origPlaceholder, int $contextCounter) {
 		for ($j = 0; $j <= $contextCounter; ++$j) {
 			$placeholder = sprintf($origPlaceholder, $j);
 			if (false === strpos($this->code, $placeholder)) {
@@ -1876,27 +1878,27 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function appendCode($code = '') {
+	protected function appendCode(string $code) {
 		$this->code .= $code;
 	}
 
-	protected function getCrlf() {
+	protected function getCrlf(): string {
 		return $this->newLine;
 	}
 
-	protected function getCrlfIndent() {
+	protected function getCrlfIndent(): string {
 		return $this->getCrlf() . $this->getIndent();
 	}
 
-	protected function getIndent($increment = 0) {
+	protected function getIndent(int $increment = 0): string {
 		return str_repeat($this->indentChar, $this->indent + $increment);
 	}
 
-	protected function getSpace($true = true) {
+	protected function getSpace(bool $true = true): string {
 		return $true ? ' ' : '';
 	}
 
-	protected function getToken($token) {
+	protected function getToken($token): array{
 		$ret = [$token, $token];
 		if (isset($token[1])) {
 			$ret = $token;
@@ -1904,42 +1906,42 @@ abstract class FormatterPass {
 		return $ret;
 	}
 
-	protected function hasLn($text) {
+	protected function hasLn(string $text): bool {
 		return (false !== strpos($text, $this->newLine));
 	}
 
-	protected function hasLnAfter() {
+	protected function hasLnAfter(): bool{
 		$id = null;
 		$text = null;
 		list($id, $text) = $this->inspectToken();
 		return T_WHITESPACE === $id && $this->hasLn($text);
 	}
 
-	protected function hasLnBefore() {
+	protected function hasLnBefore(): bool{
 		$id = null;
 		$text = null;
 		list($id, $text) = $this->inspectToken(-1);
 		return T_WHITESPACE === $id && $this->hasLn($text);
 	}
 
-	protected function hasLnLeftToken() {
+	protected function hasLnLeftToken(): bool {
 		list(, $text) = $this->getToken($this->leftToken());
 		return $this->hasLn($text);
 	}
 
-	protected function hasLnRightToken() {
+	protected function hasLnRightToken(): bool {
 		list(, $text) = $this->getToken($this->rightToken());
 		return $this->hasLn($text);
 	}
 
-	protected function inspectToken($delta = 1) {
+	protected function inspectToken(int $delta = 1): array{
 		if (!isset($this->tkns[$this->ptr + $delta])) {
 			return [null, null];
 		}
 		return $this->getToken($this->tkns[$this->ptr + $delta]);
 	}
 
-	protected function isShortArray() {
+	protected function isShortArray(): bool {
 		return !$this->leftTokenIs([
 			ST_BRACKET_CLOSE,
 			ST_CURLY_CLOSE,
@@ -1951,21 +1953,21 @@ abstract class FormatterPass {
 		]);
 	}
 
-	protected function leftMemoTokenIs($token) {
+	protected function leftMemoTokenIs($token): bool {
 		return $this->resolveFoundToken($this->memo[0], $token);
 	}
 
-	protected function leftMemoUsefulTokenIs($token, $debug = false) {
+	protected function leftMemoUsefulTokenIs($token, bool $debug = false): bool {
 		return $this->resolveFoundToken($this->memoUseful[0], $token);
 	}
 
-	protected function leftToken($ignoreList = []) {
+	protected function leftToken(array $ignoreList = []) {
 		$i = $this->leftTokenIdx($ignoreList);
 
 		return $this->tkns[$i];
 	}
 
-	protected function leftTokenIdx($ignoreList = []) {
+	protected function leftTokenIdx(array $ignoreList = []): int{
 		$ignoreList = $this->resolveIgnoreList($ignoreList);
 
 		$i = $this->walkLeft($this->tkns, $this->ptr, $ignoreList);
@@ -1973,18 +1975,18 @@ abstract class FormatterPass {
 		return $i;
 	}
 
-	protected function leftTokenIs($token, $ignoreList = []) {
+	protected function leftTokenIs($token, array $ignoreList = []): bool {
 		return $this->tokenIs('left', $token, $ignoreList);
 	}
 
-	protected function leftTokenSubsetAtIdx($tkns, $idx, $ignoreList = []) {
+	protected function leftTokenSubsetAtIdx(array $tkns, int $idx, array $ignoreList = []): int{
 		$ignoreList = $this->resolveIgnoreList($ignoreList);
 		$idx = $this->walkLeft($tkns, $idx, $ignoreList);
 
 		return $idx;
 	}
 
-	protected function leftTokenSubsetIsAtIdx($tkns, $idx, $token, $ignoreList = []) {
+	protected function leftTokenSubsetIsAtIdx(array $tkns, int $idx, $token, array $ignoreList = []): bool{
 		$idx = $this->leftTokenSubsetAtIdx($tkns, $idx, $ignoreList);
 
 		return $this->resolveTokenMatch($tkns, $idx, $token);
@@ -1994,11 +1996,11 @@ abstract class FormatterPass {
 		return $this->leftToken($this->ignoreFutileTokens);
 	}
 
-	protected function leftUsefulTokenIdx() {
+	protected function leftUsefulTokenIdx(): int {
 		return $this->leftTokenIdx($this->ignoreFutileTokens);
 	}
 
-	protected function leftUsefulTokenIs($token) {
+	protected function leftUsefulTokenIs($token): bool {
 		return $this->leftTokenIs($token, $this->ignoreFutileTokens);
 	}
 
@@ -2016,7 +2018,7 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function peekAndCountUntilAny($tkns, $ptr, $tknids) {
+	protected function peekAndCountUntilAny(array $tkns, int $ptr, array $tknids): array{
 		$tknids = array_flip($tknids);
 		$tknsSize = sizeof($tkns);
 		$countTokens = [];
@@ -2038,7 +2040,7 @@ abstract class FormatterPass {
 		return [$id, $countTokens];
 	}
 
-	protected function printAndStopAt($tknids) {
+	protected function printAndStopAt($tknids): array{
 		if (is_scalar($tknids)) {
 			$tknids = [$tknids];
 		}
@@ -2056,6 +2058,7 @@ abstract class FormatterPass {
 			}
 			$this->appendCode($text);
 		}
+		return [null, null];
 	}
 
 	protected function printAndStopAtEndOfParamBlock() {
@@ -2094,7 +2097,7 @@ abstract class FormatterPass {
 		return $paramCount;
 	}
 
-	protected function printBlock($start, $end) {
+	protected function printBlock(string $start, string $end) {
 		$count = 1;
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -2152,7 +2155,7 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function printUntilAny($tknids) {
+	protected function printUntilAny(array $tknids) {
 		$tknids = array_flip($tknids);
 		$whitespaceNewLine = false;
 		$id = null;
@@ -2178,12 +2181,12 @@ abstract class FormatterPass {
 		$this->printUntil(ST_QUOTE);
 	}
 
-	protected function refInsert(&$tkns, &$ptr, $item) {
+	protected function refInsert(array &$tkns, int &$ptr, array $item) {
 		array_splice($tkns, $ptr, 0, [$item]);
 		++$ptr;
 	}
 
-	protected function refSkipBlocks($tkns, &$ptr) {
+	protected function refSkipBlocks(array $tkns, int &$ptr) {
 		for ($sizeOfTkns = sizeof($tkns); $ptr < $sizeOfTkns; ++$ptr) {
 			$id = $tkns[$ptr][0];
 
@@ -2313,7 +2316,7 @@ abstract class FormatterPass {
 		--$ptr;
 	}
 
-	protected function refSkipIfTokenIsAny($tkns, &$ptr, $skipIds) {
+	protected function refSkipIfTokenIsAny(array $tkns, int &$ptr, array $skipIds) {
 		$skipIds = array_flip($skipIds);
 		++$ptr;
 		for ($sizeOfTkns = sizeof($tkns); $ptr < $sizeOfTkns; ++$ptr) {
@@ -2324,14 +2327,14 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function refWalkBackUsefulUntil($tkns, &$ptr, array $expectedId) {
+	protected function refWalkBackUsefulUntil(array $tkns, int &$ptr, array $expectedId) {
 		$expectedId = array_flip($expectedId);
 		do {
 			$ptr = $this->walkLeft($tkns, $ptr, $this->ignoreFutileTokens);
 		} while (isset($expectedId[$tkns[$ptr][0]]));
 	}
 
-	protected function refWalkBlock($tkns, &$ptr, $start, $end) {
+	protected function refWalkBlock(array $tkns, int &$ptr, string $start, string $end) {
 		$count = 0;
 		for ($sizeOfTkns = sizeof($tkns); $ptr < $sizeOfTkns; ++$ptr) {
 			$id = $tkns[$ptr][0];
@@ -2347,7 +2350,7 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function refWalkBlockReverse($tkns, &$ptr, $start, $end) {
+	protected function refWalkBlockReverse(array $tkns, int &$ptr, string $start, string $end) {
 		$count = 0;
 		for (; $ptr >= 0; --$ptr) {
 			$id = $tkns[$ptr][0];
@@ -2363,7 +2366,7 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function refWalkCurlyBlock($tkns, &$ptr) {
+	protected function refWalkCurlyBlock(array $tkns, int &$ptr) {
 		$count = 0;
 		for ($sizeOfTkns = sizeof($tkns); $ptr < $sizeOfTkns; ++$ptr) {
 			$id = $tkns[$ptr][0];
@@ -2385,7 +2388,7 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function refWalkCurlyBlockReverse($tkns, &$ptr) {
+	protected function refWalkCurlyBlockReverse(array $tkns, int &$ptr) {
 		$count = 0;
 		for (; $ptr >= 0; --$ptr) {
 			$id = $tkns[$ptr][0];
@@ -2407,19 +2410,19 @@ abstract class FormatterPass {
 		}
 	}
 
-	protected function refWalkUsefulUntil($tkns, &$ptr, $expectedId) {
+	protected function refWalkUsefulUntil(array $tkns, int &$ptr, $expectedId) {
 		do {
 			$ptr = $this->walkRight($tkns, $ptr, $this->ignoreFutileTokens);
 		} while ($expectedId != $tkns[$ptr][0]);
 	}
 
-	protected function refWalkUsefulUntilReverse($tkns, &$ptr, $expectedId) {
+	protected function refWalkUsefulUntilReverse(array $tkns, int &$ptr, $expectedId) {
 		do {
 			$ptr = $this->walkLeft($tkns, $ptr, $this->ignoreFutileTokens);
 		} while ($ptr >= 0 && $expectedId != $tkns[$ptr][0]);
 	}
 
-	protected function render($tkns = null) {
+	protected function render(array $tkns = null): string {
 		if (null == $tkns) {
 			$tkns = $this->tkns;
 		}
@@ -2433,7 +2436,7 @@ abstract class FormatterPass {
 		return $str;
 	}
 
-	protected function renderLight($tkns = null) {
+	protected function renderLight(array $tkns = null): string {
 		if (null == $tkns) {
 			$tkns = $this->tkns;
 		}
@@ -2444,13 +2447,13 @@ abstract class FormatterPass {
 		return $str;
 	}
 
-	protected function rightToken($ignoreList = []) {
+	protected function rightToken(array $ignoreList = []) {
 		$i = $this->rightTokenIdx($ignoreList);
 
 		return $this->tkns[$i];
 	}
 
-	protected function rightTokenIdx($ignoreList = []) {
+	protected function rightTokenIdx(array $ignoreList = []): int{
 		$ignoreList = $this->resolveIgnoreList($ignoreList);
 
 		$i = $this->walkRight($this->tkns, $this->ptr, $ignoreList);
@@ -2458,18 +2461,18 @@ abstract class FormatterPass {
 		return $i;
 	}
 
-	protected function rightTokenIs($token, $ignoreList = []) {
+	protected function rightTokenIs($token, array $ignoreList = []): bool {
 		return $this->tokenIs('right', $token, $ignoreList);
 	}
 
-	protected function rightTokenSubsetAtIdx($tkns, $idx, $ignoreList = []) {
+	protected function rightTokenSubsetAtIdx(array $tkns, int $idx, array $ignoreList = []): int{
 		$ignoreList = $this->resolveIgnoreList($ignoreList);
 		$idx = $this->walkRight($tkns, $idx, $ignoreList);
 
 		return $idx;
 	}
 
-	protected function rightTokenSubsetIsAtIdx($tkns, $idx, $token, $ignoreList = []) {
+	protected function rightTokenSubsetIsAtIdx(array $tkns, int $idx, $token, array $ignoreList = []): bool{
 		$idx = $this->rightTokenSubsetAtIdx($tkns, $idx, $ignoreList);
 
 		return $this->resolveTokenMatch($tkns, $idx, $token);
@@ -2479,23 +2482,23 @@ abstract class FormatterPass {
 		return $this->rightToken($this->ignoreFutileTokens);
 	}
 
-	protected function rightUsefulTokenIdx() {
+	protected function rightUsefulTokenIdx(): int {
 		return $this->rightTokenIdx($this->ignoreFutileTokens);
 	}
 
-	protected function rightUsefulTokenIs($token) {
+	protected function rightUsefulTokenIs($token): bool {
 		return $this->rightTokenIs($token, $this->ignoreFutileTokens);
 	}
 
-	protected function rtrimAndAppendCode($code = '') {
+	protected function rtrimAndAppendCode(string $code) {
 		$this->code = rtrim($this->code) . $code;
 	}
 
-	protected function rtrimLnAndAppendCode($code = '') {
+	protected function rtrimLnAndAppendCode(string $code) {
 		$this->code = rtrim($this->code, "\t ") . $code;
 	}
 
-	protected function scanAndReplace(&$tkns, &$ptr, $start, $end, $call, $lookFor) {
+	protected function scanAndReplace(array &$tkns, int &$ptr, string $start, string $end, string $call, array $lookFor): string{
 		$lookFor = array_flip($lookFor);
 		$placeholder = '<?php' . ' /*\x2 PHPOPEN \x3*/';
 		$tmp = '';
@@ -2524,7 +2527,7 @@ abstract class FormatterPass {
 		return $start . $tmp . $end;
 	}
 
-	protected function scanAndReplaceCurly(&$tkns, &$ptr, $start, $call, $lookFor) {
+	protected function scanAndReplaceCurly(array &$tkns, int &$ptr, string $start, string $call, array $lookFor): string{
 		$lookFor = array_flip($lookFor);
 		$placeholder = '<?php' . ' /*\x2 PHPOPEN \x3*/';
 		$tmp = '';
@@ -2568,25 +2571,25 @@ abstract class FormatterPass {
 		return $start . $tmp . ST_CURLY_CLOSE;
 	}
 
-	protected function setIndent($increment) {
+	protected function setIndent(int $increment) {
 		$this->indent += $increment;
 		if ($this->indent < 0) {
 			$this->indent = 0;
 		}
 	}
 
-	protected function siblings($tkns, $ptr) {
+	protected function siblings(array $tkns, int $ptr): array{
 		$ignoreList = $this->resolveIgnoreList([T_WHITESPACE]);
 		$left = $this->walkLeft($tkns, $ptr, $ignoreList);
 		$right = $this->walkRight($tkns, $ptr, $ignoreList);
 		return [$left, $right];
 	}
 
-	protected function substrCountTrailing($haystack, $needle) {
+	protected function substrCountTrailing(string $haystack, string $needle): int {
 		return strlen(rtrim($haystack, " \t")) - strlen(rtrim($haystack, " \t" . $needle));
 	}
 
-	protected function tokenIs($direction, $token, $ignoreList = []) {
+	protected function tokenIs(string $direction, $token, array $ignoreList = []): bool {
 		if ('left' != $direction) {
 			$direction = 'right';
 		}
@@ -2604,7 +2607,7 @@ abstract class FormatterPass {
 		return $this->resolveTokenMatch($this->tkns, $this->cache[$key], $token);
 	}
 
-	protected function walkAndAccumulateCurlyBlock(&$tkns) {
+	protected function walkAndAccumulateCurlyBlock(array &$tkns): string{
 		$count = 1;
 		$ret = '';
 		while (list($index, $token) = each($tkns)) {
@@ -2630,7 +2633,7 @@ abstract class FormatterPass {
 		return $ret;
 	}
 
-	protected function walkAndAccumulateStopAt(&$tkns, $tknid) {
+	protected function walkAndAccumulateStopAt(array &$tkns, string $tknid): string{
 		$ret = '';
 		while (list($index, $token) = each($tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -2643,7 +2646,7 @@ abstract class FormatterPass {
 		return $ret;
 	}
 
-	protected function walkAndAccumulateStopAtAny(&$tkns, $tknids) {
+	protected function walkAndAccumulateStopAtAny(array &$tkns, array $tknids): array{
 		$tknids = array_flip($tknids);
 		$ret = '';
 		$id = null;
@@ -2659,7 +2662,7 @@ abstract class FormatterPass {
 		return [$ret, $id];
 	}
 
-	protected function walkAndAccumulateUntil(&$tkns, $tknid) {
+	protected function walkAndAccumulateUntil(array &$tkns, $tknid): string{
 		$ret = '';
 		while (list($index, $token) = each($tkns)) {
 			list($id, $text) = $this->getToken($token);
@@ -2671,7 +2674,7 @@ abstract class FormatterPass {
 		return $ret;
 	}
 
-	protected function walkAndAccumulateUntilAny(&$tkns, $tknids) {
+	protected function walkAndAccumulateUntilAny(array &$tkns, array $tknids): array{
 		$tknids = array_flip($tknids);
 		$ret = '';
 		while (list(, $token) = each($tkns)) {
@@ -2684,7 +2687,7 @@ abstract class FormatterPass {
 		return [$ret, $id];
 	}
 
-	protected function walkUntil($tknid) {
+	protected function walkUntil($tknid): array{
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -2692,9 +2695,10 @@ abstract class FormatterPass {
 				return [$id, $text];
 			}
 		}
+		return [null, null];
 	}
 
-	protected function walkUsefulRightUntil($tkns, $idx, $tokens) {
+	protected function walkUsefulRightUntil(array $tkns, int $idx, $tokens): int{
 		$ignoreList = $this->resolveIgnoreList($this->ignoreFutileTokens);
 		$tokens = array_flip($tokens);
 
@@ -2708,11 +2712,11 @@ abstract class FormatterPass {
 		return;
 	}
 
-	private function calculateCacheKey($direction, $ignoreList) {
+	private function calculateCacheKey(string $direction, array $ignoreList): string {
 		return $direction . "\x2" . implode('', $ignoreList);
 	}
 
-	private function resolveFoundToken($foundToken, $token) {
+	private function resolveFoundToken($foundToken, $token): bool {
 		if ($foundToken === $token) {
 			return true;
 		} elseif (is_array($token) && isset($foundToken[1]) && in_array($foundToken[0], $token)) {
@@ -2726,14 +2730,14 @@ abstract class FormatterPass {
 		return false;
 	}
 
-	private function resolveIgnoreList($ignoreList = []) {
+	private function resolveIgnoreList(array $ignoreList = []): array{
 		if (!empty($ignoreList)) {
 			return array_flip($ignoreList);
 		}
 		return [T_WHITESPACE => true];
 	}
 
-	private function resolveTokenMatch($tkns, $idx, $token) {
+	private function resolveTokenMatch(array $tkns, int $idx, $token): bool {
 		if (!isset($tkns[$idx])) {
 			return false;
 		}
@@ -2742,13 +2746,13 @@ abstract class FormatterPass {
 		return $this->resolveFoundToken($foundToken, $token);
 	}
 
-	private function walkLeft($tkns, $idx, $ignoreList) {
+	private function walkLeft(array $tkns, int $idx, array $ignoreList): int{
 		$i = $idx;
 		while (--$i >= 0 && isset($ignoreList[$tkns[$i][0]]));
 		return $i;
 	}
 
-	private function walkRight($tkns, $idx, $ignoreList) {
+	private function walkRight(array $tkns, int $idx, array $ignoreList): int{
 		$i = $idx;
 		$tknsSize = sizeof($tkns) - 1;
 		while (++$i < $tknsSize && isset($ignoreList[$tkns[$i][0]]));
@@ -2758,9 +2762,9 @@ abstract class FormatterPass {
 
 	
 abstract class AdditionalPass extends FormatterPass {
-	abstract public function getDescription();
+	abstract public function getDescription(): string;
 
-	abstract public function getExample();
+	abstract public function getExample(): string;
 }
 
 	
@@ -3053,7 +3057,7 @@ abstract class BaseCodeFormatter {
 		
 
 final class CodeFormatter extends BaseCodeFormatter {
-	public function afterExecutedPass($source, $className) {
+	public function afterExecutedPass(string $source, string $className) {
 		$cn = get_class($className);
 		echo $cn, PHP_EOL;
 		echo $source, PHP_EOL;
@@ -3073,13 +3077,13 @@ final class CodeFormatter extends BaseCodeFormatter {
 
 	private $timings = [];
 
-	public function afterExecutedPass($source, $className) {
+	public function afterExecutedPass(string $source, string $className) {
 		$cn = get_class($className);
 		$this->timings[$cn] = microtime(true) - $this->currentTiming;
 		echo $cn, ':', (memory_get_usage() / 1024 / 1024), "\t", (memory_get_peak_usage() / 1024 / 1024), PHP_EOL;
 	}
 
-	public function afterFormat($source) {
+	public function afterFormat(string $source) {
 		asort($this->timings, SORT_NUMERIC);
 		$total = array_sum($this->timings);
 
@@ -3090,11 +3094,11 @@ final class CodeFormatter extends BaseCodeFormatter {
 		echo tabwriter($lines);
 	}
 
-	public function beforeFormat($source) {
+	public function beforeFormat(string $source) {
 		echo 'before:', (memory_get_usage() / 1024 / 1024), "\t", (memory_get_peak_usage() / 1024 / 1024), PHP_EOL;
 	}
 
-	public function beforePass($source, $className) {
+	public function beforePass(string $source, string $className) {
 		$this->currentTiming = microtime(true);
 	}
 }
@@ -3109,7 +3113,7 @@ final class CodeFormatter extends BaseCodeFormatter {
 
 	
 final class AddMissingCurlyBraces extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_ELSE]) ||
 			isset($foundTokens[T_WHILE]) ||
@@ -3124,7 +3128,7 @@ final class AddMissingCurlyBraces extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 										$touchedCurlyClose = false;
@@ -3205,11 +3209,11 @@ final class AutoImportPass extends FormatterPass {
 		$this->oracle = new SQLite3($oracleFn);
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source = '') {
+	public function format(string $source): string{
 		$namespaceCount = 0;
 		$tokens = token_get_all($source);
 		while (list(, $token) = each($tokens)) {
@@ -3476,14 +3480,14 @@ final class ConstructorPass extends FormatterPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CLASS])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -3561,7 +3565,7 @@ final class ConstructorPass extends FormatterPass {
 		return $this->code;
 	}
 
-	private function generate($var) {
+	private function generate(string $var): string {
 		switch ($this->type) {
 		case self::TYPE_SNAKE_CASE:
 			$ret = $this->generateSnakeCase($var);
@@ -3577,17 +3581,17 @@ final class ConstructorPass extends FormatterPass {
 		return $ret;
 	}
 
-	private function generateCamelCase($var) {
+	private function generateCamelCase(string $var): string{
 		$str = '$this->set' . ucfirst(str_replace('$', '', $var)) . '(' . $var . ');' . $this->newLine;
 		return $str;
 	}
 
-	private function generateGolang($var) {
+	private function generateGolang(string $var): string{
 		$str = '$this->Set' . ucfirst(str_replace('$', '', $var)) . '(' . $var . ');' . $this->newLine;
 		return $str;
 	}
 
-	private function generateSnakeCase($var) {
+	private function generateSnakeCase(string $var): string{
 		$str = '$this->set_' . (str_replace('$', '', $var)) . '(' . $var . ');' . $this->newLine;
 		return $str;
 	}
@@ -3596,11 +3600,11 @@ final class ConstructorPass extends FormatterPass {
 final class EliminateDuplicatedEmptyLines extends FormatterPass {
 	const EMPTY_LINE = "\x2 EMPTYLINE \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -3647,15 +3651,15 @@ final class EliminateDuplicatedEmptyLines extends FormatterPass {
 class ExternalPass {
 	private $passName = '';
 
-	public function __construct($passName) {
+	public function __construct(string $passName) {
 		$this->passName = $passName;
 	}
 
-	public function candidate() {
+	public function candidate(): bool {
 		return !empty($this->passName);
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$descriptorspec = [
 			0 => ['pipe', 'r'], 			1 => ['pipe', 'w'], 			2 => ['pipe', 'w'], 		];
 
@@ -3697,7 +3701,7 @@ class ExternalPass {
 final class ExtraCommaInArray extends FormatterPass {
 	const ST_SHORT_ARRAY_OPEN = 'SHORT_ARRAY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ARRAY]) || isset($foundTokens[ST_BRACKET_OPEN])) {
 			return true;
 		}
@@ -3705,7 +3709,7 @@ final class ExtraCommaInArray extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 										$contextStack = [];
@@ -3783,7 +3787,7 @@ final class ExtraCommaInArray extends FormatterPass {
 final class LeftAlignComment extends FormatterPass {
 	const NON_INDENTABLE_COMMENT = "/*\x2 COMMENT \x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_COMMENT]) ||
 			isset($foundTokens[T_DOC_COMMENT])
@@ -3794,7 +3798,7 @@ final class LeftAlignComment extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedNonIndentableComment = false;
@@ -3850,7 +3854,7 @@ final class LeftAlignComment extends FormatterPass {
 
 	
 final class MergeCurlyCloseAndDoWhile extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_WHILE], $foundTokens[T_DO])) {
 			return true;
 		}
@@ -3858,7 +3862,7 @@ final class MergeCurlyCloseAndDoWhile extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -3901,7 +3905,7 @@ final class MergeCurlyCloseAndDoWhile extends FormatterPass {
 
 	
 final class MergeDoubleArrowAndArray extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ARRAY], $foundTokens[T_DOUBLE_ARROW])) {
 			return true;
 		}
@@ -3909,7 +3913,7 @@ final class MergeDoubleArrowAndArray extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedDoubleArrow = false;
@@ -3947,7 +3951,7 @@ final class MergeDoubleArrowAndArray extends FormatterPass {
 }
 	
 final class MergeParenCloseWithCurlyOpen extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_OPEN]) || isset($foundTokens[T_ELSE]) || isset($foundTokens[T_ELSEIF])) {
 			return true;
 		}
@@ -3955,7 +3959,7 @@ final class MergeParenCloseWithCurlyOpen extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -4012,7 +4016,7 @@ final class MergeParenCloseWithCurlyOpen extends FormatterPass {
 
 	
 final class NormalizeIsNotEquals extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_IS_NOT_EQUAL])) {
 			return true;
 		}
@@ -4020,7 +4024,7 @@ final class NormalizeIsNotEquals extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -4040,11 +4044,11 @@ final class NormalizeIsNotEquals extends FormatterPass {
 
 	
 final class NormalizeLnAndLtrimLines extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$source = str_replace(["\r\n", "\n\r", "\r", "\n"], $this->newLine, $source);
 		$source = preg_replace('/\h+$/mu', '', $source);
 
@@ -4108,7 +4112,7 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 
 	
 final class Reindent extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[ST_CURLY_OPEN]) ||
 			isset($foundTokens[ST_PARENTHESES_OPEN]) ||
@@ -4120,7 +4124,7 @@ final class Reindent extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$this->useCache = true;
@@ -4235,7 +4239,7 @@ final class Reindent extends FormatterPass {
 
 	
 final class ReindentColonBlocks extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ENDIF]) || isset($foundTokens[T_ENDWHILE]) || isset($foundTokens[T_ENDFOREACH]) || isset($foundTokens[T_ENDFOR])) {
 			return true;
 		}
@@ -4243,7 +4247,7 @@ final class ReindentColonBlocks extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -4317,7 +4321,7 @@ final class ReindentComments extends FormatterPass {
 	public $commentStack = [];
 
 	
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_COMMENT])) {
 			return true;
 		}
@@ -4325,7 +4329,7 @@ final class ReindentComments extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		reset($this->commentStack);
 		$this->tkns = token_get_all($source);
 		$this->code = '';
@@ -4349,8 +4353,8 @@ final class ReindentComments extends FormatterPass {
 					continue;
 				}
 
-				$indent = substr(strrchr($ptText, 10), 1);
-				$indentLevel = strlen($indent);
+				$indent = substr((string) strrchr($ptText, 10), 1);
+				$indentLevel = strlen((string) $indent);
 				$innerIndentLevel = $indentLevel + 1;
 				$innerIndent = str_repeat($this->indentChar, $innerIndentLevel);
 
@@ -4412,11 +4416,11 @@ final class ReindentComments extends FormatterPass {
 }
 	
 final class ReindentEqual extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -4434,7 +4438,7 @@ final class ReindentEqual extends FormatterPass {
 		return $this->render($this->tkns);
 	}
 
-	private function scanUntilEqual($index) {
+	private function scanUntilEqual(int $index) {
 		for ($index; 0 <= $index; --$index) {
 			$token = $this->tkns[$index];
 			list($id, $text) = $this->getToken($token);
@@ -4537,7 +4541,7 @@ final class ReindentEqual extends FormatterPass {
 final class ReindentObjOps extends FormatterPass {
 	const ALIGN_WITH_INDENT = 1;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_OBJECT_OPERATOR]) ||
 			isset($foundTokens[T_DOUBLE_COLON])
@@ -4548,7 +4552,7 @@ final class ReindentObjOps extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -4709,13 +4713,13 @@ final class ReindentObjOps extends FormatterPass {
 	}
 
 	protected function incrementCounters(
-		&$levelCounter,
-		&$levelEntranceCounter,
-		&$contextCounter,
-		&$maxContextCounter,
-		&$touchCounter,
-		&$alignType,
-		&$printedPlaceholder
+		int &$levelCounter,
+		array &$levelEntranceCounter,
+		array &$contextCounter,
+		array &$maxContextCounter,
+		array &$touchCounter,
+		array &$alignType,
+		array &$printedPlaceholder
 	) {
 		++$levelCounter;
 		if (!isset($levelEntranceCounter[$levelCounter])) {
@@ -4806,7 +4810,7 @@ final class ReindentObjOps extends FormatterPass {
 
 	
 final class ResizeSpaces extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool{
 		$tkns = token_get_all($source);
 
 		$this->tkns = [];
@@ -4820,7 +4824,7 @@ final class ResizeSpaces extends FormatterPass {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->code = '';
 		$this->useCache = true;
 
@@ -5231,11 +5235,11 @@ final class ResizeSpaces extends FormatterPass {
 
 	
 final class RTrim extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		return preg_replace('/\h+$/mu', '', $source);
 	}
 }
@@ -5261,7 +5265,7 @@ final class SettersAndGettersPass extends FormatterPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CLASS])) {
 			return true;
 		}
@@ -5269,7 +5273,7 @@ final class SettersAndGettersPass extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -5358,7 +5362,7 @@ final class SettersAndGettersPass extends FormatterPass {
 		return $this->code;
 	}
 
-	private function generate($visibility, $var) {
+	private function generate(string $visibility, string $var): string {
 		switch ($this->type) {
 		case self::TYPE_SNAKE_CASE:
 			$ret = $this->generateSnakeCase($visibility, $var);
@@ -5374,40 +5378,41 @@ final class SettersAndGettersPass extends FormatterPass {
 		return $ret;
 	}
 
-	private function generateCamelCase($visibility, $var) {
+	private function generateCamelCase(string $visibility, string $var): string{
 		$str = $this->newLine . $visibility . ' function set' . ucfirst(str_replace('$', '', $var)) . '(' . $var . '){' . $this->newLine . '$this->' . str_replace('$', '', $var) . ' = ' . $var . ';' . $this->newLine . '}' . $this->newLine . $this->newLine;
 		$str .= $visibility . ' function get' . ucfirst(str_replace('$', '', $var)) . '(){' . $this->newLine . 'return $this->' . str_replace('$', '', $var) . ';' . $this->newLine . '}' . $this->newLine;
 		return $str;
 	}
 
-	private function generateGolang($visibility, $var) {
+	private function generateGolang(string $visibility, string $var): string{
 		$str = $this->newLine . $visibility . ' function Set' . ucfirst(str_replace('$', '', $var)) . '(' . $var . '){' . $this->newLine . '$this->' . str_replace('$', '', $var) . ' = ' . $var . ';' . $this->newLine . '}' . $this->newLine . $this->newLine;
 		$str .= $visibility . ' function ' . ucfirst(str_replace('$', '', $var)) . '(){' . $this->newLine . 'return $this->' . str_replace('$', '', $var) . ';' . $this->newLine . '}' . $this->newLine;
 		return $str;
 	}
 
-	private function generateSnakeCase($visibility, $var) {
+	private function generateSnakeCase(string $visibility, string $var): string{
 		$str = $this->newLine . $visibility . ' function set_' . (str_replace('$', '', $var)) . '(' . $var . '){' . $this->newLine . '$this->' . str_replace('$', '', $var) . ' = ' . $var . ';' . $this->newLine . '}' . $this->newLine . $this->newLine;
 		$str .= $visibility . ' function get_' . (str_replace('$', '', $var)) . '(){' . $this->newLine . 'return $this->' . str_replace('$', '', $var) . ';' . $this->newLine . '}' . $this->newLine;
 		return $str;
 	}
 
-	private function printPlaceholder($text) {
+	private function printPlaceholder(string $text) {
 		$this->skipPlaceholderUntilSemicolon();
 
 		$this->appendCode(';' . $this->newLine . sprintf(self::PLACEHOLDER, $text));
 	}
 
-	private function skipPlaceholderUntilSemicolon() {
+	private function skipPlaceholderUntilSemicolon(): array{
 		if ($this->rightUsefulTokenIs(ST_EQUAL)) {
 			return $this->printAndStopAt(ST_SEMI_COLON);
 		}
 		each($this->tkns);
+		return [];
 	}
 }
 	
 class SplitCurlyCloseAndTokens extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (!isset($foundTokens[ST_CURLY_CLOSE])) {
 			return false;
 		}
@@ -5425,7 +5430,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		reset($this->tkns);
 		$sizeofTkns = sizeof($this->tkns);
 
@@ -5531,7 +5536,7 @@ class SplitCurlyCloseAndTokens extends FormatterPass {
 final class StripExtraCommaInList extends FormatterPass {
 	const EMPTY_LIST = 'ST_EMPTY_LIST';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_LIST])) {
 			return true;
 		}
@@ -5539,7 +5544,7 @@ final class StripExtraCommaInList extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		$contextStack = [];
@@ -5591,11 +5596,11 @@ final class SurrogateToken {
 
 	
 final class TwoCommandsInSameLine extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedSemicolon = true;
@@ -5655,18 +5660,18 @@ final class TwoCommandsInSameLine extends FormatterPass {
 final class PSR1BOMMark extends FormatterPass {
 	const BOM = "\xef\xbb\xbf";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return substr($source, 0, 3) === self::BOM;
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		return substr($source, 3);
 	}
 }
 
 	
 final class PSR1ClassConstants extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CONST]) || isset($foundTokens[T_STRING])) {
 			return true;
 		}
@@ -5674,7 +5679,7 @@ final class PSR1ClassConstants extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$ucConst = false;
@@ -5703,7 +5708,7 @@ final class PSR1ClassConstants extends FormatterPass {
 }
 	
 final class PSR1ClassNames extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CLASS]) || isset($foundTokens[T_STRING])) {
 			return true;
 		}
@@ -5711,7 +5716,7 @@ final class PSR1ClassNames extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$foundClass = false;
@@ -5749,7 +5754,7 @@ final class PSR1ClassNames extends FormatterPass {
 
 	
 final class PSR1MethodNames extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION]) || isset($foundTokens[T_STRING]) || isset($foundTokens[ST_PARENTHESES_OPEN])) {
 			return true;
 		}
@@ -5757,7 +5762,7 @@ final class PSR1MethodNames extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$foundMethod = false;
@@ -5816,11 +5821,11 @@ final class PSR1MethodNames extends FormatterPass {
 
 	
 final class PSR1OpenTags extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedComment = false;
@@ -5870,7 +5875,7 @@ final class PSR1OpenTags extends FormatterPass {
 final class PSR2AlignObjOp extends FormatterPass {
 	const ALIGNABLE_TOKEN = "\x2 OBJOP%d \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_SEMI_COLON]) || isset($foundTokens[T_ARRAY]) || isset($foundTokens[T_DOUBLE_ARROW]) || isset($foundTokens[T_OBJECT_OPERATOR])) {
 			return true;
 		}
@@ -5878,7 +5883,7 @@ final class PSR2AlignObjOp extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$contextCounter = 0;
@@ -5954,11 +5959,11 @@ final class PSR2AlignObjOp extends FormatterPass {
 
 	
 final class PSR2CurlyOpenNextLine extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6046,11 +6051,11 @@ final class PSR2IndentWithSpace extends FormatterPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$spaces = str_repeat(' ', (int) $this->size);
 		$this->tkns = token_get_all($source);
 		$this->code = '';
@@ -6094,11 +6099,11 @@ final class PSR2KeywordsLowerCase extends FormatterPass {
 		'while' => 1, 'xor' => 1,
 	];
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -6157,7 +6162,7 @@ final class PSR2KeywordsLowerCase extends FormatterPass {
 }
 	
 final class PSR2LnAfterNamespace extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NAMESPACE])) {
 			return true;
 		}
@@ -6165,7 +6170,7 @@ final class PSR2LnAfterNamespace extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6208,7 +6213,7 @@ final class PSR2LnAfterNamespace extends FormatterPass {
 }
 	
 final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return isset($foundTokens[T_VAR]) ||
 		isset($foundTokens[T_PUBLIC]) ||
 		isset($foundTokens[T_PRIVATE]) ||
@@ -6220,7 +6225,7 @@ final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 		;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6345,7 +6350,7 @@ final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 				$visibility = null;
 				$static = null;
 				$skipWhitespaces = false;
-				if ('abstract' == strtolower($finalOrAbstract)) {
+				if ('abstract' == strtolower((string) $finalOrAbstract)) {
 					$finalOrAbstract = null;
 					$this->printUntil(ST_SEMI_COLON);
 					break;
@@ -6365,11 +6370,11 @@ final class PSR2ModifierVisibilityStaticOrder extends FormatterPass {
 
 	
 final class PSR2SingleEmptyLineAndStripClosingTag extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$tokenCount = count($this->tkns) - 1;
 		while (list($index, $token) = each($this->tkns)) {
@@ -6431,7 +6436,7 @@ final class PsrDecorator {
 
 	
 final class AddMissingParentheses extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NEW])) {
 			return true;
 		}
@@ -6439,7 +6444,7 @@ final class AddMissingParentheses extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -6476,12 +6481,12 @@ final class AddMissingParentheses extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add extra parentheses in new instantiations.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = new SomeClass;
@@ -6518,7 +6523,7 @@ class AliasToMaster extends AdditionalPass {
 
 	private $touchedEmptyNs = false;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6539,7 +6544,7 @@ class AliasToMaster extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -6581,12 +6586,12 @@ class AliasToMaster extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace function aliases to their masters - only basic syntax alias.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = join(',', $arr);
@@ -6613,11 +6618,11 @@ final class AlignConstVisibilityEquals extends AdditionalPass {
 
 	const OPEN_TAG = "<?php /*\x2 EQUAL OPEN TAG\x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6691,12 +6696,12 @@ final class AlignConstVisibilityEquals extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align "=" of visibility and const blocks.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 
@@ -6730,7 +6735,7 @@ class AlignDoubleArrow extends AdditionalPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOUBLE_ARROW])) {
 			return true;
 		}
@@ -6738,7 +6743,7 @@ class AlignDoubleArrow extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6818,12 +6823,12 @@ class AlignDoubleArrow extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align T_DOUBLE_ARROW (=>).';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = [
@@ -6883,11 +6888,11 @@ EOT;
 		}
 	}
 
-	private function strpos($code, $placeholder) {
+	private function strpos(string $code, string $placeholder) {
 		return call_user_func($this->strposFunc, $code, $placeholder);
 	}
 
-	private function substrCount($code, $placeholder) {
+	private function substrCount(string $code, string $placeholder): int {
 		return call_user_func($this->substrCountFunc, $code, $placeholder);
 	}
 }
@@ -6897,14 +6902,14 @@ final class AlignDoubleSlashComments extends AdditionalPass {
 	const ALIGNABLE_COMMENT = "\x2 COMMENT%d \x3";
 
 	
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_COMMENT])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -6950,12 +6955,12 @@ final class AlignDoubleSlashComments extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align "//" comments.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 //From:
@@ -6978,11 +6983,11 @@ final class AlignEquals extends AdditionalPass {
 
 	const OPEN_TAG = "<?php /*\x2 EQUAL OPEN TAG\x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -7042,12 +7047,12 @@ final class AlignEquals extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align "=".';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = 1;
@@ -7064,7 +7069,7 @@ EOT;
 }
 	
 final class AlignGroupDoubleArrow extends AlignDoubleArrow {
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -7156,12 +7161,12 @@ final class AlignGroupDoubleArrow extends AlignDoubleArrow {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align T_DOUBLE_ARROW (=>) by line groups.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = [
@@ -7188,7 +7193,7 @@ EOT;
 final class AlignPHPCode extends AdditionalPass {
 	const PLACEHOLDER_STRING = "\x2 CONSTANT_STRING_%d \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_INLINE_HTML])) {
 			return true;
 		}
@@ -7196,7 +7201,7 @@ final class AlignPHPCode extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -7267,12 +7272,12 @@ final class AlignPHPCode extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Align PHP code within HTML block.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <div>
 	<?php
@@ -7287,14 +7292,14 @@ EOT;
 final class AlignTypehint extends AdditionalPass {
 	const ALIGNABLE_TYPEHINT = "\x2 TYPEHINT%d \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -7335,12 +7340,12 @@ final class AlignTypehint extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align function type hints.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 //From:
@@ -7376,7 +7381,7 @@ EOT;
 final class AllmanStyleBraces extends AdditionalPass {
 	const OTHER_BLOCK = '';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_OPEN])) {
 			return true;
 		}
@@ -7384,7 +7389,7 @@ final class AllmanStyleBraces extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$blockStack = [];
@@ -7543,12 +7548,12 @@ final class AllmanStyleBraces extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Transform all curly braces into Allman-style.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 if ($a) {
@@ -7567,7 +7572,7 @@ EOT;
 
 	
 class AutoPreincrement extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_INC]) || isset($foundTokens[T_DEC])) {
 			return true;
 		}
@@ -7575,7 +7580,7 @@ class AutoPreincrement extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		for ($this->ptr = sizeof($this->tkns) - 1; $this->ptr >= 0; --$this->ptr) {
 			$token = $this->tkns[$this->ptr];
@@ -7621,12 +7626,12 @@ class AutoPreincrement extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Automatically convert postincrement to preincrement.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a++;
@@ -7691,11 +7696,11 @@ EOT;
 final class AutoSemicolon extends AdditionalPass {
 	const ST_CLOSURE = 'CLOSURE';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$parenStack = [];
@@ -7958,12 +7963,12 @@ final class AutoSemicolon extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add semicolons in statements ends.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -7980,12 +7985,12 @@ EOT;
 final class CakePHPStyle extends AdditionalPass {
 	private $foundTokens;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool{
 		$this->foundTokens = $foundTokens;
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$fmt = new PSR2ModifierVisibilityStaticOrder();
 		if ($fmt->candidate($source, $this->foundTokens)) {
 			$source = $fmt->format($source);
@@ -8002,12 +8007,12 @@ final class CakePHPStyle extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Applies CakePHP Coding Style';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 namespace A;
@@ -8037,7 +8042,7 @@ class A {
 EOT;
 	}
 
-	private function addUnderscoresBeforeName($source) {
+	private function addUnderscoresBeforeName(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$levelTouched = null;
@@ -8111,7 +8116,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function mergeEqualsWithReference($source) {
+	private function mergeEqualsWithReference(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8131,7 +8136,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function removeSpaceAfterCasts($source) {
+	private function removeSpaceAfterCasts(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8172,7 +8177,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function resizeSpaces($source) {
+	private function resizeSpaces(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8210,7 +8215,7 @@ EOT;
 class ClassToSelf extends AdditionalPass {
 	const PLACEHOLDER = 'self';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_CLASS]) ||
 			isset($foundTokens[T_INTERFACE]) ||
@@ -8222,7 +8227,7 @@ class ClassToSelf extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$tknsLen = sizeof($this->tkns);
@@ -8261,12 +8266,12 @@ class ClassToSelf extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return '"self" is preferred within class, trait or interface.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -8288,7 +8293,7 @@ class A {
 EOT;
 	}
 
-	private function convertToPlaceholder($name, $start, $end) {
+	private function convertToPlaceholder(string $name, $start, $end) {
 		for ($i = $start; $i < $end; ++$i) {
 			list($id, $text) = $this->getToken($this->tkns[$i]);
 
@@ -8321,12 +8326,12 @@ final class ClassToStatic extends ClassToSelf {
 	const PLACEHOLDER = 'static';
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return '"static" is preferred within class, trait or interface.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -8351,7 +8356,7 @@ EOT;
 
 	
 final class ConvertOpenTagWithEcho extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_OPEN_TAG_WITH_ECHO])) {
 			return true;
 		}
@@ -8359,7 +8364,7 @@ final class ConvertOpenTagWithEcho extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8377,12 +8382,12 @@ final class ConvertOpenTagWithEcho extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert from "<?=" to "<?php echo ".';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?="Hello World"?>
 
@@ -8393,7 +8398,7 @@ EOT;
 
 	
 final class DocBlockToComment extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOC_COMMENT])) {
 			return true;
 		}
@@ -8401,7 +8406,7 @@ final class DocBlockToComment extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$this->useCache = true;
@@ -8450,12 +8455,12 @@ final class DocBlockToComment extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace docblocks with regular comments when used in non structural elements.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 EOT;
 	}
@@ -8540,7 +8545,7 @@ EOT;
 }
 	
 final class DoubleToSingleQuote extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CONSTANT_ENCAPSED_STRING])) {
 			return true;
 		}
@@ -8548,7 +8553,7 @@ final class DoubleToSingleQuote extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8566,12 +8571,12 @@ final class DoubleToSingleQuote extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert from double to single quotes.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = "";
@@ -8601,7 +8606,7 @@ EOT;
 
 	
 final class EchoToPrint extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ECHO])) {
 			return true;
 		}
@@ -8609,7 +8614,7 @@ final class EchoToPrint extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		while (list($index, $token) = each($this->tkns)) {
 			list($id) = $this->getToken($token);
@@ -8640,12 +8645,12 @@ final class EchoToPrint extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert from T_ECHO to print.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 echo 1;
@@ -8658,7 +8663,7 @@ EOT;
 }
 	
 final class EncapsulateNamespaces extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NAMESPACE])) {
 			return true;
 		}
@@ -8666,7 +8671,7 @@ final class EncapsulateNamespaces extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8702,12 +8707,12 @@ final class EncapsulateNamespaces extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Encapsulate namespaces with curly braces';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 namespace NS1;
@@ -8727,7 +8732,7 @@ EOT;
 
 	
 final class GeneratePHPDoc extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION]) || isset($foundTokens[T_PUBLIC]) || isset($foundTokens[T_PROTECTED]) || isset($foundTokens[T_PRIVATE]) || isset($foundTokens[T_STATIC]) || isset($foundTokens[T_VAR])) {
 			return true;
 		}
@@ -8735,7 +8740,7 @@ final class GeneratePHPDoc extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedVisibility = false;
@@ -8890,12 +8895,12 @@ final class GeneratePHPDoc extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Automatically generates PHPDoc blocks';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 class A {
@@ -8946,7 +8951,7 @@ EOT;
 
 	
 final class IndentTernaryConditions extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_QUESTION])) {
 			return true;
 		}
@@ -8954,7 +8959,7 @@ final class IndentTernaryConditions extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -8977,12 +8982,12 @@ final class IndentTernaryConditions extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Applies indentation to ternary conditions.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = ($b)
@@ -9007,12 +9012,12 @@ final class JoinToImplode extends AliasToMaster {
 	];
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace implode() alias (join() -> implode()).';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = join(',', $arr);
@@ -9031,11 +9036,11 @@ final class LeftWordWrap extends AdditionalPass {
 
 	private static $tabSizeInSpace = 8;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -9077,12 +9082,12 @@ final class LeftWordWrap extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Word wrap at 80 columns - left justify.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return '';
 	}
 }
@@ -9092,11 +9097,11 @@ final class LongArray extends AdditionalPass {
 
 	const ST_SHORT_ARRAY_OPEN = 'SHORT_ARRAY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		$contextStack = [];
@@ -9152,12 +9157,12 @@ final class LongArray extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert short to long arrays.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -9172,7 +9177,7 @@ EOT;
 	
 
 final class MergeElseIf extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ELSE]) || isset($foundTokens[T_ELSEIF])) {
 			return true;
 		}
@@ -9180,7 +9185,7 @@ final class MergeElseIf extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -9207,12 +9212,12 @@ final class MergeElseIf extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Merge if with else.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 if($a){
@@ -9233,14 +9238,14 @@ EOT;
 
 	
 final class SplitElseIf extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ELSE]) || isset($foundTokens[T_ELSEIF])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -9259,12 +9264,12 @@ final class SplitElseIf extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Merge if with else.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 if($a){
@@ -9279,7 +9284,7 @@ EOT;
 }
 	
 final class MergeNamespaceWithOpenTag extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NAMESPACE])) {
 			return true;
 		}
@@ -9287,7 +9292,7 @@ final class MergeNamespaceWithOpenTag extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -9313,12 +9318,12 @@ final class MergeNamespaceWithOpenTag extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Ensure there is no more than one linebreak before namespace';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 
@@ -9335,13 +9340,13 @@ EOT;
 	
 final class MildAutoPreincrement extends AutoPreincrement {
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Automatically convert postincrement to preincrement. (Deprecated pass. Use AutoPreincrement instead).';
 	}
 }
 	
 final class NewLineBeforeReturn extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_RETURN])) {
 			return true;
 		}
@@ -9349,7 +9354,7 @@ final class NewLineBeforeReturn extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -9371,12 +9376,12 @@ final class NewLineBeforeReturn extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add an empty line before T_RETURN.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -9398,7 +9403,7 @@ EOT;
 
 	
 final class NoSpaceAfterPHPDocBlocks extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOC_COMMENT])) {
 			return true;
 		}
@@ -9406,7 +9411,7 @@ final class NoSpaceAfterPHPDocBlocks extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -9428,12 +9433,12 @@ final class NoSpaceAfterPHPDocBlocks extends FormatterPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove empty lines after PHPDoc blocks.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 /**
@@ -9458,7 +9463,7 @@ class OrganizeClass extends AdditionalPass {
 
 	const OPENER_PLACEHOLDER = "<?php /*\x2 ORDERMETHOD \x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_CLASS])
 			|| isset($foundTokens[T_TRAIT])
@@ -9470,7 +9475,7 @@ class OrganizeClass extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 				$return = '';
@@ -9507,12 +9512,12 @@ class OrganizeClass extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Organize class, interface and trait structure.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -9751,7 +9756,7 @@ class OrderAndRemoveUseClauses extends AdditionalPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_USE])) {
 			return true;
 		}
@@ -9759,19 +9764,19 @@ class OrderAndRemoveUseClauses extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source = '') {
+	public function format(string $source): string{
 		$source = $this->sortWithinNamespaces($source);
 
 		return $source;
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Order use block and remove unused imports.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 // From
 use C;
@@ -10049,12 +10054,12 @@ EOT;
 	
 final class OnlyOrderUseClauses extends OrderAndRemoveUseClauses {
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Order use block - do not remove unused imports.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 // From
 use C;
@@ -10093,8 +10098,9 @@ final class OrderMethod extends OrganizeClass {
 final class OrderMethodAndVisibility extends OrganizeClass {
 }
 
-	class PHPDocTypesToFunctionTypehint extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	
+class PHPDocTypesToFunctionTypehint extends AdditionalPass {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -10102,7 +10108,7 @@ final class OrderMethodAndVisibility extends OrganizeClass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -10171,12 +10177,12 @@ final class OrderMethodAndVisibility extends OrganizeClass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Read variable types from PHPDoc blocks and add them in function signatures.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:
@@ -10206,7 +10212,7 @@ EOT;
 final class PrettyPrintDocBlocks extends AdditionalPass {
 	const EMPTY_LINE = "\x2 EMPTYLINE \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOC_COMMENT])) {
 			return true;
 		}
@@ -10214,7 +10220,7 @@ final class PrettyPrintDocBlocks extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -10230,12 +10236,12 @@ final class PrettyPrintDocBlocks extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Prettify Doc Blocks';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 /**
@@ -10469,7 +10475,7 @@ EOT;
 }
 	
 final class PSR2EmptyFunction extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -10477,7 +10483,7 @@ final class PSR2EmptyFunction extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -10506,12 +10512,12 @@ final class PSR2EmptyFunction extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Merges in the same line of function header the body of empty functions.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // PSR2 Mode - From
@@ -10529,7 +10535,7 @@ EOT;
 final class PSR2MultilineFunctionParams extends AdditionalPass {
 	const LINE_BREAK = "\x2 LN \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -10537,7 +10543,7 @@ final class PSR2MultilineFunctionParams extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -10588,12 +10594,12 @@ final class PSR2MultilineFunctionParams extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Break function parameters into multiple lines.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // PSR2 Mode - From
@@ -10619,7 +10625,7 @@ class ReindentAndAlignObjOps extends AdditionalPass {
 
 	const ALIGN_WITH_SPACES = 2;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_OBJECT_OPERATOR]) ||
 			isset($foundTokens[T_DOUBLE_COLON])
@@ -10630,7 +10636,7 @@ class ReindentAndAlignObjOps extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -10950,12 +10956,12 @@ class ReindentAndAlignObjOps extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Align object operators.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:
@@ -11067,7 +11073,7 @@ EOT;
 
 	
 final class ReindentSwitchBlocks extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_SWITCH])) {
 			return true;
 		}
@@ -11075,7 +11081,7 @@ final class ReindentSwitchBlocks extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -11153,12 +11159,12 @@ final class ReindentSwitchBlocks extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Reindent one level deeper the content of switch blocks.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<EOT
 <?php
 // From
@@ -11177,7 +11183,7 @@ EOT;
 }
 	
 final class RemoveIncludeParentheses extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_INCLUDE]) || isset($foundTokens[T_REQUIRE]) || isset($foundTokens[T_INCLUDE_ONCE]) || isset($foundTokens[T_REQUIRE_ONCE])) {
 			return true;
 		}
@@ -11185,7 +11191,7 @@ final class RemoveIncludeParentheses extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$parenCount = 0;
@@ -11224,12 +11230,12 @@ final class RemoveIncludeParentheses extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove parentheses from include declarations.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:
@@ -11246,7 +11252,7 @@ EOT;
 final class RemoveSemicolonAfterCurly extends AdditionalPass {
 	const LAMBDA_CURLY_OPEN = 'LAMBDA_CURLY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_CLOSE], $foundTokens[ST_SEMI_COLON])) {
 			return true;
 		}
@@ -11254,7 +11260,7 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$curlyStack = [];
@@ -11314,12 +11320,12 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove semicolon after closing curly brace.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:
@@ -11338,7 +11344,7 @@ EOT;
 
 	
 final class RemoveUseLeadingSlash extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NAMESPACE]) || isset($foundTokens[T_TRAIT]) || isset($foundTokens[T_CLASS]) || isset($foundTokens[T_FUNCTION]) || isset($foundTokens[T_NS_SEPARATOR])) {
 			return true;
 		}
@@ -11346,7 +11352,7 @@ final class RemoveUseLeadingSlash extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$lastTouchedToken = null;
@@ -11372,12 +11378,12 @@ final class RemoveUseLeadingSlash extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove leading slash in T_USE imports.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 namespace NS1;
@@ -11402,7 +11408,7 @@ EOT;
 
 	
 final class ReplaceBooleanAndOr extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_LOGICAL_AND]) || isset($foundTokens[T_LOGICAL_OR])) {
 			return true;
 		}
@@ -11410,7 +11416,7 @@ final class ReplaceBooleanAndOr extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -11431,12 +11437,12 @@ final class ReplaceBooleanAndOr extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert from "and"/"or" to "&&"/"||". Danger! This pass leads to behavior change.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 if ($a and $b or $c) {...}
 
@@ -11447,11 +11453,11 @@ EOT;
 
 	
 final class ReplaceIsNull extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$this->useCache = true;
@@ -11475,12 +11481,12 @@ final class ReplaceIsNull extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace is_null($a) with null === $a.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 is_null($a);
@@ -11498,7 +11504,7 @@ final class RestoreComments extends AdditionalPass {
 	public $commentStack = [];
 
 	
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_COMMENT])) {
 			return true;
 		}
@@ -11506,7 +11512,7 @@ final class RestoreComments extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		reset($this->commentStack);
 		$this->tkns = token_get_all($source);
 		$this->code = '';
@@ -11523,17 +11529,17 @@ final class RestoreComments extends AdditionalPass {
 		return $this->renderLight($this->tkns);
 	}
 
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Revert any formatting of comments content.';
 	}
 
-	public function getExample() {
+	public function getExample(): string {
 		return '';
 	}
 }
 	
 final class ReturnNull extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_RETURN])) {
 			return true;
 		}
@@ -11541,7 +11547,7 @@ final class ReturnNull extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$this->useCache = true;
@@ -11598,12 +11604,12 @@ final class ReturnNull extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Simplify empty returns.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 function a(){
@@ -11627,7 +11633,7 @@ final class ShortArray extends AdditionalPass {
 
 	const FOUND_PARENTHESES = 'paren';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ARRAY])) {
 			return true;
 		}
@@ -11635,7 +11641,7 @@ final class ShortArray extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$foundParen = [];
@@ -11671,12 +11677,12 @@ final class ShortArray extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert old array into new array. (array() -> [])';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 echo array();
@@ -11691,7 +11697,7 @@ EOT;
 
 	
 final class SmartLnAfterCurlyOpen extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_OPEN])) {
 			return true;
 		}
@@ -11699,7 +11705,7 @@ final class SmartLnAfterCurlyOpen extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -11752,12 +11758,12 @@ final class SmartLnAfterCurlyOpen extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add line break when implicit curly block is added.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 if($a) echo array();
@@ -11790,28 +11796,28 @@ final class SortUseNameSpace extends AdditionalPass {
 		$this->pass = new OrderAndRemoveUseClauses($sortFunction);
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return $this->pass->candidate($source, $foundTokens);
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		return $this->pass->format($source);
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Organize use clauses by length and alphabetic order.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return '';
 	}
 }
 	
 final class SpaceAroundControlStructures extends AdditionalPass {
 	
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_IF]) ||
 			isset($foundTokens[T_DO]) ||
@@ -11826,7 +11832,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	}
 
 	
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$isComment = false;
@@ -11911,12 +11917,12 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add space around control structures.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -11940,15 +11946,16 @@ EOT;
 	}
 }
 
-	final class SpaceAfterExclamationMark extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	
+final class SpaceAfterExclamationMark extends AdditionalPass {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_EXCLAMATION])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -11974,11 +11981,11 @@ EOT;
 		return $this->code;
 	}
 
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add space after exclamation mark.';
 	}
 
-	public function getExample() {
+	public function getExample(): string {
 		echo '
 <?php
 // From:
@@ -11989,15 +11996,16 @@ if (! true) foo();
 ';
 	}
 }
-	final class SpaceAroundExclamationMark extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	
+final class SpaceAroundExclamationMark extends AdditionalPass {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_EXCLAMATION])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -12027,11 +12035,11 @@ if (! true) foo();
 		return $this->code;
 	}
 
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add spaces around exclamation mark.';
 	}
 
-	public function getExample() {
+	public function getExample(): string {
 		echo '
 <?php
 // From:
@@ -12044,7 +12052,7 @@ if ( ! true) foo();
 }
 	
 final class SpaceBetweenMethods extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -12052,7 +12060,7 @@ final class SpaceBetweenMethods extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -12077,12 +12085,12 @@ final class SpaceBetweenMethods extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Put space between methods.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 class A {
@@ -12122,11 +12130,11 @@ final class StrictBehavior extends AdditionalPass {
 		'mb_detect_encoding' => 3,
 	];
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -12174,12 +12182,12 @@ final class StrictBehavior extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Activate strict option in array_search, base64_decode, in_array, array_keys, mb_detect_encoding. Danger! This pass leads to behavior change.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12210,7 +12218,7 @@ EOT;
 	
 
 final class StrictComparison extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_IS_EQUAL]) || isset($foundTokens[T_IS_NOT_EQUAL])) {
 			return true;
 		}
@@ -12218,7 +12226,7 @@ final class StrictComparison extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -12239,12 +12247,12 @@ final class StrictComparison extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'All comparisons are converted to strict. Danger! This pass leads to behavior change.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12264,11 +12272,11 @@ final class StripExtraCommaInArray extends AdditionalPass {
 
 	const ST_SHORT_ARRAY_OPEN = 'SHORT_ARRAY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		$contextStack = [];
@@ -12325,12 +12333,12 @@ final class StripExtraCommaInArray extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove trailing commas within array blocks';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12347,7 +12355,7 @@ EOT;
 	
 
 final class StripNewlineAfterClassOpen extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CLASS]) || isset($foundTokens[T_TRAIT])) {
 			return true;
 		}
@@ -12355,7 +12363,7 @@ final class StripNewlineAfterClassOpen extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -12386,12 +12394,12 @@ final class StripNewlineAfterClassOpen extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Strip empty lines after class opening curly brace.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12409,7 +12417,7 @@ EOT;
 }
 	
 final class StripNewlineAfterCurlyOpen extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_OPEN])) {
 			return true;
 		}
@@ -12417,7 +12425,7 @@ final class StripNewlineAfterCurlyOpen extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -12442,12 +12450,12 @@ final class StripNewlineAfterCurlyOpen extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Strip empty lines after opening curly brace.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12471,7 +12479,7 @@ EOT;
 	
 
 final class StripNewlineWithinClassBody extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_CLASS]) || isset($foundTokens[T_TRAIT])) {
 			return true;
 		}
@@ -12479,7 +12487,7 @@ final class StripNewlineWithinClassBody extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -12535,12 +12543,12 @@ final class StripNewlineWithinClassBody extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Strip empty lines after class opening curly brace.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12559,7 +12567,7 @@ EOT;
 }
 	
 final class StripSpaces extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_WHITESPACE]) || isset($foundTokens[T_COMMENT])) {
 			return true;
 		}
@@ -12567,7 +12575,7 @@ final class StripSpaces extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		while (list($index, $token) = each($this->tkns)) {
@@ -12585,12 +12593,12 @@ final class StripSpaces extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove all empty spaces';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12605,7 +12613,7 @@ EOT;
 }
 	
 final class StripSpaceWithinControlStructures extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_CASE]) ||
 			isset($foundTokens[T_DO]) ||
@@ -12621,7 +12629,7 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedDo = false;
@@ -12707,12 +12715,12 @@ final class StripSpaceWithinControlStructures extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Strip empty lines within control structures.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12737,7 +12745,7 @@ EOT;
 
 	
 final class TightConcat extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CONCAT])) {
 			return true;
 		}
@@ -12745,7 +12753,7 @@ final class TightConcat extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$whitespaces = " \t";
@@ -12770,12 +12778,12 @@ final class TightConcat extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Ensure string concatenation does not have spaces, except when close to numbers.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12791,12 +12799,12 @@ EOT;
 	
 final class TrimSpaceBeforeSemicolon extends AdditionalPass {
 	
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
 	
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$isComment = false;
@@ -12820,12 +12828,12 @@ final class TrimSpaceBeforeSemicolon extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove empty lines before semi-colon.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From
@@ -12871,14 +12879,14 @@ final class UpgradeToPreg extends AdditionalPass {
 
 	private static $delimiters = ['/', '#', '!'];
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return (
 			false !== stripos($source, 'ereg') ||
 			false !== stripos($source, 'split')
 		);
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -12934,12 +12942,12 @@ final class UpgradeToPreg extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Upgrade ereg_* calls to preg_*';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return '<?php
 // From:
 $var = ereg("[A-Z]", $var);
@@ -12991,11 +12999,11 @@ final class WordWrap extends AdditionalPass {
 
 	private static $tabSizeInSpace = 8;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -13051,18 +13059,18 @@ final class WordWrap extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Word wrap at 80 columns.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return '';
 	}
 }
 	
 final class WrongConstructorName extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_NAMESPACE]) || isset($foundTokens[T_CLASS])) {
 			return true;
 		}
@@ -13070,7 +13078,7 @@ final class WrongConstructorName extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$touchedNamespace = false;
@@ -13134,12 +13142,12 @@ final class WrongConstructorName extends AdditionalPass {
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Update old constructor names into new ones. http://php.net/manual/en/language.oop5.decon.php';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 class A {
@@ -13171,7 +13179,7 @@ final class YodaComparisons extends AdditionalPass {
 
 	const PARENTHESES_BLOCK = 'PARENTHESES_BLOCK';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_IS_EQUAL]) ||
 			isset($foundTokens[T_IS_IDENTICAL]) ||
@@ -13184,17 +13192,17 @@ final class YodaComparisons extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		return $this->yodise($source);
 	}
 
 	
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Execute Yoda Comparisons.';
 	}
 
 	
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 if($a == 1){
@@ -13414,7 +13422,7 @@ EOT;
 	}
 	if (!isset($testEnv)) {
 		
-function showHelp($argv, $enableCache, $inPhar) {
+function showHelp(array $argv, bool $enableCache, bool $inPhar) {
 	echo 'Usage: ' . $argv[0] . ' [-hv] [-o=FILENAME] [--config=FILENAME] ' . ($enableCache ? '[--cache[=FILENAME]] ' : '') . '[options] <target>', PHP_EOL;
 	$options = [
 		'--cache[=FILENAME]' => 'cache file. Default: ',

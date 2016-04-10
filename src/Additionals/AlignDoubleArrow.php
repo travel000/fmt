@@ -27,7 +27,7 @@ class AlignDoubleArrow extends AdditionalPass {
 		}
 	}
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOUBLE_ARROW])) {
 			return true;
 		}
@@ -35,7 +35,7 @@ class AlignDoubleArrow extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -117,14 +117,14 @@ class AlignDoubleArrow extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align T_DOUBLE_ARROW (=>).';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = [
@@ -184,11 +184,11 @@ EOT;
 		}
 	}
 
-	private function strpos($code, $placeholder) {
+	private function strpos(string $code, string $placeholder) {
 		return call_user_func($this->strposFunc, $code, $placeholder);
 	}
 
-	private function substrCount($code, $placeholder) {
+	private function substrCount(string $code, string $placeholder): int {
 		return call_user_func($this->substrCountFunc, $code, $placeholder);
 	}
 }

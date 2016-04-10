@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+declare (strict_types = 1);
 # Copyright (c) 2015, phpfmt and its authors
 # All rights reserved.
 #
@@ -34,7 +35,7 @@ if (!ini_get('short_open_tag')) {
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $isHHVM = (false !== strpos(phpversion(), 'hhvm'));
 $shortTagEnabled = ini_get('short_open_tag');
-$opt = getopt('v', ['verbose', 'deployed', 'coverage', 'coveralls', 'testNumber:', 'stop', 'baseline']);
+$opt = getopt('v', ['verbose', 'coverage', 'coveralls', 'testNumber:', 'stop', 'baseline']);
 $isCoverage = isset($opt['coverage']) || isset($opt['coveralls']);
 $isCoveralls = isset($opt['coveralls']);
 if ($isCoverage) {
@@ -91,14 +92,15 @@ if (isset($opt['baseline'])) {
 	echo 'done', PHP_EOL;
 }
 
+echo 'Building fmt.php... ';
+exec('php build.php');
+echo 'done', PHP_EOL;
+
+echo 'Starting timer...', PHP_EOL;
 $start = microtime(true);
 $testEnv = true;
 ob_start();
-if (!isset($opt['deployed'])) {
-	include realpath(__DIR__ . '/fmt.src.php');
-} else {
-	include realpath(__DIR__ . '/../fmt.php');
-}
+include realpath(__DIR__ . '/../fmt.php');
 ob_end_clean();
 
 echo 'Running tests...', PHP_EOL;
@@ -325,7 +327,7 @@ if (sizeof($skippedTests) > 0) {
 }
 exit(0);
 
-function getToken($token) {
+function getToken($token): array{
 	if (is_string($token)) {
 		return [$token, $token];
 	} else {

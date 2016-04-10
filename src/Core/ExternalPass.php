@@ -15,15 +15,15 @@
 class ExternalPass {
 	private $passName = '';
 
-	public function __construct($passName) {
+	public function __construct(string $passName) {
 		$this->passName = $passName;
 	}
 
-	public function candidate() {
+	public function candidate(): bool {
 		return !empty($this->passName);
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$descriptorspec = [
 			0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
 			1 => ['pipe', 'w'], // stdout is a pipe that the child will write to

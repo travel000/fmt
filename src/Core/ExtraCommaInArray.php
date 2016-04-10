@@ -15,7 +15,7 @@
 final class ExtraCommaInArray extends FormatterPass {
 	const ST_SHORT_ARRAY_OPEN = 'SHORT_ARRAY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ARRAY]) || isset($foundTokens[ST_BRACKET_OPEN])) {
 			return true;
 		}
@@ -23,7 +23,7 @@ final class ExtraCommaInArray extends FormatterPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		// It scans for possible blocks (parentheses, bracket and curly)

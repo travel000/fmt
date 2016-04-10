@@ -17,11 +17,11 @@ final class AlignEquals extends AdditionalPass {
 
 	const OPEN_TAG = "<?php /*\x2 EQUAL OPEN TAG\x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -85,14 +85,14 @@ final class AlignEquals extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Vertically align "=".';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = 1;

@@ -17,7 +17,7 @@ class OrganizeClass extends AdditionalPass {
 
 	const OPENER_PLACEHOLDER = "<?php /*\x2 ORDERMETHOD \x3*/";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_CLASS])
 			|| isset($foundTokens[T_TRAIT])
@@ -29,7 +29,7 @@ class OrganizeClass extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 
 		// It scans for classes/interfaces/traits bodies and organizes functions internally.
@@ -69,14 +69,14 @@ class OrganizeClass extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Organize class, interface and trait structure.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From

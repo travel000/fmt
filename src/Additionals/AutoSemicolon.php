@@ -15,11 +15,11 @@
 final class AutoSemicolon extends AdditionalPass {
 	const ST_CLOSURE = 'CLOSURE';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$parenStack = [];
@@ -284,14 +284,14 @@ final class AutoSemicolon extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add semicolons in statements ends.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From

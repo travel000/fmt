@@ -12,6 +12,8 @@
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+define('SKIP_DECLARE', '// SKIP DECLARE ');
+
 if (ini_get('phar.readonly')) {
 	unset($argv[0]);
 	$ret = 0;
@@ -43,11 +45,12 @@ if (!empty($newver)) {
 }
 
 class Build extends FormatterPass {
-	public function candidate($source, $foundTokens) {
+
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$curlyStack = [];
@@ -55,6 +58,10 @@ class Build extends FormatterPass {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
+			case T_DECLARE:
+				$this->appendCode(SKIP_DECLARE . $text);
+				break;
+
 			case T_NAMESPACE:
 				if ($this->rightUsefulTokenIs(T_STRING)) {
 					list($rId, $rText) = $this->rightUsefulToken();
@@ -127,7 +134,14 @@ for ($i = 0; $i < $workers; ++$i) {
 				break;
 			}
 			echo $target, PHP_EOL;
-			file_put_contents($target . '.php', $pass->format(file_get_contents($target . '.src.php')));
+			file_put_contents($target . '.tmp.src.php', $pass->format(file_get_contents($target . '.src.php')));
+			file_put_contents($target . '.php',
+				str_replace(
+					SKIP_DECLARE,
+					'',
+					file_get_contents($target . '.tmp.src.php')
+				)
+			);
 			if (file_exists($target . '.stub.src.php')) {
 				file_put_contents($target . '.stub.php', $pass->format(file_get_contents($target . '.stub.src.php')));
 			}
@@ -153,12 +167,13 @@ $chn_done->close();
 echo 'Building PHARs...';
 $phars = ['fmt', 'fmt-external', 'refactor'];
 foreach ($phars as $target) {
-	file_put_contents($target . '.stub.php', '<?php namespace {$inPhar = true;} ' . preg_replace('/' . preg_quote('<?php') . '/', '', file_get_contents($target . '.stub.php'), 1));
+	file_put_contents($target . '.stub.php', '<?php declare (strict_types = 1);' . PHP_EOL . 'namespace {$inPhar = true;} ' . preg_replace('/' . preg_quote('<?php') . '/', '', file_get_contents($target . '.stub.php'), 1));
 	$phar = new Phar($target . '.phar', FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_FILENAME, $target . '.phar');
 	$phar[$target . '.stub.php'] = file_get_contents($target . '.stub.php');
 	$phar->setStub('#!/usr/bin/env php' . "\n" . $phar->createDefaultStub($target . '.stub.php'));
 	file_put_contents($target . '.phar.sha1', sha1_file($target . '.phar'));
 	unlink($target . '.stub.php');
+	unlink($target . '.tmp.src.php');
 }
 echo 'done', PHP_EOL;
 

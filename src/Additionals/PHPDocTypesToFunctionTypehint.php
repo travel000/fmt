@@ -1,6 +1,7 @@
 <?php
+
 class PHPDocTypesToFunctionTypehint extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -8,7 +9,7 @@ class PHPDocTypesToFunctionTypehint extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -79,14 +80,14 @@ class PHPDocTypesToFunctionTypehint extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Read variable types from PHPDoc blocks and add them in function signatures.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:

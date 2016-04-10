@@ -15,7 +15,7 @@
 final class RemoveSemicolonAfterCurly extends AdditionalPass {
 	const LAMBDA_CURLY_OPEN = 'LAMBDA_CURLY_OPEN';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_CURLY_CLOSE], $foundTokens[ST_SEMI_COLON])) {
 			return true;
 		}
@@ -23,7 +23,7 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$curlyStack = [];
@@ -85,14 +85,14 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Remove semicolon after closing curly brace.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From:

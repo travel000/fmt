@@ -34,11 +34,11 @@ final class PSR2KeywordsLowerCase extends FormatterPass {
 		'while' => 1, 'xor' => 1,
 	];
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {

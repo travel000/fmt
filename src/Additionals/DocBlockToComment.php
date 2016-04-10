@@ -14,7 +14,7 @@
 
 // From PHP-CS-Fixer
 final class DocBlockToComment extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_DOC_COMMENT])) {
 			return true;
 		}
@@ -22,7 +22,7 @@ final class DocBlockToComment extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$this->useCache = true;
@@ -73,14 +73,14 @@ final class DocBlockToComment extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace docblocks with regular comments when used in non structural elements.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 EOT;
 	}

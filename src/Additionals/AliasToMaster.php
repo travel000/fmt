@@ -37,7 +37,7 @@ class AliasToMaster extends AdditionalPass {
 
 	private $touchedEmptyNs = false;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -58,7 +58,7 @@ class AliasToMaster extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string {
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
@@ -102,14 +102,14 @@ class AliasToMaster extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Replace function aliases to their masters - only basic syntax alias.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 $a = join(',', $arr);

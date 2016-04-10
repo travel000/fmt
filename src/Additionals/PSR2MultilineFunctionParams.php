@@ -15,7 +15,7 @@
 final class PSR2MultilineFunctionParams extends AdditionalPass {
 	const LINE_BREAK = "\x2 LN \x3";
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_FUNCTION])) {
 			return true;
 		}
@@ -23,7 +23,7 @@ final class PSR2MultilineFunctionParams extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -76,14 +76,14 @@ final class PSR2MultilineFunctionParams extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Break function parameters into multiple lines.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // PSR2 Mode - From

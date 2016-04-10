@@ -1,13 +1,14 @@
 <?php
+
 final class SpaceAfterExclamationMark extends AdditionalPass {
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[ST_EXCLAMATION])) {
 			return true;
 		}
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 
@@ -33,11 +34,11 @@ final class SpaceAfterExclamationMark extends AdditionalPass {
 		return $this->code;
 	}
 
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add space after exclamation mark.';
 	}
 
-	public function getExample() {
+	public function getExample(): string {
 		echo '
 <?php
 // From:

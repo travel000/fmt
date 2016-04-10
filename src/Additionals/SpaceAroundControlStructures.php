@@ -17,7 +17,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	 * @param $source
 	 * @param $foundTokens
 	 */
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (
 			isset($foundTokens[T_IF]) ||
 			isset($foundTokens[T_DO]) ||
@@ -35,7 +35,7 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	 * @param  $source
 	 * @return mixed
 	 */
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$isComment = false;
@@ -122,14 +122,14 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Add space around control structures.';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 // From

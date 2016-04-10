@@ -15,12 +15,12 @@
 final class CakePHPStyle extends AdditionalPass {
 	private $foundTokens;
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool{
 		$this->foundTokens = $foundTokens;
 		return true;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$fmt = new PSR2ModifierVisibilityStaticOrder();
 		if ($fmt->candidate($source, $this->foundTokens)) {
 			$source = $fmt->format($source);
@@ -39,14 +39,14 @@ final class CakePHPStyle extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Applies CakePHP Coding Style';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 namespace A;
@@ -76,7 +76,7 @@ class A {
 EOT;
 	}
 
-	private function addUnderscoresBeforeName($source) {
+	private function addUnderscoresBeforeName(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$levelTouched = null;
@@ -150,7 +150,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function mergeEqualsWithReference($source) {
+	private function mergeEqualsWithReference(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -171,7 +171,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function removeSpaceAfterCasts($source) {
+	private function removeSpaceAfterCasts(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {
@@ -212,7 +212,7 @@ EOT;
 		return $this->code;
 	}
 
-	private function resizeSpaces($source) {
+	private function resizeSpaces(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		while (list($index, $token) = each($this->tkns)) {

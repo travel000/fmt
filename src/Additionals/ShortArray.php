@@ -20,7 +20,7 @@ final class ShortArray extends AdditionalPass {
 
 	const FOUND_PARENTHESES = 'paren';
 
-	public function candidate($source, $foundTokens) {
+	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ARRAY])) {
 			return true;
 		}
@@ -28,7 +28,7 @@ final class ShortArray extends AdditionalPass {
 		return false;
 	}
 
-	public function format($source) {
+	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$foundParen = [];
@@ -66,14 +66,14 @@ final class ShortArray extends AdditionalPass {
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getDescription() {
+	public function getDescription(): string {
 		return 'Convert old array into new array. (array() -> [])';
 	}
 
 	/**
 	 * @codeCoverageIgnore
 	 */
-	public function getExample() {
+	public function getExample(): string {
 		return <<<'EOT'
 <?php
 echo array();
