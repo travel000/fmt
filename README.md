@@ -15,8 +15,7 @@ phpfmt
 
 * [Sublime Text 2/3](https://github.com/phpfmt/sublime-phpfmt)
 * [Vim](https://github.com/phpfmt/vim-phpfmt)
-* [PHPStorm](https://github.com/phpfmt/fmt/blob/master/PHPStorm.md)
-* [PHPStorm beta](https://github.com/phpfmt/phpstorm-phpfmt)
+* [PHPStorm](https://github.com/phpfmt/phpstorm-phpfmt)
 
 ## Usage
 
