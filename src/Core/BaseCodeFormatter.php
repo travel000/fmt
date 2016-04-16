@@ -220,14 +220,6 @@ abstract class BaseCodeFormatter {
 			$args[1] = null;
 		}
 
-		if (!class_exists($pass)) {
-			$passName = sprintf('ExternalPass%s', $pass);
-			$passes = array_reverse($this->passes, true);
-			$passes[$passName] = new ExternalPass($pass);
-			$this->passes = array_reverse($passes, true);
-			return;
-		}
-
 		if (isset($this->shortcircuits[$pass])) {
 			return;
 		}
