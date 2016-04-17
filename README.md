@@ -9,7 +9,7 @@ phpfmt
 [![Throughput Graph](https://graphs.waffle.io/phpfmt/fmt/throughput.svg)](https://waffle.io/phpfmt/fmt/metrics)
 
 ## Requirements
-- PHP >= 5.6.0 to run the formatter. Note that the formatter can parse even a PHP file version 4 in case needed. HHVM is not supported.
+- PHP >= 7.0.0 to run the formatter. Note that the formatter can parse even a PHP file version 4 in case needed. HHVM is not supported.
 
 ## Plugins
 
