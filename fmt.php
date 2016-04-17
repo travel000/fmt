@@ -1665,7 +1665,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '20.0.0');
+	define('VERSION', '20.1.0');
 	
 function extractFromArgv(array $argv, string $item) {
 	return array_values(
@@ -3049,7 +3049,7 @@ abstract class BaseCodeFormatter {
 		
 
 final class CodeFormatter extends BaseCodeFormatter {
-	public function afterExecutedPass(string $source, string $className) {
+	public function afterExecutedPass(string $source, FormatterPass $className) {
 		$cn = get_class($className);
 		echo $cn, PHP_EOL;
 		echo $source, PHP_EOL;
@@ -3069,7 +3069,7 @@ final class CodeFormatter extends BaseCodeFormatter {
 
 	private $timings = [];
 
-	public function afterExecutedPass(string $source, string $className) {
+	public function afterExecutedPass(string $source, FormatterPass $className) {
 		$cn = get_class($className);
 		$this->timings[$cn] = microtime(true) - $this->currentTiming;
 		echo $cn, ':', (memory_get_usage() / 1024 / 1024), "\t", (memory_get_peak_usage() / 1024 / 1024), PHP_EOL;
@@ -13668,9 +13668,9 @@ if (isset($opts['visibility_order'])) {
 }
 
 if (isset($opts['passes'])) {
-	$optPasses = array_map(function ($v) {
+	$optPasses = array_filter(array_map(function ($v) {
 		return trim($v);
-	}, explode(',', $opts['passes']));
+	}, explode(',', $opts['passes'])));
 	foreach ($optPasses as $optPass) {
 		$fmt->enablePass($optPass);
 	}

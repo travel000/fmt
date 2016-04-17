@@ -316,9 +316,9 @@ if (isset($opts['visibility_order'])) {
 }
 
 if (isset($opts['passes'])) {
-	$optPasses = array_map(function ($v) {
+	$optPasses = array_filter(array_map(function ($v) {
 		return trim($v);
-	}, explode(',', $opts['passes']));
+	}, explode(',', $opts['passes'])));
 	foreach ($optPasses as $optPass) {
 		$fmt->enablePass($optPass);
 	}

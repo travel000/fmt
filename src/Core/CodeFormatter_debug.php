@@ -16,7 +16,7 @@
  * @codeCoverageIgnore
  */
 final class CodeFormatter extends BaseCodeFormatter {
-	public function afterExecutedPass(string $source, string $className) {
+	public function afterExecutedPass(string $source, FormatterPass $className) {
 		$cn = get_class($className);
 		echo $cn, PHP_EOL;
 		echo $source, PHP_EOL;

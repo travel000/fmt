@@ -20,7 +20,7 @@ final class CodeFormatter extends BaseCodeFormatter {
 
 	private $timings = [];
 
-	public function afterExecutedPass(string $source, string $className) {
+	public function afterExecutedPass(string $source, FormatterPass $className) {
 		$cn = get_class($className);
 		$this->timings[$cn] = microtime(true) - $this->currentTiming;
 		echo $cn, ':', (memory_get_usage() / 1024 / 1024), "\t", (memory_get_peak_usage() / 1024 / 1024), PHP_EOL;
