@@ -1784,25 +1784,6 @@ define('ST_SEMI_COLON', ';');
 define('ST_TIMES', '*');
 define('ST_BITWISE_OR', '|');
 define('ST_BITWISE_XOR', '^');
-if (!defined('T_POW')) {
-	define('T_POW', '**');
-}
-if (!defined('T_POW_EQUAL')) {
-	define('T_POW_EQUAL', '**=');
-}
-if (!defined('T_YIELD')) {
-	define('T_YIELD', 'yield');
-}
-if (!defined('T_FINALLY')) {
-	define('T_FINALLY', 'finally');
-}
-if (!defined('T_SPACESHIP')) {
-	define('T_SPACESHIP', '<=>');
-}
-if (!defined('T_COALESCE')) {
-	define('T_COALESCE', '??');
-}
-
 define('ST_PARENTHESES_BLOCK', 'ST_PARENTHESES_BLOCK');
 define('ST_BRACKET_BLOCK', 'ST_BRACKET_BLOCK');
 define('ST_CURLY_BLOCK', 'ST_CURLY_BLOCK');
