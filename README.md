@@ -13,7 +13,7 @@ phpfmt
 
 ## Plugins
 
-* [Sublime Text 2/3](https://github.com/phpfmt/sublime-phpfmt)
+* [Sublime Text 3](https://github.com/phpfmt/sublime-phpfmt)
 * [Vim](https://github.com/phpfmt/vim-phpfmt)
 * [PHPStorm](https://github.com/phpfmt/phpstorm-phpfmt)
 
