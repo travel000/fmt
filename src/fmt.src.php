@@ -40,9 +40,8 @@ namespace {
 	if (class_exists('SQLite3')) {
 		$enableCache = true;
 		require 'Core/Cache.php';
-	} else {
-		require 'Core/Cache_dummy.php';
 	}
+	require 'Core/CacheDummy.php';
 
 	require 'version.php';
 	require 'helpers.php';

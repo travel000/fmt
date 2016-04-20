@@ -15,7 +15,7 @@
 /**
  * @codeCoverageIgnore
  */
-final class Cache implements Cacher {
+final class CacheDummy implements Cacher {
 	public function create_db() {}
 	public function is_changed(string $target, string $filename): string {
 		return file_get_contents($filename);

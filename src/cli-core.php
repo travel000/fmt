@@ -198,15 +198,13 @@ if (isset($opts['help-pass'])) {
 	die();
 }
 
-$cache = null;
+$cache = new CacheDummy();
 $cache_fn = "";
 if ($enableCache && isset($opts['cache'])) {
 	$argv = extractFromArgv($argv, 'cache');
 	$cache_fn = $opts['cache'];
 	$cache = new Cache($cache_fn);
 	fwrite(STDERR, 'Using cache ...' . PHP_EOL);
-} elseif (!$enableCache) {
-	$cache = new Cache();
 }
 
 $backup = true;
