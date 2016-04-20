@@ -1665,7 +1665,7 @@ final class Cache implements Cacher {
 
 	}
 
-	define('VERSION', '20.1.0');
+	define('VERSION', '20.1.1');
 	
 function extractFromArgv(array $argv, string $item) {
 	return array_values(
@@ -13532,7 +13532,7 @@ if (isset($opts['help-pass'])) {
 }
 
 $cache = null;
-$cache_fn = null;
+$cache_fn = "";
 if ($enableCache && isset($opts['cache'])) {
 	$argv = extractFromArgv($argv, 'cache');
 	$cache_fn = $opts['cache'];

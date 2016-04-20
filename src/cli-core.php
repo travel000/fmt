@@ -199,7 +199,7 @@ if (isset($opts['help-pass'])) {
 }
 
 $cache = null;
-$cache_fn = null;
+$cache_fn = "";
 if ($enableCache && isset($opts['cache'])) {
 	$argv = extractFromArgv($argv, 'cache');
 	$cache_fn = $opts['cache'];
