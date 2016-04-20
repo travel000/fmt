@@ -1651,10 +1651,10 @@ final class Cache implements Cacher {
 	}
 }
 
-	} else {
-		
+	}
+	
 
-final class Cache implements Cacher {
+final class CacheDummy implements Cacher {
 	public function create_db() {}
 	public function is_changed(string $target, string $filename): string {
 		return file_get_contents($filename);
@@ -1663,9 +1663,8 @@ final class Cache implements Cacher {
 	public function upsert(string $target, string $filename, string $content) {}
 }
 
-	}
 
-	define('VERSION', '20.1.1');
+	define('VERSION', '20.2.0');
 	
 function extractFromArgv(array $argv, string $item) {
 	return array_values(
@@ -13531,15 +13530,13 @@ if (isset($opts['help-pass'])) {
 	die();
 }
 
-$cache = null;
+$cache = new CacheDummy();
 $cache_fn = "";
 if ($enableCache && isset($opts['cache'])) {
 	$argv = extractFromArgv($argv, 'cache');
 	$cache_fn = $opts['cache'];
 	$cache = new Cache($cache_fn);
 	fwrite(STDERR, 'Using cache ...' . PHP_EOL);
-} elseif (!$enableCache) {
-	$cache = new Cache();
 }
 
 $backup = true;
