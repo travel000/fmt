@@ -29,9 +29,9 @@ function cofunc(callable $fn) {
 		return;
 	}
 	if ($pid) {
-		pcntl_signal(SIGCHLD, SIG_IGN);
 		return;
 	}
+	pcntl_signal(SIGCHLD, SIG_IGN);
 	$params = [];
 	if (func_num_args() > 1) {
 		$params = array_slice(func_get_args(), 1);
@@ -145,7 +145,7 @@ class Message {
 		if (null === $key) {
 			$key = ftok(tempnam(sys_get_temp_dir(), 'csp.' . uniqid('shm', true)), 'C');
 		}
-		$this->shm = shm_attach((int) $key);
+		$this->shm = shm_attach($key);
 		if (false === $this->shm) {
 			trigger_error('Unable to attach shared memory segment for channel', E_ERROR);
 		}

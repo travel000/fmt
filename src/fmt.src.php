@@ -74,6 +74,7 @@ namespace {
 	require 'PSR/PSR1OpenTags.php';
 	require 'PSR/PSR2AlignObjOp.php';
 	require 'PSR/PSR2CurlyOpenNextLine.php';
+	require 'PSR/PSR2IndentImplements.php';
 	require 'PSR/PSR2IndentWithSpace.php';
 	require 'PSR/PSR2KeywordsLowerCase.php';
 	require 'PSR/PSR2LnAfterNamespace.php';

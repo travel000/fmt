@@ -12,36 +12,50 @@
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-final class PsrDecorator {
-	public static function PSR1(CodeFormatter $fmt) {
-		$fmt->enablePass('PSR1OpenTags');
-		$fmt->enablePass('PSR1BOMMark');
-		$fmt->enablePass('PSR1ClassConstants');
-		$fmt->disablePass('ReindentComments');
+final class PSR2IndentImplements extends FormatterPass {
+	public function candidate(string $source, array $foundTokens): bool {
+		if (isset($foundTokens[T_IMPLEMENTS])) {
+			return true;
+		}
+
+		return false;
 	}
 
-	public static function PSR1Naming(CodeFormatter $fmt) {
-		$fmt->enablePass('PSR1ClassNames');
-		$fmt->enablePass('PSR1MethodNames');
-		$fmt->disablePass('ReindentComments');
-	}
+	public function format(string $source): string{
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		$touchedImplements = false;
 
-	public static function PSR2(CodeFormatter $fmt) {
-		$fmt->enablePass('PSR2KeywordsLowerCase');
-		$fmt->enablePass('PSR2IndentWithSpace');
-		$fmt->enablePass('PSR2LnAfterNamespace');
-		$fmt->enablePass('PSR2CurlyOpenNextLine');
-		$fmt->enablePass('PSR2ModifierVisibilityStaticOrder');
-		$fmt->enablePass('PSR2SingleEmptyLineAndStripClosingTag');
-		$fmt->enablePass('PSR2IndentImplements');
-		$fmt->enablePass('ReindentSwitchBlocks');
-		$fmt->disablePass('ReindentComments');
-		$fmt->disablePass('StripNewlineWithinClassBody');
-	}
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			switch ($id) {
+			case T_IMPLEMENTS:
+				$this->appendCode($text);
+				$touchedImplements = true;
+				break;
 
-	public static function decorate(CodeFormatter $fmt) {
-		self::PSR1($fmt);
-		self::PSR1Naming($fmt);
-		self::PSR2($fmt);
+			case T_WHITESPACE:
+				$this->appendCode($text);
+				if ($touchedImplements && $this->hasLn($text)) {
+					$this->appendCode($this->getIndent(+1));
+				}
+				break;
+
+			case ST_CURLY_OPEN:
+				$this->appendCode($text);
+				break 2;
+
+			default:
+				$this->appendCode($text);
+				break;
+			}
+		}
+		while (list($index, $token) = each($this->tkns)) {
+			list(, $text) = $this->getToken($token);
+			$this->appendCode($text);
+		}
+
+		return $this->code;
 	}
 }

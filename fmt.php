@@ -26,9 +26,9 @@ function cofunc(callable $fn) {
 		return;
 	}
 	if ($pid) {
-		pcntl_signal(SIGCHLD, SIG_IGN);
 		return;
 	}
+	pcntl_signal(SIGCHLD, SIG_IGN);
 	$params = [];
 	if (func_num_args() > 1) {
 		$params = array_slice(func_get_args(), 1);
@@ -142,7 +142,7 @@ class Message {
 		if (null === $key) {
 			$key = ftok(tempnam(sys_get_temp_dir(), 'csp.' . uniqid('shm', true)), 'C');
 		}
-		$this->shm = shm_attach((int) $key);
+		$this->shm = shm_attach($key);
 		if (false === $this->shm) {
 			trigger_error('Unable to attach shared memory segment for channel', E_ERROR);
 		}
@@ -1463,6 +1463,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'PSR2IndentImplements' => false,
 		'ReindentComments' => false,
 		'ReindentEqual' => false,
 		'Reindent' => false,
@@ -4620,6 +4621,57 @@ final class PSR2CurlyOpenNextLine extends FormatterPass {
 }
 
 	
+final class PSR2IndentImplements extends FormatterPass {
+	public function candidate(string $source, array $foundTokens): bool {
+		if (isset($foundTokens[T_IMPLEMENTS])) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function format(string $source): string{
+		$this->tkns = token_get_all($source);
+		$this->code = '';
+		$touchedImplements = false;
+
+		while (list($index, $token) = each($this->tkns)) {
+			list($id, $text) = $this->getToken($token);
+			$this->ptr = $index;
+			switch ($id) {
+
+			case T_IMPLEMENTS:
+				$this->appendCode($text);
+				$touchedImplements = true;
+				break;
+
+			case T_WHITESPACE:
+				$this->appendCode($text);
+				if ($touchedImplements && $this->hasLn($text)) {
+					$this->appendCode($this->getIndent(+1));
+				}
+				break;
+
+			case ST_CURLY_OPEN:
+				$this->appendCode($text);
+				break 2;
+
+			default:
+				$this->appendCode($text);
+				break;
+			}
+		}
+
+		while (list($index, $token) = each($this->tkns)) {
+			list(, $text) = $this->getToken($token);
+			$this->appendCode($text);
+		}
+
+		return $this->code;
+	}
+}
+
+	
 final class PSR2IndentWithSpace extends FormatterPass {
 	private $size = 4;
 
@@ -5000,6 +5052,7 @@ final class PsrDecorator {
 		$fmt->enablePass('PSR2CurlyOpenNextLine');
 		$fmt->enablePass('PSR2ModifierVisibilityStaticOrder');
 		$fmt->enablePass('PSR2SingleEmptyLineAndStripClosingTag');
+		$fmt->enablePass('PSR2IndentImplements');
 		$fmt->enablePass('ReindentSwitchBlocks');
 		$fmt->disablePass('ReindentComments');
 		$fmt->disablePass('StripNewlineWithinClassBody');

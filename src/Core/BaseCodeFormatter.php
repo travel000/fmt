@@ -75,6 +75,7 @@ abstract class BaseCodeFormatter {
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
+		'PSR2IndentImplements' => false,
 		'ReindentComments' => false,
 		'ReindentEqual' => false,
 		'Reindent' => false,
