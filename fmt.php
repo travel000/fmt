@@ -318,7 +318,7 @@ final class CacheDummy implements Cacher {
 }
 
 
-	define('VERSION', '20.3.0');
+	define('VERSION', '20.5.0');
 	
 function extractFromArgv(array $argv, string $item) {
 	return array_values(
@@ -2276,7 +2276,6 @@ final class EliminateDuplicatedEmptyLines extends FormatterPass {
 }
 	
 final class ExtraCommaInArray extends FormatterPass {
-
 	const ST_SHORT_ARRAY_OPEN = 'SHORT_ARRAY_OPEN';
 
 	public function candidate(string $source, array $foundTokens): bool {
@@ -4639,7 +4638,6 @@ final class PSR2IndentImplements extends FormatterPass {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
-
 			case T_IMPLEMENTS:
 				$this->appendCode($text);
 				$touchedImplements = true;
@@ -4661,7 +4659,6 @@ final class PSR2IndentImplements extends FormatterPass {
 				break;
 			}
 		}
-
 		while (list($index, $token) = each($this->tkns)) {
 			list(, $text) = $this->getToken($token);
 			$this->appendCode($text);
@@ -7255,7 +7252,7 @@ final class EchoToPrint extends AdditionalPass {
 				$start = $index;
 				$end = $this->walkUsefulRightUntil($this->tkns, $index, [ST_SEMI_COLON, T_CLOSE_TAG]);
 				$convert = true;
-				for ($i = $start; $i < $end; $i++) {
+				for ($i = $start; $i < $end; ++$i) {
 					$tkn = $this->tkns[$i];
 					if (ST_PARENTHESES_OPEN === $tkn[0]) {
 						$this->refWalkBlock($tkns, $ptr, ST_PARENTHESES_OPEN, ST_PARENTHESES_CLOSE);
@@ -7290,7 +7287,6 @@ print 2;
 ?>
 EOT;
 	}
-
 }
 	
 final class EncapsulateNamespaces extends AdditionalPass {
@@ -9895,12 +9891,12 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$curlyStack = [];
+		$touchedFunction = false;
 
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
-
 			case T_NAMESPACE:
 			case T_CLASS:
 			case T_TRAIT:
@@ -10541,7 +10537,6 @@ final class SpaceAroundControlStructures extends AdditionalPass {
 				$this->appendCode($text);
 				break;
 			}
-
 		}
 
 		return $this->code;

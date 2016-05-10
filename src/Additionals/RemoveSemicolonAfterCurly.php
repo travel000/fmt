@@ -27,6 +27,7 @@ final class RemoveSemicolonAfterCurly extends AdditionalPass {
 		$this->tkns = token_get_all($source);
 		$this->code = '';
 		$curlyStack = [];
+		$touchedFunction = false;
 
 		while (list($index, $token) = each($this->tkns)) {
 			list($id, $text) = $this->getToken($token);
