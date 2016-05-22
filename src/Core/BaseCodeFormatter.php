@@ -51,7 +51,6 @@ abstract class BaseCodeFormatter {
 
 		'PSR2IndentWithSpace' => false,
 		'AlignPHPCode' => false,
-		'AllmanStyleBraces' => false,
 		'NamespaceMergeWithOpenTag' => false,
 		'MergeNamespaceWithOpenTag' => false,
 
@@ -152,7 +151,6 @@ abstract class BaseCodeFormatter {
 	private $shortcircuit = [
 		'AlignDoubleArrow' => ['AlignGroupDoubleArrow'],
 		'AlignGroupDoubleArrow' => ['AlignDoubleArrow'],
-		'AllmanStyleBraces' => ['PSR2CurlyOpenNextLine'],
 		'OnlyOrderUseClauses' => ['OrderAndRemoveUseClauses'],
 		'OrderAndRemoveUseClauses' => ['OnlyOrderUseClauses'],
 		'OrganizeClass' => ['ReindentComments', 'RestoreComments'],
