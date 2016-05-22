@@ -11,7 +11,7 @@ phpfmt
 ## Requirements
 - PHP >= 7.0.0 to run the formatter. Note that the formatter can parse and format even a PHP file version 4 in case needed. HHVM is not supported.
 
-## Plugins
+## Editor Plugins
 
 * [Sublime Text 3](https://github.com/phpfmt/sublime-phpfmt)
 * [Vim](https://github.com/phpfmt/vim-phpfmt)
@@ -25,9 +25,7 @@ $ php fmt.phar filename.php
 $ php fmt.phar --help
 Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [options] <target>
   --cache[=FILENAME]                cache file. Default: .php.tools.cache
-  --cakephp                         Apply CakePHP coding style
   --config=FILENAME                 configuration file. Default: .phpfmt.ini
-  --constructor=type                analyse classes for attributes and generate constructor - camel, snake, golang
   --dry-run                         Runs the formatter without atually changing files;
                                     returns exit code 1 if changes would have been applied
   --enable_auto_align               disable auto align of ST_EQUAL and T_DOUBLE_ARROW
@@ -45,8 +43,6 @@ Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [op
   --psr1                            activate PSR1 style
   --psr1-naming                     activate PSR1 style - Section 3 and 4.3 - Class and method names case.
   --psr2                            activate PSR2 style
-  --selfupdate                      self-update fmt.phar from Github
-  --setters_and_getters=type        analyse classes for attributes and generate setters and getters - camel, snake, golang
   --smart_linebreak_after_curly     convert multistatement blocks into multiline blocks
   --version                         version
   --visibility_order                fixes visibiliy order for method in classes - PSR-2 4.2
