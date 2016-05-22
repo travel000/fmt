@@ -303,7 +303,6 @@ if ($isCoveralls) {
 
 		echo implode('', $newFile), PHP_EOL;
 	}
-
 }
 if (sizeof($brokenTests) > 0) {
 	echo 'run test.php -v to see the error diffs', PHP_EOL;

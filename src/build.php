@@ -44,7 +44,6 @@ echo 'Bumping version to: ', $newver, PHP_EOL;
 file_put_contents('version.php', $newver);
 
 class Build extends FormatterPass {
-
 	public function candidate(string $source, array $foundTokens): bool {
 		return true;
 	}
