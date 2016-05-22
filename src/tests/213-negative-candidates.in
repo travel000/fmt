@@ -1,3 +1,0 @@
-<?php
-//passes:AddMissingParentheses,AutoPreincrement,JoinToImplode,MergeElseIf,RemoveUseLeadingSlash,ReturnNull,ShortArray,SpaceBetweenMethods,WrongConstructorName,ConstructorPass,EncapsulateNamespaces,SettersAndGettersPass
-$a . $b;

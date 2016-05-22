@@ -44,7 +44,6 @@ namespace {
 
 	require 'Core/AddMissingCurlyBraces.php';
 	require 'Core/AutoImport.php';
-	require 'Core/ConstructorPass.php';
 	require 'Core/EliminateDuplicatedEmptyLines.php';
 	require 'Core/ExtraCommaInArray.php';
 	require 'Core/LeftAlignComment.php';
@@ -60,7 +59,6 @@ namespace {
 	require 'Core/ReindentObjOps.php';
 	require 'Core/ResizeSpaces.php';
 	require 'Core/RTrim.php';
-	require 'Core/SettersAndGettersPass.php';
 	require 'Core/SplitCurlyCloseAndTokens.php';
 	require 'Core/StripExtraCommaInList.php';
 	require 'Core/SurrogateToken.php';
@@ -93,7 +91,6 @@ namespace {
 	require 'Additionals/AllmanStyleBraces.php';
 	require 'Additionals/AutoPreincrement.php';
 	require 'Additionals/AutoSemicolon.php';
-	require 'Additionals/CakePHPStyle.php';
 	require 'Additionals/ClassToSelf.php';
 	require 'Additionals/ClassToStatic.php';
 	require 'Additionals/ConvertOpenTagWithEcho.php';

@@ -40,8 +40,6 @@ abstract class BaseCodeFormatter {
 		'AutoPreincrement' => false,
 		'MildAutoPreincrement' => false,
 
-		'CakePHPStyle' => false,
-
 		'StripNewlineAfterClassOpen' => false,
 		'StripNewlineAfterCurlyOpen' => false,
 
@@ -110,8 +108,6 @@ abstract class BaseCodeFormatter {
 		'OnlyOrderUseClauses' => false,
 		'OrderAndRemoveUseClauses' => false,
 		'AutoImportPass' => false,
-		'ConstructorPass' => false,
-		'SettersAndGettersPass' => false,
 		'NormalizeIsNotEquals' => false,
 		'RemoveIncludeParentheses' => false,
 		'TwoCommandsInSameLine' => false,
