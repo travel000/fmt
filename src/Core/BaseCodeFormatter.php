@@ -192,6 +192,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
 		$this->passes['ResizeSpaces'] = new ResizeSpaces();
+		$this->passes['ReturnNull'] = new ReturnNull();
 		$this->passes['RTrim'] = new RTrim();
 		$this->passes['SplitCurlyCloseAndTokens'] = new SplitCurlyCloseAndTokens();
 		$this->passes['StripExtraCommaInList'] = new StripExtraCommaInList();

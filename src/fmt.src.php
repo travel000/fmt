@@ -58,6 +58,7 @@ namespace {
 	require 'Core/ReindentEqual.php';
 	require 'Core/ReindentObjOps.php';
 	require 'Core/ResizeSpaces.php';
+	require 'Core/ReturnNull.php';
 	require 'Core/RTrim.php';
 	require 'Core/SplitCurlyCloseAndTokens.php';
 	require 'Core/StripExtraCommaInList.php';
@@ -124,7 +125,6 @@ namespace {
 	require 'Additionals/ReplaceBooleanAndOr.php';
 	require 'Additionals/ReplaceIsNull.php';
 	require 'Additionals/RestoreComments.php';
-	require 'Additionals/ReturnNull.php';
 	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
 	require 'Additionals/SortUseNameSpace.php';
