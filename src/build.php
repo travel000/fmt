@@ -13,6 +13,7 @@
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 define('SKIP_DECLARE', '// SKIP DECLARE ');
+define('VERSION_PATTERN', '<?php define(\'VERSION\', \'%d.%d\');');
 
 if (ini_get('phar.readonly')) {
 	unset($argv[0]);
@@ -25,24 +26,22 @@ require 'Core/constants.php';
 require 'Core/FormatterPass.php';
 require 'Additionals/AdditionalPass.php';
 require 'Additionals/EncapsulateNamespaces.php';
+exec('git checkout HEAD version.php');
 require 'version.php';
 
-error_reporting(E_ALL);
-$opt = getopt('Mmp');
-$newver = '';
-$verPattern = '<?php define(\'VERSION\', \'%d.%d.%d\');';
-$tmp = explode('.', VERSION);
-if (isset($opt['M'])) {
-	$newver = sprintf($verPattern, $tmp[0] + 1, 0, 0);
-} elseif (isset($opt['m'])) {
-	$newver = sprintf($verPattern, $tmp[0], $tmp[1] + 1, 0);
-} elseif (isset($opt['p'])) {
-	$newver = sprintf($verPattern, $tmp[0], $tmp[1], $tmp[2] + 1);
+$ver = explode('.', VERSION);
+
+$majorVersion = calculateVersion(getBranchDate(currentBranch()));
+if ($majorVersion != $ver[0]) {
+	$ver[0] = $majorVersion;
+	$ver[1] = 0;
+} else {
+	$ver[1] += 1;
 }
-if (!empty($newver)) {
-	echo 'Bumping version to: ', $newver, PHP_EOL;
-	file_put_contents('version.php', $newver);
-}
+
+$newver = sprintf(VERSION_PATTERN, $ver[0], $ver[1]);
+echo 'Bumping version to: ', $newver, PHP_EOL;
+file_put_contents('version.php', $newver);
 
 class Build extends FormatterPass {
 
@@ -186,4 +185,29 @@ foreach ($targets as $target) {
 			chmod('..' . DIRECTORY_SEPARATOR . $target . $variant, $permission);
 		}
 	}
+}
+
+function currentBranch(): string{
+	$cmd = 'git rev-parse --abbrev-ref HEAD';
+	return exec($cmd);
+}
+
+function getBranchDate(string $branch): DateTime{
+	$cmd = 'git log master%BRANCH% --oneline | tail -n -1 | awk \'{ print $1 }\' | xargs git show -s --pretty=format:%ai';
+	$replaceBranch = '';
+	if ('master' != $branch) {
+		$replaceBranch = '..' . escapeshellarg($branch);
+	}
+	$cmd = str_replace('%BRANCH%', $replaceBranch, $cmd);
+	$ret = exec($cmd);
+	return new DateTime($ret);
+}
+
+function calculateVersion(DateTime $date2): int{
+	$date1 = getBranchDate('master');
+	$diff = intval($date2->diff($date1)->format('%a'));
+	if (0 == $diff) {
+		$diff = $date1->diff(new DateTime('now'))->format('%a');
+	}
+	return intval($diff);
 }
