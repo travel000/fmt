@@ -1,1 +1,1 @@
-<?php define('VERSION', '803.1');
+<?php define('VERSION', '803.2');
