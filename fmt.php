@@ -318,7 +318,7 @@ final class CacheDummy implements Cacher {
 }
 
 
-	define('VERSION', '803.0');
+	define('VERSION', '803.1');
 	
 function extractFromArgv(array $argv, string $item) {
 	return array_values(
