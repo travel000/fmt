@@ -1,6 +1,6 @@
 <?php
 //passes:EchoToPrint
-echo 1, "2";
+echo 1, '2';
 if (true) {
 	print 3;
 }

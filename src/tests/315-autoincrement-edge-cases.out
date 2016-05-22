@@ -4,7 +4,7 @@
 
 ++$var[$v];
 
-++${$var}->{$v . "string"}->attr[$c]->$dynattr;
+++${$var}->{$v . 'string'}->attr[$c]->$dynattr;
 
 $var = $v++;
 

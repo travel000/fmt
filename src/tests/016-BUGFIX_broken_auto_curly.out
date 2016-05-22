@@ -1,5 +1,5 @@
 <?php
-echo "OK";
+echo 'OK';
 do {
 	$cmd = cmd();
 } while (true);
@@ -55,7 +55,7 @@ if (true) {
 
 if ($count_spaces > 0) {
 	for ($i = 1; $i <= $count_spaces; $i++) {
-		$new_txt .= "&nbsp;1";
+		$new_txt .= '&nbsp;1';
 	}
 }
 
@@ -67,6 +67,6 @@ if (true) {
 
 if ($count_spaces > 0) {
 	for ($i = 1; $i <= $count_spaces; $i++) {
-		$new_txt .= "&nbsp;2";
+		$new_txt .= '&nbsp;2';
 	}
 }

@@ -53,11 +53,11 @@ $x = [
 ];
 
 $var = array(
-	"supercalifral",
+	'supercalifral',
 	// line comment
 );
 
 $var = array(
-	"supercalifral",
+	'supercalifral',
 	/* comment */
 );

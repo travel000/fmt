@@ -29,19 +29,19 @@ function stripslashes_deep($value) {
  */
 function stripslashes_deep($value) {
 	switch ($x) {
-	case "T":
+	case 'T':
 		hey();
 		break;
-	case "F":
+	case 'F':
 		return ($x == 1) ? shalom() : hello();
 		break;
 	}
 
 	switch ($x) {
-	case "T":
+	case 'T':
 		hey();
 		break;
-	case "F":
+	case 'F':
 		shalom();
 		break;
 	}

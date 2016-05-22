@@ -8,7 +8,7 @@ if (func() === $a) {}
 if (func($a) === $a) {}
 if (func($a = 1) === $a) {}
 if (func(1 == $a) === $a) {}
-if ("adsadsa" === $a) {}
+if ('adsadsa' === $a) {}
 if ('adsadsa' === $a) {}
 if ("$b" === $a) {}
 if (" $b " === $a) {}
@@ -22,13 +22,13 @@ if (FALSE === $a || $b) {}
 if (1 == $a->b && $c) {}
 if (0 === $a->{$b} || $c) {}
 while (0 === $a->{$b}->c || $c) {}
-if ("" === $this->bar[$idx]) {}
-if ("" === $this->{$bar}) {}
-if ("" === $this->{$bar}[$idx]) {}
-if ($this->{$bar}[$idx]() === "") {}
-if ($this->{$bar}[$idx]($a) === "") {}
-if ($this->{$bar}[$idx]($a = 1) === "") {}
-if ($this->{$bar}[$idx](1 == $a) === "") {}
+if ('' === $this->bar[$idx]) {}
+if ('' === $this->{$bar}) {}
+if ('' === $this->{$bar}[$idx]) {}
+if ($this->{$bar}[$idx]() === '') {}
+if ($this->{$bar}[$idx]($a) === '') {}
+if ($this->{$bar}[$idx]($a = 1) === '') {}
+if ($this->{$bar}[$idx](1 == $a) === '') {}
 
 if ($a == $b) {}
 
@@ -58,10 +58,10 @@ if ($a == $b) {
 
 if (null === $a[1]) {}
 if ($this->method() === $foo) {}
-if ("" === $this->bar[$idx]) {}
-if ("" === $this->bar[$idx]->a) {}
-if ("" === $this->foobar->{$idx}) {}
-if ("" === $this->foobar->{$idx}->a) {}
+if ('' === $this->bar[$idx]) {}
+if ('' === $this->bar[$idx]->a) {}
+if ('' === $this->foobar->{$idx}) {}
+if ('' === $this->foobar->{$idx}->a) {}
 if (null === $a[0 === $b ? $c : $d]) {}
 if (null === $this->{$a ? 'a' : 'b' === null}) {}
 
@@ -100,7 +100,7 @@ if (func() !== $a) {}
 if (func($a) !== $a) {}
 if (func($a = 1) !== $a) {}
 if (func(1 != $a) !== $a) {}
-if ("adsadsa" !== $a) {}
+if ('adsadsa' !== $a) {}
 if ('adsadsa' !== $a) {}
 if ("$b" !== $a) {}
 if (" $b " !== $a) {}
@@ -114,13 +114,13 @@ if (FALSE !== $a || $b) {}
 if (1 != $a->b && $c) {}
 if (0 !== $a->{$b} || $c) {}
 while (0 !== $a->{$b}->c || $c) {}
-if ("" !== $this->bar[$idx]) {}
-if ("" !== $this->{$bar}) {}
-if ("" !== $this->{$bar}[$idx]) {}
-if ($this->{$bar}[$idx]() !== "") {}
-if ($this->{$bar}[$idx]($a) !== "") {}
-if ($this->{$bar}[$idx]($a = 1) !== "") {}
-if ($this->{$bar}[$idx](1 != $a) !== "") {}
+if ('' !== $this->bar[$idx]) {}
+if ('' !== $this->{$bar}) {}
+if ('' !== $this->{$bar}[$idx]) {}
+if ($this->{$bar}[$idx]() !== '') {}
+if ($this->{$bar}[$idx]($a) !== '') {}
+if ($this->{$bar}[$idx]($a = 1) !== '') {}
+if ($this->{$bar}[$idx](1 != $a) !== '') {}
 
 if ($a != $b) {}
 
@@ -150,10 +150,10 @@ if ($a != $b) {
 
 if (null !== $a[1]) {}
 if ($this->method() !== $foo) {}
-if ("" !== $this->bar[$idx]) {}
-if ("" !== $this->bar[$idx]->a) {}
-if ("" !== $this->foobar->{$idx}) {}
-if ("" !== $this->foobar->{$idx}->a) {}
+if ('' !== $this->bar[$idx]) {}
+if ('' !== $this->bar[$idx]->a) {}
+if ('' !== $this->foobar->{$idx}) {}
+if ('' !== $this->foobar->{$idx}->a) {}
 if (null !== $a[0 !== $b ? $c : $d]) {}
 if (null !== $this->{$a ? 'a' : 'b' !== null}) {}
 

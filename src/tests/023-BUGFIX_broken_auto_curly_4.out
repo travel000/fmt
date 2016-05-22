@@ -5,7 +5,7 @@ abstract class GenericContent {
 	private $properties = array(
 	);
 	protected static $PROPERTIES = array(
-		"dummy" => "shortstr",
+		'dummy' => 'shortstr',
 	);
 	public function __construct($props, $prop_types = null) {
 		if ($prop_types) {

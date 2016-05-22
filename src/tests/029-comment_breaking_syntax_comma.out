@@ -9,7 +9,7 @@ $expect = array(
 	, 4 => new ClassObject('i')
 	, 5 => new ClassObject('comment 2')
 	, 6 => new ClassObject('i')
-	, 7 => new ClassObject("still comment 2")
+	, 7 => new ClassObject('still comment 2')
 	// comment 3
 	, 8 => new ClassObject('b')
 	// comment 4

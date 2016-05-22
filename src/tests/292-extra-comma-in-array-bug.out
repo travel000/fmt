@@ -1,6 +1,6 @@
 <?php
 //passes:Default,ExtraCommaInArray
-$x = "literal"[
+$x = 'literal'[
 	$x
 ];
 
@@ -15,7 +15,7 @@ $x = "literal"[
 
 [
 	1,
-	"literal",
+	'literal',
 ];
 
 [
@@ -40,7 +40,7 @@ $x = "literal"[
 	$var
 ];
 
-${"x"}[
+${'x'}[
 	1
 ];
 
@@ -48,7 +48,7 @@ literal[
 	1
 ];
 
-array("literal")[
+array('literal')[
 	1
 ];
 

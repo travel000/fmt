@@ -44,6 +44,7 @@ namespace {
 
 	require 'Core/AddMissingCurlyBraces.php';
 	require 'Core/AutoImport.php';
+	require 'Core/DoubleToSingleQuote.php';
 	require 'Core/EliminateDuplicatedEmptyLines.php';
 	require 'Core/ExtraCommaInArray.php';
 	require 'Core/MergeCurlyCloseAndDoWhile.php';
@@ -93,7 +94,6 @@ namespace {
 	require 'Additionals/ClassToStatic.php';
 	require 'Additionals/ConvertOpenTagWithEcho.php';
 	require 'Additionals/DocBlockToComment.php';
-	require 'Additionals/DoubleToSingleQuote.php';
 	require 'Additionals/EchoToPrint.php';
 	require 'Additionals/EncapsulateNamespaces.php';
 	require 'Additionals/GeneratePHPDoc.php';

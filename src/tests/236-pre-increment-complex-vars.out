@@ -2,7 +2,7 @@
 //passes: TwoCommandsInSameLine, AddMissingCurlyBraces, NormalizeLnAndLtrimLines, MergeParenCloseWithCurlyOpen, MergeCurlyCloseAndDoWhile, MergeDoubleArrowAndArray, ExtraCommaInArray, ResizeSpaces, Reindent, ReindentColonBlocks,   ReindentObjOps, OrderAndRemoveUseClauses, EliminateDuplicatedEmptyLines, AlignEquals, AlignDoubleArrow,  RTrim, AutoPreincrement
 
 ++${$a};
-++${"a"};
+++${'a'};
 ++${$a};
 "{$a}++";
 "${a1}++";

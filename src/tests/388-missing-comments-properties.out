@@ -13,7 +13,7 @@ class Test {
 	/**
 	 * @var string
 	 */
-	private $c = "c";
+	private $c = 'c';
 	/**
 	 * @var array
 	 */

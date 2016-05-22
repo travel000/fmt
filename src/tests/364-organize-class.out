@@ -5,12 +5,12 @@ class A {
 	/**
 	 * something about this other constant
 	 */
-	const OTHERCONST = "b";
+	const OTHERCONST = 'b';
 
 	/**
 	 * something about this constant
 	 */
-	const SOMECONST = "a";
+	const SOMECONST = 'a';
 
 	/**
 	 * some other attribute

@@ -3,7 +3,7 @@
 // from sublime-phpfmt#101
 $console
 	->register('cms:setup')
-	->setDescription("Sets up the CMS environment.")
+	->setDescription('Sets up the CMS environment.')
 	->setCode(
 		function (InputInterface $input, OutputInterface $output) use ($app) {
 			$public = __DIR__ . '/some/class/path';

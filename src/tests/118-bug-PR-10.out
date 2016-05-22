@@ -4,5 +4,5 @@ $related_others = array("${keywords}abc",
 );
 
 function a() {
-	echo "a";
+	echo 'a';
 }

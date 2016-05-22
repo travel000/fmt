@@ -13,7 +13,7 @@ $this->a{$b++}($a++);
 $this->a($a++);
 $this->a{$b++}();
 
-echo "a" . $i++;
+echo 'a' . $i++;
 
 --$a;
 
@@ -27,7 +27,7 @@ $this->a{$b--}($a--);
 $this->a($a--);
 $this->a{$b--}();
 
-echo "a" . $i--;
+echo 'a' . $i--;
 
 ++$i;
 --$i;

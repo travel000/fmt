@@ -176,6 +176,7 @@ abstract class BaseCodeFormatter {
 
 	public function __construct() {
 		$this->passes['AddMissingCurlyBraces'] = new AddMissingCurlyBraces();
+		$this->passes['DoubleToSingleQuote'] = new DoubleToSingleQuote();
 		$this->passes['EliminateDuplicatedEmptyLines'] = new EliminateDuplicatedEmptyLines();
 		$this->passes['ExtraCommaInArray'] = new ExtraCommaInArray();
 		$this->passes['MergeCurlyCloseAndDoWhile'] = new MergeCurlyCloseAndDoWhile();
