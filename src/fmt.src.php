@@ -58,6 +58,7 @@ namespace {
 	require 'Core/ReindentComments.php';
 	require 'Core/ReindentEqual.php';
 	require 'Core/ReindentObjOps.php';
+	require 'Core/RemoveBOMMark.php';
 	require 'Core/ResizeSpaces.php';
 	require 'Core/ReturnNull.php';
 	require 'Core/RTrim.php';
@@ -67,7 +68,6 @@ namespace {
 	require 'Core/SurrogateToken.php';
 	require 'Core/TwoCommandsInSameLine.php';
 
-	require 'PSR/PSR1BOMMark.php';
 	require 'PSR/PSR1ClassConstants.php';
 	require 'PSR/PSR1ClassNames.php';
 	require 'PSR/PSR1MethodNames.php';

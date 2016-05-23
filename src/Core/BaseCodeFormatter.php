@@ -64,7 +64,6 @@ abstract class BaseCodeFormatter {
 		'PSR1ClassNames' => false,
 
 		'PSR1ClassConstants' => false,
-		'PSR1BOMMark' => false,
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
@@ -136,6 +135,7 @@ abstract class BaseCodeFormatter {
 		'EchoToPrint' => false,
 		'TrimSpaceBeforeSemicolon' => false,
 		'StripNewlineWithinClassBody' => false,
+		'RemoveBOMMark' => false,
 	];
 
 	private $hasAfterExecutedPass = false;
@@ -158,7 +158,6 @@ abstract class BaseCodeFormatter {
 		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
 
 		'PSR1OpenTags' => ['ReindentComments'],
-		'PSR1BOMMark' => ['ReindentComments'],
 		'PSR1ClassConstants' => ['ReindentComments'],
 		'PSR1ClassNames' => ['ReindentComments'],
 		'PSR1MethodNames' => ['ReindentComments'],
@@ -189,6 +188,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['ReindentComments'] = new ReindentComments();
 		$this->passes['ReindentEqual'] = new ReindentEqual();
 		$this->passes['ReindentObjOps'] = new ReindentObjOps();
+		$this->passes['RemoveBOMMark'] = new RemoveBOMMark();
 		$this->passes['RemoveIncludeParentheses'] = new RemoveIncludeParentheses();
 		$this->passes['ResizeSpaces'] = new ResizeSpaces();
 		$this->passes['ReturnNull'] = new ReturnNull();

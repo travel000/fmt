@@ -15,7 +15,6 @@
 final class PsrDecorator {
 	public static function PSR1(CodeFormatter $fmt) {
 		$fmt->enablePass('PSR1OpenTags');
-		$fmt->enablePass('PSR1BOMMark');
 		$fmt->enablePass('PSR1ClassConstants');
 		$fmt->disablePass('ReindentComments');
 	}
