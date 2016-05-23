@@ -24,13 +24,16 @@ final class MergeCurlyCloseAndDoWhile extends FormatterPass {
 	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
 		$this->code = '';
-		while (list($index, $token) = each($this->tkns)) {
+		$lenTkns = sizeof($this->tkns);
+		for ($index = 0; $index < $lenTkns; ++$index) {
+			$token = $this->tkns[$index];
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
 			case T_WHILE:
 				$str = $text;
-				while (list($index, $token) = each($this->tkns)) {
+				for ($index++; $index < $lenTkns; ++$index) {
+					$token = $this->tkns[$index];
 					list($id, $text) = $this->getToken($token);
 					$this->ptr = $index;
 					$str .= $text;

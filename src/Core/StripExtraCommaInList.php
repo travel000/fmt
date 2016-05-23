@@ -25,11 +25,13 @@ final class StripExtraCommaInList extends FormatterPass {
 
 	public function format(string $source): string{
 		$this->tkns = token_get_all($source);
+		$lenTkns = sizeof($this->tkns);
 
 		$contextStack = [];
 		$touchedListArrayString = false;
 
-		while (list($index, $token) = each($this->tkns)) {
+		for ($index = 0; $index < $lenTkns; ++$index) {
+			$token = $this->tkns[$index];
 			list($id, $text) = $this->getToken($token);
 			$this->ptr = $index;
 			switch ($id) {
@@ -66,6 +68,7 @@ final class StripExtraCommaInList extends FormatterPass {
 			}
 			$this->tkns[$this->ptr] = [$id, $text];
 		}
+
 		return $this->renderLight();
 	}
 }
