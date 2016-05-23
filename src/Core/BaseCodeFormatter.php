@@ -36,7 +36,6 @@ abstract class BaseCodeFormatter {
 		'RemoveUseLeadingSlash' => false,
 		'ShortArray' => false,
 		'MergeElseIf' => false,
-		'SplitElseIf' => false,
 		'AutoPreincrement' => false,
 		'MildAutoPreincrement' => false,
 
@@ -181,6 +180,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['ExtraCommaInArray'] = new ExtraCommaInArray();
 		$this->passes['MergeCurlyCloseAndDoWhile'] = new MergeCurlyCloseAndDoWhile();
 		$this->passes['MergeDoubleArrowAndArray'] = new MergeDoubleArrowAndArray();
+		$this->passes['MergeElseIf'] = new MergeElseIf();
 		$this->passes['MergeParenCloseWithCurlyOpen'] = new MergeParenCloseWithCurlyOpen();
 		$this->passes['NormalizeIsNotEquals'] = new NormalizeIsNotEquals();
 		$this->passes['NormalizeLnAndLtrimLines'] = new NormalizeLnAndLtrimLines();

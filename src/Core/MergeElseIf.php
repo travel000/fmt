@@ -15,7 +15,7 @@
 /**
  * From PHP-CS-Fixer
  */
-final class MergeElseIf extends AdditionalPass {
+final class MergeElseIf extends FormatterPass {
 	public function candidate(string $source, array $foundTokens): bool {
 		if (isset($foundTokens[T_ELSE]) || isset($foundTokens[T_ELSEIF])) {
 			return true;
@@ -32,7 +32,7 @@ final class MergeElseIf extends AdditionalPass {
 			$this->ptr = $index;
 			switch ($id) {
 			case T_IF:
-				if ($this->leftTokenIs([T_ELSE]) && !$this->leftTokenIs([T_OPEN_TAG, T_OPEN_TAG_WITH_ECHO])) {
+				if ($this->leftTokenIs([T_ELSE])) {
 					$this->rtrimAndAppendCode($text);
 					break;
 				}
@@ -48,33 +48,5 @@ final class MergeElseIf extends AdditionalPass {
 		}
 
 		return $this->code;
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 */
-	public function getDescription(): string {
-		return 'Merge if with else.';
-	}
-
-	/**
-	 * @codeCoverageIgnore
-	 */
-	public function getExample(): string {
-		return <<<'EOT'
-<?php
-if($a){
-
-} else if($b) {
-
-}
-
-if($a){
-
-} elseif($b) {
-
-}
-?>
-EOT;
 	}
 }

@@ -49,6 +49,7 @@ namespace {
 	require 'Core/ExtraCommaInArray.php';
 	require 'Core/MergeCurlyCloseAndDoWhile.php';
 	require 'Core/MergeDoubleArrowAndArray.php';
+	require 'Core/MergeElseIf.php';
 	require 'Core/MergeParenCloseWithCurlyOpen.php';
 	require 'Core/NormalizeIsNotEquals.php';
 	require 'Core/NormalizeLnAndLtrimLines.php';
@@ -103,8 +104,6 @@ namespace {
 	require 'Additionals/JoinToImplode.php';
 	require 'Additionals/LeftWordWrap.php';
 	require 'Additionals/LongArray.php';
-	require 'Additionals/MergeElseIf.php';
-	require 'Additionals/SplitElseIf.php';
 	require 'Additionals/MergeNamespaceWithOpenTag.php';
 	require 'Additionals/MildAutoPreincrement.php';
 	require 'Additionals/NewLineBeforeReturn.php';
