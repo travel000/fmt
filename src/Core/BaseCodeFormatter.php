@@ -29,7 +29,6 @@ abstract class BaseCodeFormatter {
 		'RestoreComments' => false,
 		'UpgradeToPreg' => false,
 		'DocBlockToComment' => false,
-		'LongArray' => false,
 
 		'StripExtraCommaInArray' => false,
 		'NoSpaceAfterPHPDocBlocks' => false,

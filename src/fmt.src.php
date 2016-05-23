@@ -103,7 +103,6 @@ namespace {
 	require 'Additionals/IndentTernaryConditions.php';
 	require 'Additionals/JoinToImplode.php';
 	require 'Additionals/LeftWordWrap.php';
-	require 'Additionals/LongArray.php';
 	require 'Additionals/MergeNamespaceWithOpenTag.php';
 	require 'Additionals/MildAutoPreincrement.php';
 	require 'Additionals/NewLineBeforeReturn.php';
