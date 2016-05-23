@@ -41,8 +41,6 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 
 			case T_COMMENT:
 			case T_DOC_COMMENT:
-				list($prevId, $prevText) = $this->inspectToken(-1);
-
 				$lines = explode($this->newLine, $text);
 				$newText = '';
 				foreach ($lines as $v) {
