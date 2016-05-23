@@ -1,13 +1,13 @@
 <?php
-fn(1, $acc1 = ObjectClass::fb(array('ii' => uniqid(), 'nnnn' => 1, 'description' => 'description', 'images' => 'image-url')));
-fn(null, $acc2 = ObjectClass::fb(array('ii' => uniqid(), 'nnnn' => 1, 'description' => 'description', 'imageUrl' => 'image-url')));
+fn(1, $acc1 = ObjectClass::fb(['ii' => uniqid(), 'nnnn' => 1, 'description' => 'description', 'images' => 'image-url']));
+fn(null, $acc2 = ObjectClass::fb(['ii' => uniqid(), 'nnnn' => 1, 'description' => 'description', 'imageUrl' => 'image-url']));
 
-$ds = array(
+$ds = [
 	'aaaa'   => [
 		'id' => 1,
 	],
-	'dddddd' => array(
-		'id' => array(
+	'dddddd' => [
+		'id' => [
 			'dd'                => 1,
 			'ddddddd'           => 1,
 			'eeee'              => '312321',
@@ -16,6 +16,6 @@ $ds = array(
 			';ldkasl;eiqwopieq' => '312',
 			'opieq'             => '312',
 			'lkeoiwueqq'        => 3,
-		),
-	),
-);
+		],
+	],
+];

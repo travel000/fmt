@@ -9,7 +9,7 @@ class Abc {
 	 * @param array $c
 	 * @return mixed
 	 */
-	function a(ClassA $a, \Lll\llll\ppp $b = 10, $c = array()) {
+	function a(ClassA $a, \Lll\llll\ppp $b = 10, $c = []) {
 
 		return $c;
 	}
@@ -20,7 +20,7 @@ class Abc {
 	 * @param array $c
 	 * @return mixed
 	 */
-	public static function b(ClassA $a, \Lll\llll\ppp $b = 10, $c = array()) {
+	public static function b(ClassA $a, \Lll\llll\ppp $b = 10, $c = []) {
 
 		return $c;
 	}
@@ -31,7 +31,7 @@ class Abc {
 	 * @param array $c
 	 * @return mixed
 	 */
-	static private function c(ClassA $a, \Lll\llll\ppp $b = 10, $c = array()) {
+	static private function c(ClassA $a, \Lll\llll\ppp $b = 10, $c = []) {
 
 		return $c;
 	}

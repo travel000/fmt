@@ -6,11 +6,11 @@ $cccccccc = 3;
 
 $c = 0;
 
-$a = array(
+$a = [
 	$a   => 1,
 	$ccc => 10,
-);
-$bbbb = array(
+];
+$bbbb = [
 	$b    => 0,
 	$cccc => '
 $a = array(
@@ -18,4 +18,4 @@ $a = array(
 	10 => 10,
 );
 ',
-);
+];

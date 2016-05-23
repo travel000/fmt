@@ -1,5 +1,5 @@
 <?php
-$a = array(
+$a = [
 	<<<EOT
 EOT
-);
+];

@@ -1,5 +1,5 @@
 <?php
-$exclude_dirs = array(
+$exclude_dirs = [
 	'a/',
 	'b/',
 	'c/',
@@ -7,4 +7,4 @@ $exclude_dirs = array(
 	/* comment
 
 	 */
-);
+];

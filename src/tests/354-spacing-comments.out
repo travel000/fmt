@@ -6,9 +6,9 @@ $a = [
 	],
 ];
 
-$a = array(
+$a = [
 	'k1' => false, // COMMENT
 
-	'k2' => array( // COMMENT
-	),
-);
+	'k2' => [ // COMMENT
+	],
+];

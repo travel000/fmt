@@ -2,17 +2,17 @@
 function func($a) {
 	if ($detailed) {
 		if (isset($obj, $obj->ID, $obj->DN)) {
-			$res['o'] = array(
+			$res['o'] = [
 				'id'   => (string) $obj->ID,
 				'name' => (string) $obj->N,
-			);
+			];
 		}
-		$res['b'] = array();
+		$res['b'] = [];
 		foreach ($obj->Buckets->Bucket as $b) {
-			$res['b'][] = array(
+			$res['b'][] = [
 				'name' => (string) $b->N,
 				'time' => strtotime((string) $b->CD),
-			);
+			];
 		}
 	} else {
 		foreach ($obj->Buckets->Bucket as $b) {

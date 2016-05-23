@@ -2,7 +2,7 @@
 namespace A {
     class Test
     {
-        protected static $rules = array();
+        protected static $rules = [];
 
         public static function show()
         {

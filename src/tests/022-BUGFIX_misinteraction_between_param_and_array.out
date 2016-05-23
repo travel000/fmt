@@ -1,4 +1,4 @@
 <?php
-function func($a, $b, array $c = array(), array $d = array(), $e) {
+function func($a, $b, array $c = [], array $d = [], $e) {
 	cmd();
 }

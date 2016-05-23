@@ -1,7 +1,7 @@
 <?php
-$varArray = array(
+$varArray = [
 	'a' => 'b',
-);
+];
 
 $var3 = <<<EOA
 data
@@ -9,9 +9,9 @@ data
 data
 EOA;
 
-$varArray = array(
+$varArray = [
 	'a' => 'b',
-);
+];
 
 $varArray = [
 	'c' => 'd',

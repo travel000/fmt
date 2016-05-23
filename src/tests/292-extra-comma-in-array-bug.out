@@ -48,7 +48,7 @@ literal[
 	1
 ];
 
-array('literal')[
+['literal'][
 	1
 ];
 

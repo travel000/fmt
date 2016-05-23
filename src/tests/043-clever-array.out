@@ -1,16 +1,16 @@
 <?php
-$a = array(1, 2);
-$a = array(
+$a = [1, 2];
+$a = [
 	1,
 	2,
-);
-$a = array(array());
-$a = array(
-	array('k' => 'v'),
-);
-$a = array(
-	array(
+];
+$a = [[]];
+$a = [
+	['k' => 'v'],
+];
+$a = [
+	[
 		'k' => 'v',
 		'k' => 'v',
-	),
-);
+	],
+];

@@ -5,6 +5,6 @@ $arr = [
 ];
 
 $obj = new ClassObjects();
-$arr = array(
+$arr = [
 	ConstangBag::ConstantName => ConstangBag::ConstantName,
-);
+];

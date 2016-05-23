@@ -24,7 +24,7 @@ class Test {
 	 * @param array $c
 	 * @param array $d
 	 */
-	public function __construct(\Traversable $t, Tools $k, array $a, $b, $c = [], $d = array()) {
+	public function __construct(\Traversable $t, Tools $k, array $a, $b, $c = [], $d = []) {
 		$this->a = $a;
 		$this->b = $b;
 	}

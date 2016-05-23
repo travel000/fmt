@@ -1,7 +1,7 @@
 <?php
 
-$arr = array(
-	'options' => array(
+$arr = [
+	'options' => [
 		'object_repository'  => $serviceLocator->getServiceLocator()
 		                                       ->get('Doctrine\ORM\EntityManager')
 		                                       ->getRepository('Appointment\Entity\Appointment')
@@ -15,5 +15,5 @@ $arr = array(
 		                                       ->getRepository('Appointment\Entity\Appointment')
 		                                       ->getRepository('Appointment\Entity\Appointment')
 		                                       ->getRepository('Appointment\Entity\Appointment'),
-	),
-);
+	],
+];

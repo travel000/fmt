@@ -20,20 +20,20 @@ $object
 // old array syntax
 $object
 	->firstMethod()
-	->chainedMethod($var, array(
+	->chainedMethod($var, [
 		1,
 		2,
 		3,
-	));
+	]);
 
 $object
 	->firstMethod(
 		$obj2
 			->doMagic()
 	)
-	->chainedMethod($var, array(
+	->chainedMethod($var, [
 		1,
 		2,
 		3,
-	))
+	])
 ;

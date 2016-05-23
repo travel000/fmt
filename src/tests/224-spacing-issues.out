@@ -1,7 +1,7 @@
 <?php
 function func($type, $shells, &$shellList) {}
 
-call_user_func_array(array(&$obj, $action), $args);
+call_user_func_array([&$obj, $action], $args);
 
 $insert = substr($insert, 0, (int) $var['key'] - 2);
 

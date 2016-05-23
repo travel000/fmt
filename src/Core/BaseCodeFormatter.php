@@ -194,6 +194,7 @@ abstract class BaseCodeFormatter {
 		$this->passes['ResizeSpaces'] = new ResizeSpaces();
 		$this->passes['ReturnNull'] = new ReturnNull();
 		$this->passes['RTrim'] = new RTrim();
+		$this->passes['ShortArray'] = new ShortArray();
 		$this->passes['SplitCurlyCloseAndTokens'] = new SplitCurlyCloseAndTokens();
 		$this->passes['StripExtraCommaInList'] = new StripExtraCommaInList();
 		$this->passes['TwoCommandsInSameLine'] = new TwoCommandsInSameLine();

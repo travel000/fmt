@@ -2,7 +2,7 @@
 //passes:Default,PSR2ModifierVisibilityStaticOrder
 class MyClass {
 	public static function whatever($things) {
-		$stuff = array(1, 2, 3, 4, 5);
+		$stuff = [1, 2, 3, 4, 5];
 
 		function fancyCalculation($a, $b) {
 			return $a + $b;
@@ -17,4 +17,4 @@ class MyClass {
 	}
 }
 
-echo MyClass::whatever(array(6, 7, 8, 9, 10)) . PHP_EOL;
+echo MyClass::whatever([6, 7, 8, 9, 10]) . PHP_EOL;

@@ -19,7 +19,7 @@
                 }
                 ?></td>
             <td><?php foreach ($param4_arr as $v) {
-                		echo CHtml::link($v['name'], array('file', 'id' => $v['id'], 'typ' => '1')) . '<br>';
+                		echo CHtml::link($v['name'], ['file', 'id' => $v['id'], 'typ' => '1']) . '<br>';
                 }
                 ?></td>
         </tr>

@@ -1,5 +1,5 @@
 <?php
-$expect = array(
+$expect = [
 	// comment 1
 	0 => new ClassObject('b')
 	, 1 => new ClassObject('comment 1')
@@ -16,4 +16,4 @@ $expect = array(
 	, 9 => new ClassObject("Now comment 4\n\n")
 	// comment SIX
 	, 10 => new ClassObject('b'),
-);
+];

@@ -3,9 +3,9 @@ class AppointmentFactory
 {
     public function aaa(SomeType $somevar)
     {
-        func(array(
+        func([
             $somevar->getServiceLocator()
                     ->get('STRING')->getRepository('STRING'),
-        ));
+        ]);
     }
 }

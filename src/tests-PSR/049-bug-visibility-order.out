@@ -5,9 +5,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Public extends Public_Controller {
 
 	public function about_us() {
-		$this->outputData['css'] = array(
+		$this->outputData['css'] = [
 			base_url() . 'assets/css/about.css',
-		);
+		];
 		$this->load_view('public/about_us');
 
 	}

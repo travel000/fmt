@@ -60,6 +60,7 @@ namespace {
 	require 'Core/ResizeSpaces.php';
 	require 'Core/ReturnNull.php';
 	require 'Core/RTrim.php';
+	require 'Core/ShortArray.php';
 	require 'Core/SplitCurlyCloseAndTokens.php';
 	require 'Core/StripExtraCommaInList.php';
 	require 'Core/SurrogateToken.php';
@@ -125,7 +126,6 @@ namespace {
 	require 'Additionals/ReplaceBooleanAndOr.php';
 	require 'Additionals/ReplaceIsNull.php';
 	require 'Additionals/RestoreComments.php';
-	require 'Additionals/ShortArray.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
 	require 'Additionals/SortUseNameSpace.php';
 	require 'Additionals/SpaceAroundControlStructures.php';

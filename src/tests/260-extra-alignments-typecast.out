@@ -3,7 +3,7 @@
 function a(
 	TypeA     $a,
 	TypeBB    $bb,
-	TypeCCC   $ccc = array(),
+	TypeCCC   $ccc = [],
 	TypeDDDD  $dddd,
 	TypeEEEEE $eeeee
 ) {

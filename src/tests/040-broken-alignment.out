@@ -6,8 +6,8 @@ class ClassObject {
 
 	private $real_long_name_variable = false;
 
-	private $ppppp  = array();
-	private $gddddd = array();
+	private $ppppp  = [];
+	private $gddddd = [];
 
 	public $a = 0;
 }
