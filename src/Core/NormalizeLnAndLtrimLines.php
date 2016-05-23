@@ -43,10 +43,6 @@ final class NormalizeLnAndLtrimLines extends FormatterPass {
 			case T_DOC_COMMENT:
 				list($prevId, $prevText) = $this->inspectToken(-1);
 
-				if (T_WHITESPACE === $prevId && ("\n" === $prevText || "\n\n" == substr($prevText, -2, 2))) {
-					$this->appendCode(LeftAlignComment::NON_INDENTABLE_COMMENT);
-				}
-
 				$lines = explode($this->newLine, $text);
 				$newText = '';
 				foreach ($lines as $v) {

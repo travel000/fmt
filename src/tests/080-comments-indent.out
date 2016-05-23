@@ -11,9 +11,9 @@ class Obj {
 		return false;
 	}
 
-/**
- * For some reason that's rather boring, this one should be in the first column too.
- */
+	/**
+	 * For some reason that's rather boring, this one should be in the first column too.
+	 */
 	public function func2() {
 		return false;
 	}

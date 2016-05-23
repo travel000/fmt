@@ -4,5 +4,5 @@ function f() {}
 
 function g()
 {
-// Comment
+    // Comment
 }

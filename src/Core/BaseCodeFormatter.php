@@ -55,8 +55,6 @@ abstract class BaseCodeFormatter {
 		'NamespaceMergeWithOpenTag' => false,
 		'MergeNamespaceWithOpenTag' => false,
 
-		'LeftAlignComment' => false,
-
 		'PSR2AlignObjOp' => false,
 		'PSR2EmptyFunction' => false,
 		'PSR2SingleEmptyLineAndStripClosingTag' => false,
@@ -182,7 +180,6 @@ abstract class BaseCodeFormatter {
 		$this->passes['AddMissingCurlyBraces'] = new AddMissingCurlyBraces();
 		$this->passes['EliminateDuplicatedEmptyLines'] = new EliminateDuplicatedEmptyLines();
 		$this->passes['ExtraCommaInArray'] = new ExtraCommaInArray();
-		$this->passes['LeftAlignComment'] = new LeftAlignComment();
 		$this->passes['MergeCurlyCloseAndDoWhile'] = new MergeCurlyCloseAndDoWhile();
 		$this->passes['MergeDoubleArrowAndArray'] = new MergeDoubleArrowAndArray();
 		$this->passes['MergeParenCloseWithCurlyOpen'] = new MergeParenCloseWithCurlyOpen();

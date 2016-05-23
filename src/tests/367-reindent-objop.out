@@ -13,7 +13,7 @@ $foo->bar(
 $foo->bar(
 	'aoeu'
 )->
-//comment1
+	//comment1
 	baz();
 
 $foo->bar(

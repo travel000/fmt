@@ -35,10 +35,6 @@ final class ReindentComments extends FormatterPass {
 			$this->ptr = $index;
 			$this->tkns[$this->ptr] = [$id, $text];
 			if (T_COMMENT == $id) {
-				if (LeftAlignComment::NON_INDENTABLE_COMMENT == $text) {
-					continue;
-				}
-
 				$oldComment = current($this->commentStack);
 				next($this->commentStack);
 				if (substr($text, 0, 2) != '/*') {
@@ -97,7 +93,7 @@ final class ReindentComments extends FormatterPass {
 						if (substr($line, 0, 2) == '/*') {
 							continue;
 						}
-						if (substr($line, -2, 2) == '*/') {
+						if (substr($line, -2, 2) == '*/' && strlen(trim($line)) == 2) {
 							$lines[$idx] = str_repeat($this->indentChar, $indentLevel) . '*/';
 							continue;
 						}

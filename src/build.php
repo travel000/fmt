@@ -192,7 +192,7 @@ function currentBranch(): string{
 }
 
 function getBranchDate(string $branch): DateTime{
-	$cmd = 'git log master%BRANCH% --oneline | tail -n -1 | awk \'{ print $1 }\' | xargs git show -s --pretty=format:%ai';
+	$cmd = 'git log master%BRANCH% --oneline | tail -n -1 | awk \'{ print $1 }\' | xargs git show -s --date=format:\'%Y-%m-%d\' --pretty=format:%ad';
 	$replaceBranch = '';
 	if ('master' != $branch) {
 		$replaceBranch = '..' . escapeshellarg($branch);

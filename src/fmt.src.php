@@ -46,7 +46,6 @@ namespace {
 	require 'Core/AutoImport.php';
 	require 'Core/EliminateDuplicatedEmptyLines.php';
 	require 'Core/ExtraCommaInArray.php';
-	require 'Core/LeftAlignComment.php';
 	require 'Core/MergeCurlyCloseAndDoWhile.php';
 	require 'Core/MergeDoubleArrowAndArray.php';
 	require 'Core/MergeParenCloseWithCurlyOpen.php';

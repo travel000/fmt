@@ -6,5 +6,5 @@ if (null === $a) {
 }
 
 if (null/*aaa*/ === /*aaa*/$a
-// hello world
+	// hello world
 );
