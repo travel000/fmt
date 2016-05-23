@@ -41,7 +41,7 @@ final class CodeFormatter extends BaseCodeFormatter {
 		echo 'before:', (memory_get_usage() / 1024 / 1024), "\t", (memory_get_peak_usage() / 1024 / 1024), PHP_EOL;
 	}
 
-	public function beforePass(string $source, string $className) {
+	public function beforePass(string $source, FormatterPass $className) {
 		$this->currentTiming = microtime(true);
 	}
 }
