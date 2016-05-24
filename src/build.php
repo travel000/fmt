@@ -177,7 +177,7 @@ foreach ($phars as $target) {
 }
 echo 'done', PHP_EOL;
 
-$variants = ['.php' => 0755, '.phar' => 0755, '.phar.sha1' => 0444];
+$variants = ['.php' => 0755, '.phar' => 0755, '.phar.sha1' => 0644];
 foreach ($targets as $target) {
 	foreach ($variants as $variant => $permission) {
 		if (file_exists($target . $variant)) {
