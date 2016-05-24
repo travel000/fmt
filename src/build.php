@@ -31,12 +31,14 @@ require 'version.php';
 
 $ver = explode('.', VERSION);
 
-$majorVersion = calculateVersion(getBranchDate(currentBranch()));
-if ($majorVersion != $ver[0]) {
-	$ver[0] = $majorVersion;
-	$ver[1] = 0;
-} else {
-	$ver[1] += 1;
+if (changesFound()) {
+	$majorVersion = calculateVersion(getBranchDate(currentBranch()));
+	if ($majorVersion != $ver[0]) {
+		$ver[0] = $majorVersion;
+		$ver[1] = 0;
+	} else {
+		$ver[1] += 1;
+	}
 }
 
 $newver = sprintf(VERSION_PATTERN, $ver[0], $ver[1]);
@@ -209,4 +211,13 @@ function calculateVersion(DateTime $date2): int{
 		$diff = $date1->diff(new DateTime('now'))->format('%a');
 	}
 	return intval($diff);
+}
+
+function changesFound(): bool{
+	$output = [];
+	$retCode = 0;
+	$retCodeStaged = 0;
+	exec('git diff --exit-code', $output, $retCode);
+	exec('git diff --cached --exit-code', $output, $retCodeStaged);
+	return $retCode || $retCodeStaged;
 }
