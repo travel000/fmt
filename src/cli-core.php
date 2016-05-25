@@ -45,6 +45,7 @@ function showHelp(array $argv, bool $enableCache, bool $inPhar) {
 		'-v' => 'verbose',
 	];
 	if ($inPhar) {
+		$options['--selfupdate[=channel]'] = 'self-update fmt.phar from Github. options: lts, alpha (default: lts)';
 		$options['--version'] = 'version';
 	}
 	$options['--cache[=FILENAME]'] .= (Cacher::DEFAULT_CACHE_FILENAME);
@@ -92,6 +93,7 @@ $getoptLongOptions = [
 	'yoda',
 ];
 if ($inPhar) {
+	$getoptLongOptions[] = 'selfupdate::';
 	$getoptLongOptions[] = 'version';
 }
 if (!$enableCache) {
@@ -128,7 +130,9 @@ if (isset($opts['list-simple'])) {
 	echo tabwriter($helpLines);
 	die();
 }
-
+if (isset($opts['selfupdate'])) {
+	selfupdate($argv, $inPhar, $opts['selfupdate']);
+}
 if (isset($opts['version'])) {
 	if ($inPhar) {
 		echo $argv[0], ' ', VERSION, PHP_EOL;
