@@ -29,6 +29,7 @@ namespace {
 
 	require 'version.php';
 	require 'helpers.php';
+	require 'selfupdate.php';
 
 	require 'Core/constants.php';
 	require 'Core/FormatterPass.php';
