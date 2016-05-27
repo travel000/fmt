@@ -1,5 +1,7 @@
 Description:
+```
 <provide a succinct description of the error>
+```
 
 Failing code:
 ```
@@ -21,4 +23,7 @@ Your configuration:
 <insert your phpfmt configuration and PHP related information>
 ```
 
-
+phpfmt engine channel and branch:
+```
+<for example: lts/803.3>
+```
