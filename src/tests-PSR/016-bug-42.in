@@ -1,5 +1,0 @@
-<?php
-
-\Zend\Filter\Null;
-
-?>

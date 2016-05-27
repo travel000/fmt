@@ -40,27 +40,15 @@ abstract class BaseCodeFormatter {
 		'SpaceAfterExclamationMark' => false,
 		'SpaceAroundExclamationMark' => false,
 
-		'PSR2IndentWithSpace' => false,
 		'AlignPHPCode' => false,
 		'NamespaceMergeWithOpenTag' => false,
 		'MergeNamespaceWithOpenTag' => false,
 
-		'PSR2AlignObjOp' => false,
 		'PSR2EmptyFunction' => false,
-		'PSR2SingleEmptyLineAndStripClosingTag' => false,
 		'PSR2ModifierVisibilityStaticOrder' => false,
-		'PSR2CurlyOpenNextLine' => false,
-		'PSR2LnAfterNamespace' => false,
-		'PSR2KeywordsLowerCase' => false,
-
-		'PSR1MethodNames' => false,
-		'PSR1ClassNames' => false,
-
-		'PSR1ClassConstants' => false,
 
 		'EliminateDuplicatedEmptyLines' => false,
 		'IndentTernaryConditions' => false,
-		'PSR2IndentImplements' => false,
 		'ReindentComments' => false,
 		'ReindentEqual' => false,
 		'Reindent' => false,
@@ -142,17 +130,6 @@ abstract class BaseCodeFormatter {
 		'ReindentComments' => ['OrganizeClass', 'RestoreComments'],
 		'ReindentObjOps' => ['ReindentAndAlignObjOps'],
 		'RestoreComments' => ['OrganizeClass', 'ReindentComments'],
-
-		'PSR1OpenTags' => ['ReindentComments'],
-		'PSR1ClassConstants' => ['ReindentComments'],
-		'PSR1ClassNames' => ['ReindentComments'],
-		'PSR1MethodNames' => ['ReindentComments'],
-		'PSR2KeywordsLowerCase' => ['ReindentComments'],
-		'PSR2IndentWithSpace' => ['ReindentComments'],
-		'PSR2LnAfterNamespace' => ['ReindentComments'],
-		'PSR2CurlyOpenNextLine' => ['ReindentComments'],
-		'PSR2ModifierVisibilityStaticOrder' => ['ReindentComments'],
-		'PSR2SingleEmptyLineAndStripClosingTag' => ['ReindentComments'],
 	];
 
 	private $shortcircuits = [];

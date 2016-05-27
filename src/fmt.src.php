@@ -54,6 +54,7 @@ namespace {
 	require 'Core/MergeParenCloseWithCurlyOpen.php';
 	require 'Core/NormalizeIsNotEquals.php';
 	require 'Core/NormalizeLnAndLtrimLines.php';
+	require 'Core/PSR2ModifierVisibilityStaticOrder.php';
 	require 'Core/Reindent.php';
 	require 'Core/ReindentColonBlocks.php';
 	require 'Core/ReindentComments.php';
@@ -68,20 +69,6 @@ namespace {
 	require 'Core/StripExtraCommaInList.php';
 	require 'Core/SurrogateToken.php';
 	require 'Core/TwoCommandsInSameLine.php';
-
-	require 'PSR/PSR1ClassConstants.php';
-	require 'PSR/PSR1ClassNames.php';
-	require 'PSR/PSR1MethodNames.php';
-	require 'PSR/PSR1OpenTags.php';
-	require 'PSR/PSR2AlignObjOp.php';
-	require 'PSR/PSR2CurlyOpenNextLine.php';
-	require 'PSR/PSR2IndentImplements.php';
-	require 'PSR/PSR2IndentWithSpace.php';
-	require 'PSR/PSR2KeywordsLowerCase.php';
-	require 'PSR/PSR2LnAfterNamespace.php';
-	require 'PSR/PSR2ModifierVisibilityStaticOrder.php';
-	require 'PSR/PSR2SingleEmptyLineAndStripClosingTag.php';
-	require 'PSR/PsrDecorator.php';
 
 	require 'Additionals/AddMissingParentheses.php';
 	require 'Additionals/AliasToMaster.php';

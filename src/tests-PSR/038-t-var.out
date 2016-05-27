@@ -1,5 +1,0 @@
-<?php
-class A
-{
-    public $foo, $bar;
-}

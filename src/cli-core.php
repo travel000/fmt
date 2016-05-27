@@ -16,29 +16,17 @@ function showHelp(array $argv, bool $enableCache, bool $inPhar) {
 	echo 'Usage: ' . $argv[0] . ' [-hv] [-o=FILENAME] [--config=FILENAME] ' . ($enableCache ? '[--cache[=FILENAME]] ' : '') . '[options] <target>', PHP_EOL;
 	$options = [
 		'--cache[=FILENAME]' => 'cache file. Default: ',
-		'--cakephp' => 'Apply CakePHP coding style',
 		'--config=FILENAME' => 'configuration file. Default: .phpfmt.ini',
-		'--constructor=type' => 'analyse classes for attributes and generate constructor - camel, snake, golang',
 		'--dry-run' => 'Runs the formatter without atually changing files; returns exit code 1 if changes would have been applied',
-		'--enable_auto_align' => 'disable auto align of ST_EQUAL and T_DOUBLE_ARROW',
 		'--exclude=pass1,passN,...' => 'disable specific passes',
 		'--help-pass' => 'show specific information for one pass',
 		'--ignore=PATTERN-1,PATTERN-N,...' => 'ignore file names whose names contain any PATTERN-N',
-		'--indent_with_space=SIZE' => 'use spaces instead of tabs for indentation. Default 4',
 		'--lint-before' => 'lint files before pretty printing (PHP must be declared in %PATH%/$PATH)',
 		'--list' => 'list possible transformations',
 		'--list-simple' => 'list possible transformations - greppable',
 		'--no-backup' => 'no backup file (original.php~)',
 		'--passes=pass1,passN,...' => 'call specific compiler pass',
 		'--profile=NAME' => 'use one of profiles present in configuration file',
-		'--psr' => 'activate PSR1 and PSR2 styles',
-		'--psr1' => 'activate PSR1 style',
-		'--psr1-naming' => 'activate PSR1 style - Section 3 and 4.3 - Class and method names case.',
-		'--psr2' => 'activate PSR2 style',
-		'--setters_and_getters=type' => 'analyse classes for attributes and generate setters and getters - camel, snake, golang',
-		'--smart_linebreak_after_curly' => 'convert multistatement blocks into multiline blocks',
-		'--visibility_order' => 'fixes visibiliy order for method in classes - PSR-2 4.2',
-		'--yoda' => 'yoda-style comparisons',
 		'-h, --help' => 'this help message',
 		'-o=file' => 'output the formatted code to "file"',
 		'-o=-' => 'output the formatted code to standard output',
@@ -65,32 +53,19 @@ function showHelp(array $argv, bool $enableCache, bool $inPhar) {
 
 $getoptLongOptions = [
 	'cache::',
-	'cakephp',
 	'config:',
-	'constructor:',
 	'dry-run',
-	'enable_auto_align',
 	'exclude:',
 	'help',
 	'help-pass:',
 	'ignore:',
-	'indent_with_space::',
 	'lint-before',
 	'list',
 	'list-simple',
 	'no-backup',
 	'oracleDB::',
 	'passes:',
-	'php2go',
 	'profile:',
-	'psr',
-	'psr1',
-	'psr1-naming',
-	'psr2',
-	'setters_and_getters:',
-	'smart_linebreak_after_curly',
-	'visibility_order',
-	'yoda',
 ];
 if ($inPhar) {
 	$getoptLongOptions[] = 'selfupdate::';
@@ -234,15 +209,6 @@ if (isset($opts['lint-before'])) {
 }
 
 $fmt = new CodeFormatter();
-if (isset($opts['setters_and_getters'])) {
-	$argv = extractFromArgv($argv, 'setters_and_getters');
-	$fmt->enablePass('SettersAndGettersPass', $opts['setters_and_getters']);
-}
-
-if (isset($opts['constructor'])) {
-	$argv = extractFromArgv($argv, 'constructor');
-	$fmt->enablePass('ConstructorPass', $opts['constructor']);
-}
 
 if (isset($opts['oracleDB'])) {
 	$argv = extractFromArgv($argv, 'oracleDB');
@@ -263,56 +229,6 @@ if (isset($opts['oracleDB'])) {
 	}
 }
 
-if (isset($opts['smart_linebreak_after_curly'])) {
-	$fmt->enablePass('SmartLnAfterCurlyOpen');
-	$argv = extractFromArgv($argv, 'smart_linebreak_after_curly');
-}
-
-if (isset($opts['yoda'])) {
-	$fmt->enablePass('YodaComparisons');
-	$argv = extractFromArgv($argv, 'yoda');
-}
-
-if (isset($opts['enable_auto_align'])) {
-	$fmt->enablePass('AlignEquals');
-	$fmt->enablePass('AlignDoubleArrow');
-	$argv = extractFromArgv($argv, 'enable_auto_align');
-}
-
-if (isset($opts['psr'])) {
-	PsrDecorator::decorate($fmt);
-	$argv = extractFromArgv($argv, 'psr');
-}
-
-if (isset($opts['psr1'])) {
-	PsrDecorator::PSR1($fmt);
-	$argv = extractFromArgv($argv, 'psr1');
-}
-
-if (isset($opts['psr1-naming'])) {
-	PsrDecorator::PSR1Naming($fmt);
-	$argv = extractFromArgv($argv, 'psr1-naming');
-}
-
-if (isset($opts['psr2'])) {
-	PsrDecorator::PSR2($fmt);
-	$argv = extractFromArgv($argv, 'psr2');
-}
-
-if (isset($opts['indent_with_space'])) {
-	$fmt->enablePass('PSR2IndentWithSpace', $opts['indent_with_space']);
-	$argv = extractFromArgv($argv, 'indent_with_space');
-}
-
-if ((isset($opts['psr1']) || isset($opts['psr2']) || isset($opts['psr'])) && isset($opts['enable_auto_align'])) {
-	$fmt->enablePass('PSR2AlignObjOp');
-}
-
-if (isset($opts['visibility_order'])) {
-	$fmt->enablePass('PSR2ModifierVisibilityStaticOrder');
-	$argv = extractFromArgv($argv, 'visibility_order');
-}
-
 if (isset($opts['passes'])) {
 	$optPasses = array_filter(array_map(function ($v) {
 		return trim($v);
@@ -321,16 +237,6 @@ if (isset($opts['passes'])) {
 		$fmt->enablePass($optPass);
 	}
 	$argv = extractFromArgv($argv, 'passes');
-}
-
-if (isset($opts['cakephp'])) {
-	$fmt->enablePass('CakePHPStyle');
-	$argv = extractFromArgv($argv, 'cakephp');
-}
-
-if (isset($opts['php2go'])) {
-	Php2GoDecorator::decorate($fmt);
-	$argv = extractFromArgv($argv, 'php2go');
 }
 
 if (isset($opts['exclude'])) {
