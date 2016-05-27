@@ -264,7 +264,11 @@ EOT;
 		$lastGroup = null;
 		foreach ($lines as $idx => $line) {
 			if ('@' == substr(ltrim($line), 0, 1)) {
-				$tag = strtolower(substr($line, 0, strpos($line, ' ')));
+				$pos = strpos($line, ' ');
+				if (false === $pos) {
+					continue;
+				}
+				$tag = strtolower(substr($line, 0, $pos));
 				if (isset($groups[$tag]) && $groups[$tag] != $lastGroup) {
 					$lines[$idx] = (null !== $lastGroup ? $this->newLine . ' * ' : '') . $line;
 					$lastGroup = $groups[$tag];
