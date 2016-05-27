@@ -17,9 +17,6 @@
  */
 abstract class BaseCodeFormatter {
 	protected $passes = [
-		'StripSpaces' => false,
-
-		'ReplaceBooleanAndOr' => false,
 		'EliminateDuplicatedEmptyLines' => false,
 
 		'RTrim' => false,
@@ -30,13 +27,11 @@ abstract class BaseCodeFormatter {
 		'UpgradeToPreg' => false,
 		'DocBlockToComment' => false,
 
-		'StripExtraCommaInArray' => false,
 		'NoSpaceAfterPHPDocBlocks' => false,
 		'RemoveUseLeadingSlash' => false,
 		'ShortArray' => false,
 		'MergeElseIf' => false,
 		'AutoPreincrement' => false,
-		'MildAutoPreincrement' => false,
 
 		'StripNewlineAfterClassOpen' => false,
 		'StripNewlineAfterCurlyOpen' => false,
@@ -44,8 +39,6 @@ abstract class BaseCodeFormatter {
 		'SortUseNameSpace' => false,
 		'SpaceAfterExclamationMark' => false,
 		'SpaceAroundExclamationMark' => false,
-
-		'TightConcat' => false,
 
 		'PSR2IndentWithSpace' => false,
 		'AlignPHPCode' => false,
@@ -107,15 +100,11 @@ abstract class BaseCodeFormatter {
 		'TwoCommandsInSameLine' => false,
 
 		'SpaceBetweenMethods' => false,
-		'GeneratePHPDoc' => false,
 		'ReturnNull' => false,
 		'AddMissingParentheses' => false,
-		'WrongConstructorName' => false,
 		'JoinToImplode' => false,
 		'EncapsulateNamespaces' => false,
 		'PrettyPrintDocBlocks' => false,
-		'StrictBehavior' => false,
-		'StrictComparison' => false,
 		'ReplaceIsNull' => false,
 		'DoubleToSingleQuote' => false,
 		'LeftWordWrap' => false,
@@ -124,15 +113,12 @@ abstract class BaseCodeFormatter {
 		'PSR2MultilineFunctionParams' => false,
 		'SpaceAroundControlStructures' => false,
 
-		'OrderMethodAndVisibility' => false,
-		'OrderMethod' => false,
 		'OrganizeClass' => false,
 		'AutoSemicolon' => false,
 		'PSR1OpenTags' => false,
 		'PHPDocTypesToFunctionTypehint' => false,
 		'RemoveSemicolonAfterCurly' => false,
 		'NewLineBeforeReturn' => false,
-		'EchoToPrint' => false,
 		'TrimSpaceBeforeSemicolon' => false,
 		'StripNewlineWithinClassBody' => false,
 		'RemoveBOMMark' => false,

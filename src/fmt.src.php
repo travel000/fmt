@@ -98,21 +98,16 @@ namespace {
 	require 'Additionals/ClassToStatic.php';
 	require 'Additionals/ConvertOpenTagWithEcho.php';
 	require 'Additionals/DocBlockToComment.php';
-	require 'Additionals/EchoToPrint.php';
 	require 'Additionals/EncapsulateNamespaces.php';
-	require 'Additionals/GeneratePHPDoc.php';
 	require 'Additionals/IndentTernaryConditions.php';
 	require 'Additionals/JoinToImplode.php';
 	require 'Additionals/LeftWordWrap.php';
 	require 'Additionals/MergeNamespaceWithOpenTag.php';
-	require 'Additionals/MildAutoPreincrement.php';
 	require 'Additionals/NewLineBeforeReturn.php';
 	require 'Additionals/NoSpaceAfterPHPDocBlocks.php';
 	require 'Additionals/OrganizeClass.php';
 	require 'Additionals/OrderAndRemoveUseClauses.php';
 	require 'Additionals/OnlyOrderUseClauses.php';
-	require 'Additionals/OrderMethod.php';
-	require 'Additionals/OrderMethodAndVisibility.php';
 	require 'Additionals/PHPDocTypesToFunctionTypehint.php';
 	require 'Additionals/PrettyPrintDocBlocks.php';
 	require 'Additionals/PSR2EmptyFunction.php';
@@ -122,7 +117,6 @@ namespace {
 	require 'Additionals/RemoveIncludeParentheses.php';
 	require 'Additionals/RemoveSemicolonAfterCurly.php';
 	require 'Additionals/RemoveUseLeadingSlash.php';
-	require 'Additionals/ReplaceBooleanAndOr.php';
 	require 'Additionals/ReplaceIsNull.php';
 	require 'Additionals/RestoreComments.php';
 	require 'Additionals/SmartLnAfterCurlyOpen.php';
@@ -131,19 +125,13 @@ namespace {
 	require 'Additionals/SpaceAfterExclamationMark.php';
 	require 'Additionals/SpaceAroundExclamationMark.php';
 	require 'Additionals/SpaceBetweenMethods.php';
-	require 'Additionals/StrictBehavior.php';
-	require 'Additionals/StrictComparison.php';
-	require 'Additionals/StripExtraCommaInArray.php';
 	require 'Additionals/StripNewlineAfterClassOpen.php';
 	require 'Additionals/StripNewlineAfterCurlyOpen.php';
 	require 'Additionals/StripNewlineWithinClassBody.php';
-	require 'Additionals/StripSpaces.php';
 	require 'Additionals/StripSpaceWithinControlStructures.php';
-	require 'Additionals/TightConcat.php';
 	require 'Additionals/TrimSpaceBeforeSemicolon.php';
 	require 'Additionals/UpgradeToPreg.php';
 	require 'Additionals/WordWrap.php';
-	require 'Additionals/WrongConstructorName.php';
 	require 'Additionals/YodaComparisons.php';
 
 	if (!isset($inPhar)) {
