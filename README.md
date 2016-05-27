@@ -28,7 +28,6 @@ Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [op
   --config=FILENAME                 configuration file. Default: .phpfmt.ini
   --dry-run                         Runs the formatter without atually changing files;
                                     returns exit code 1 if changes would have been applied
-  --enable_auto_align               disable auto align of ST_EQUAL and T_DOUBLE_ARROW
   --exclude=pass1,passN,...         disable specific passes
   --help-pass                       show specific information for one pass
   --ignore=PATTERN-1,PATTERN-N,...  ignore file names whose names contain any PATTERN-N
@@ -38,10 +37,7 @@ Usage: fmt.phar [-hv] [-o=FILENAME] [--config=FILENAME] [--cache[=FILENAME]] [op
   --no-backup                       no backup file (original.php~)
   --passes=pass1,passN,...          call specific compiler pass
   --profile=NAME                    use one of profiles present in configuration file
-  --smart_linebreak_after_curly     convert multistatement blocks into multiline blocks
   --version                         version
-  --visibility_order                fixes visibiliy order for method in classes - PSR-2 4.2
-  --yoda                            yoda-style comparisons
   -h, --help                        this help message
   -o=-                              output the formatted code to standard output
   -o=file                           output the formatted code to "file"
@@ -92,7 +88,6 @@ $a        = 10;
 $otherVar = 20;
 $third    = 30;
 </code></pre>
-<i>This can be disabled with the option "disable_auto_align"</i>
 </td>
 </tr>
 <tr>
